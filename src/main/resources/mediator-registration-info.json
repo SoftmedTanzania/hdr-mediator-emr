@@ -1,0 +1,33 @@
+{
+  "urn": "urn:uuid:0ad8fbe0-434c-11eb-b585-df00a464e3b8",
+  "version": "0.1.0",
+  "name": "HDR mediator",
+  "description": "An OpenHIM mediator for processing data to be sent to HDR from EMR systems",
+  "endpoints": [
+    {
+      "name": "HDR mediator Route",
+      "host": "localhost",
+      "port": "3000",
+      "path": "/emr",
+      "type": "http"
+    }
+  ],
+  "defaultChannelConfig": [
+    {
+      "name": "HDR mediator",
+      "urlPattern": "^/emr$",
+      "type": "http",
+      "allow": ["hdrmediator"],
+      "routes": [
+        {
+          "name": "HDR mediator Route",
+          "host": "localhost",
+          "port": "3000",
+          "path": "/emr",
+          "type": "http",
+          "primary": "true"
+        }
+      ]
+    }
+  ]
+}
