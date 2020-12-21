@@ -21,7 +21,7 @@ Open up `src/main/resources/mediator.properties` and supply your OpenHIM config 
   core.api.password=openhim-password
 ```
 
-To build and launch our mediator, run
+To build and launch our mediator, run.
 
 ```
   mvn install
