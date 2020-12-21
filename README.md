@@ -1,3 +1,4 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3436b5e072f14939b0407cad4baa743d)](https://app.codacy.com/gh/SoftmedTanzania/hdr-mediator-emr?utm_source=github.com&utm_medium=referral&utm_content=SoftmedTanzania/hdr-mediator-emr&utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/SoftmedTanzania/hdr-mediator-emr/badge.svg)](https://coveralls.io/github/SoftmedTanzania/hdr-mediator-emr)
 # Tanzania EMR-HDR mediator
 An [OpenHIM](http://openhim.org/) mediator for processing data received from emr and sending it to Tanzania Health Data Repository (HDR).
