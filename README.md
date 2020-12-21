@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/SoftmedTanzania/hdr-mediator-emr.svg?branch=master)](https://travis-ci.com/github/SoftmedTanzania/hdr-mediator-emr)
 # Tanzania EMR-HDR mediator
 An [OpenHIM](http://openhim.org/) mediator for processing data received from emr and sending it to Tanzania Health Data Repository (HDR).
 
