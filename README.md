@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/SoftmedTanzania/hdr-mediator-emr.svg?branch=master)](https://travis-ci.com/github/SoftmedTanzania/hdr-mediator-emr)
+[![Coverage Status](https://coveralls.io/repos/github/SoftmedTanzania/hdr-mediator-emr/badge.svg)](https://coveralls.io/github/SoftmedTanzania/hdr-mediator-emr)
 # Tanzania EMR-HDR mediator
 An [OpenHIM](http://openhim.org/) mediator for processing data received from emr and sending it to Tanzania Health Data Repository (HDR).
 
@@ -21,7 +22,7 @@ Open up `src/main/resources/mediator.properties` and supply your OpenHIM config 
   core.api.password=openhim-password
 ```
 
-To build and launch our mediator, run.
+To build and launch our mediator, run
 
 ```
   mvn install
