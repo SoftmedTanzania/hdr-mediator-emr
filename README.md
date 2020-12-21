@@ -26,3 +26,4 @@ To build and launch our mediator, run
   mvn install
   java -jar target/hdr-mediator-emr-0.1.0-jar-with-dependencies.jar
 ```
+
