@@ -23,4 +23,4 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
       - name: Build coveralls coverage report and send it coveralls via api
-        run: mvn coveralls:report
+        run: mvn coveralls:report -DrepoToken=DBe9Q6DfA6cHQrnIV4cWHEUP7Ru0oyEeT
