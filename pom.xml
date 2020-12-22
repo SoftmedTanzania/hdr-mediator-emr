@@ -77,9 +77,6 @@
                         <version>2.3.1</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <repoToken>DBe9Q6DfA6cHQrnIV4cWHEUP7Ru0oyEeT</repoToken>
-                </configuration>
             </plugin>
         </plugins>
     </build>
