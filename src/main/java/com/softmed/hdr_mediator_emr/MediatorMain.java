@@ -3,6 +3,7 @@ package com.softmed.hdr_mediator_emr;
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openhim.mediator.engine.*;
@@ -18,7 +19,7 @@ public class MediatorMain {
 
         //TODO Configure routes here
         //...
-        routingTable.addRoute("/emr", DefaultOrchestrator.class);
+        routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
 
         return routingTable;
     }

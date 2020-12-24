@@ -4,16 +4,17 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.JavaTestKit;
-import java.util.Collections;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.*;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 
-import static org.junit.Assert.*;
+import java.util.Collections;
 
-public class DefaultOrchestratorTest {
+import static org.junit.Assert.assertTrue;
+
+public class ServiceReceivedOrchestratorTest {
 
     static ActorSystem system;
 
@@ -40,7 +41,7 @@ public class DefaultOrchestratorTest {
     public void testMediatorHTTPRequest() throws Exception {
         new JavaTestKit(system) {{
             final MediatorConfig testConfig = new MediatorConfig("hdr-mediator-emr", "localhost", 3000);
-            final ActorRef defaultOrchestrator = system.actorOf(Props.create(DefaultOrchestrator.class, testConfig));
+            final ActorRef serviceReceivedOrchestrator = system.actorOf(Props.create(ServiceReceivedOrchestrator.class, testConfig));
 
             MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
                     getRef(),
@@ -50,13 +51,14 @@ public class DefaultOrchestratorTest {
                     "http",
                     null,
                     null,
-                    "/emr",
-                    "test message",
+                    "/service_received",
+                    "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
+                            "SVCREC,Masana,108627-1,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224",
                     Collections.<String, String>singletonMap("Content-Type", "text/plain"),
                     Collections.<Pair<String, String>>emptyList()
             );
 
-            defaultOrchestrator.tell(POST_Request, getRef());
+            serviceReceivedOrchestrator.tell(POST_Request, getRef());
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
