@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.JavaTestKit;
-import com.softmed.hdr_mediator_emr.orchestrators.orchestrators.ServiceReceivedOrchestrator;
+import com.softmed.hdr_mediator_emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.*;
 import org.openhim.mediator.engine.MediatorConfig;

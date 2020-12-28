@@ -41,7 +41,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.softmed.hdr_mediator_emr.orchestrators.MediatorMain</mainClass>
+                                    <mainClass>com.softmed.hdr_mediator_emr.MediatorMain</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

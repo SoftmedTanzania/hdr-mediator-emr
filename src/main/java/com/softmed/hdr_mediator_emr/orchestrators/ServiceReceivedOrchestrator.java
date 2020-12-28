@@ -1,11 +1,11 @@
-package com.softmed.hdr_mediator_emr.orchestrators.orchestrators;
+package com.softmed.hdr_mediator_emr.orchestrators;
 
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.softmed.hdr_mediator_emr.orchestrators.domain.ServiceReceived;
+import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.openhim.mediator.engine.MediatorConfig;

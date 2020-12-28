@@ -1,9 +1,9 @@
-package com.softmed.hdr_mediator_emr.orchestrators;
+package com.softmed.hdr_mediator_emr;
 
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import com.softmed.hdr_mediator_emr.orchestrators.orchestrators.ServiceReceivedOrchestrator;
+import com.softmed.hdr_mediator_emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openhim.mediator.engine.*;

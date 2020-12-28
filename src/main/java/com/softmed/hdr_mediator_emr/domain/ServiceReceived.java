@@ -1,4 +1,4 @@
-package com.softmed.hdr_mediator_emr.orchestrators.domain;
+package com.softmed.hdr_mediator_emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
