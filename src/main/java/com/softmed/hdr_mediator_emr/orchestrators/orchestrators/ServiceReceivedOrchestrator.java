@@ -1,12 +1,13 @@
-package com.softmed.hdr_mediator_emr;
+package com.softmed.hdr_mediator_emr.orchestrators.orchestrators;
 
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
+import com.softmed.hdr_mediator_emr.orchestrators.domain.ServiceReceived;
 import org.apache.http.HttpStatus;
+import org.json.JSONArray;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
@@ -14,10 +15,13 @@ import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceReceivedOrchestrator extends UntypedActor {
     private final MediatorConfig config;
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    private List<ServiceReceived> validReceivedList;
+    private List<ServiceReceived> inValidReceivedList;
 
 
     public ServiceReceivedOrchestrator(MediatorConfig config) {
@@ -49,5 +53,21 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
         } else {
             unhandled(msg);
         }
+    }
+
+    private boolean departmentIDMappingValidation(ServiceReceived serviceReceived) {
+        Map<String, Object> mapping = config.getDynamicConfig();
+        if (mapping != null && mapping.get("departmentMappings") != null) {
+            JSONArray mappingJSONArray = new JSONArray(new Gson().toJson(mapping.get("departmentMappings")));
+
+            for (int i = 0; i < mappingJSONArray.length(); i++) {
+                String localDepartmentID = mappingJSONArray.getJSONObject(i).getString("localDepartmentId");
+
+                if (localDepartmentID.equals(serviceReceived.getDeptID()))
+                    return true;
+            }
+            return false;
+        }
+        return true;
     }
 }

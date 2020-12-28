@@ -1,9 +1,9 @@
-package com.softmed.hdr_mediator_emr;
+package com.softmed.hdr_mediator_emr.orchestrators;
 
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
+import com.softmed.hdr_mediator_emr.orchestrators.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openhim.mediator.engine.*;
@@ -18,7 +18,6 @@ public class MediatorMain {
         RoutingTable routingTable = new RoutingTable();
 
         //TODO Configure routes here
-        //...
         routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
 
         return routingTable;
@@ -92,6 +91,10 @@ public class MediatorMain {
         }
 
         MediatorConfig config = loadConfig(configPath);
+
+        //TODO Remove this configuration in production environments. It is unsafe
+        config.setSSLContext(new MediatorConfig.SSLContext(true));
+
         final MediatorServer server = new MediatorServer(system, config);
 
         //setup shutdown hook

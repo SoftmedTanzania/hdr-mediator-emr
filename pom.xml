@@ -41,7 +41,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.softmed.hdr_mediator_emr.MediatorMain</mainClass>
+                                    <mainClass>com.softmed.hdr_mediator_emr.orchestrators.MediatorMain</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>org.openhim</groupId>
             <artifactId>mediator-engine</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.0</version>
         </dependency>
         <!-- Testing dependencies -->
         <dependency>
