@@ -133,7 +133,7 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
             Model model = reader.read(new FileReader("pom.xml"));
 
             hdrEvent.setMediatorVersion(model.getVersion());
-            hdrEvent.setPayload(serviceReceived);
+            hdrEvent.setJson(serviceReceived);
 
             hdrEvents.add(hdrEvent);
         }

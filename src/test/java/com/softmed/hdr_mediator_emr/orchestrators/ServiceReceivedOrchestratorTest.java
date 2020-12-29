@@ -134,7 +134,7 @@ public class ServiceReceivedOrchestratorTest {
         public void executeOnReceive(MediatorHTTPRequest msg) {
             System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
-            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
+            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
 
             ServiceReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
 
