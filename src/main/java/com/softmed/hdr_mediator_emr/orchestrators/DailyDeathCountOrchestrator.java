@@ -1,7 +1,5 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.softmed.hdr_mediator_emr.domain.DailyDeathCount;
@@ -21,8 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 public class DailyDeathCountOrchestrator extends BaseOrchestrator {
-    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-
     public DailyDeathCountOrchestrator(MediatorConfig config) {
         super(config);
     }
