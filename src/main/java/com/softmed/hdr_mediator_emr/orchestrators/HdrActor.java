@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class HdrActor extends UntypedActor {
     private final MediatorConfig config;
-    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private ActorRef requestHandler;
     private MediatorHTTPRequest forwardToHdrRequest;
 

@@ -26,9 +26,9 @@ public class HdrRequestMessage {
     }
 
     public static class HdrClient {
-        String openHimClientId;
-        String name;
-        JSONObject payload;
+        private String openHimClientId;
+        private String name;
+        private JSONObject payload;
 
         public String getOpenHimClientId() {
             return openHimClientId;
@@ -56,11 +56,11 @@ public class HdrRequestMessage {
     }
 
     public static class HdrEvent {
-        String eventType;
-        Date eventDate;
-        String openHimClientId;
-        String mediatorVersion;
-        Object payload;
+        private String eventType;
+        private Date eventDate;
+        private String openHimClientId;
+        private String mediatorVersion;
+        private Object payload;
 
         public String getEventType() {
             return eventType;

@@ -32,7 +32,7 @@ import java.util.Map;
 public class ServiceReceivedOrchestrator extends UntypedActor {
     private final MediatorConfig config;
     private final List<ServiceReceived> validReceivedList = new ArrayList<>();
-    LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private String errorMessage = "";
     private MediatorHTTPRequest originalRequest;
 

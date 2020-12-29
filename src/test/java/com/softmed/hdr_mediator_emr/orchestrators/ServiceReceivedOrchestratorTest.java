@@ -9,7 +9,6 @@ import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhim.mediator.engine.MediatorConfig;
@@ -33,11 +32,8 @@ public class ServiceReceivedOrchestratorTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                     "SVCREC,Masana,108627-1,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
-    static ActorSystem system;
-    MediatorConfig testConfig;
-
-    public ServiceReceivedOrchestratorTest() {
-    }
+    private static ActorSystem system;
+    private MediatorConfig testConfig;
 
     @Before
     public void before() throws Exception {
@@ -136,19 +132,19 @@ public class ServiceReceivedOrchestratorTest {
 
             ServiceReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
 
-            ServiceReceived receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload),ServiceReceived.class);
+            ServiceReceived receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), ServiceReceived.class);
 
-            Assert.assertEquals(expectedPayload.getPatID(),receivedObjectInMessage.getPatID());
-            Assert.assertEquals(expectedPayload.getDeptName(),receivedObjectInMessage.getDeptName());
-            Assert.assertEquals(expectedPayload.getDeptID(),receivedObjectInMessage.getDeptID());
-            Assert.assertEquals(expectedPayload.getMessageType(),receivedObjectInMessage.getMessageType());
-            Assert.assertEquals(expectedPayload.getDob(),receivedObjectInMessage.getDob());
-            Assert.assertEquals(expectedPayload.getGender(),receivedObjectInMessage.getGender());
-            Assert.assertEquals(expectedPayload.getIcd10Code(),receivedObjectInMessage.getIcd10Code());
-            Assert.assertEquals(expectedPayload.getLocalOrgID(),receivedObjectInMessage.getLocalOrgID());
-            Assert.assertEquals(expectedPayload.getMedSvcCode(),receivedObjectInMessage.getMedSvcCode());
-            Assert.assertEquals(expectedPayload.getOrgName(),receivedObjectInMessage.getOrgName());
-            Assert.assertEquals(expectedPayload.getServiceDate(),receivedObjectInMessage.getServiceDate());
+            assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
+            assertEquals(expectedPayload.getDeptName(), receivedObjectInMessage.getDeptName());
+            assertEquals(expectedPayload.getDeptID(), receivedObjectInMessage.getDeptID());
+            assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
+            assertEquals(expectedPayload.getDob(), receivedObjectInMessage.getDob());
+            assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
+            assertEquals(expectedPayload.getIcd10Code(), receivedObjectInMessage.getIcd10Code());
+            assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
+            assertEquals(expectedPayload.getMedSvcCode(), receivedObjectInMessage.getMedSvcCode());
+            assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
+            assertEquals(expectedPayload.getServiceDate(), receivedObjectInMessage.getServiceDate());
 
             System.out.println("message is okay ");
         }
