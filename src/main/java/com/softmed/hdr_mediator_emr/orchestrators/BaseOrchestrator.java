@@ -18,14 +18,14 @@ import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 import java.io.IOException;
 import java.util.List;
 
-public abstract class Orchestrator extends UntypedActor {
+public abstract class BaseOrchestrator extends UntypedActor {
     protected final MediatorConfig config;
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     protected String errorMessage = "";
     protected MediatorHTTPRequest originalRequest;
 
 
-    public Orchestrator(MediatorConfig config) {
+    public BaseOrchestrator(MediatorConfig config) {
         this.config = config;
     }
 

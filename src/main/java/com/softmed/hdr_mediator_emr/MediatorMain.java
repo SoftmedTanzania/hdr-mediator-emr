@@ -3,6 +3,7 @@ package com.softmed.hdr_mediator_emr;
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import com.softmed.hdr_mediator_emr.orchestrators.DailyDeathCountOrchestrator;
 import com.softmed.hdr_mediator_emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -24,6 +25,7 @@ public class MediatorMain {
 
         //Configuring various routes here
         routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
+        routingTable.addRoute("/daily_death_count", DailyDeathCountOrchestrator.class);
 
         return routingTable;
     }

@@ -1,7 +1,5 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
@@ -22,9 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class ServiceReceivedOrchestrator extends Orchestrator {
-    private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-
+public class ServiceReceivedOrchestrator extends BaseOrchestrator {
     public ServiceReceivedOrchestrator(MediatorConfig config) {
         super(config);
     }
@@ -47,9 +43,9 @@ public class ServiceReceivedOrchestrator extends Orchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<ServiceReceived> validReceivedList = new ArrayList<>();
 
-        for(Object object:receivedList){
+        for (Object object : receivedList) {
             ServiceReceived serviceReceived = null;
-            if(object!=null && ServiceReceived.class.isAssignableFrom(object.getClass()))
+            if (object != null && ServiceReceived.class.isAssignableFrom(object.getClass()))
                 serviceReceived = (ServiceReceived) object;
 
             if (!departmentIDMappingValidation(serviceReceived)) {
