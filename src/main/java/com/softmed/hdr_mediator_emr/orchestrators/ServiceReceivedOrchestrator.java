@@ -20,6 +20,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
+import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -91,6 +92,10 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
                 continue;
             }
 
+            if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(),"yyyymmdd")) {
+                errorMessage += serviceReceived.getPatID() + " - service date is of invalid format/is not a valid past date;";
+                continue;
+            }
             //TODO implement additional data validations checks
             validReceivedList.add(serviceReceived);
         }
