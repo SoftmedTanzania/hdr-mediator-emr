@@ -92,6 +92,16 @@
             <artifactId>mediator-engine</artifactId>
             <version>4.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>tz.go.moh.him</groupId>
+            <artifactId>mediator-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
         <!-- Testing dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -104,11 +114,6 @@
             <artifactId>akka-testkit_2.10</artifactId>
             <version>2.3.7</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>tz.go.moh.him</groupId>
-            <artifactId>mediator-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

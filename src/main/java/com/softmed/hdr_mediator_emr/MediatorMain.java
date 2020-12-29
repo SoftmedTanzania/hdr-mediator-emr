@@ -17,19 +17,15 @@ public class MediatorMain {
     private static RoutingTable buildRoutingTable() throws RoutingTable.RouteAlreadyMappedException {
         RoutingTable routingTable = new RoutingTable();
 
-        //TODO Configure routes here
+        //Configuring various routes here
         routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
 
         return routingTable;
     }
 
     private static StartupActorsConfig buildStartupActorsConfig() {
-        StartupActorsConfig startupActors = new StartupActorsConfig();
-
-        //TODO Add own startup actors here
-        //...
-
-        return startupActors;
+        //You can Add additional startup single instance actors here
+        return new StartupActorsConfig();
     }
 
     private static MediatorConfig loadConfig(String configPath) throws IOException, RoutingTable.RouteAlreadyMappedException {
@@ -63,7 +59,10 @@ public class MediatorMain {
         config.setStartupActors(buildStartupActorsConfig());
 
         InputStream regInfo = MediatorMain.class.getClassLoader().getResourceAsStream("mediator-registration-info.json");
-        RegistrationConfig regConfig = new RegistrationConfig(regInfo);
+        RegistrationConfig regConfig = null;
+        if (regInfo != null) {
+            regConfig = new RegistrationConfig(regInfo);
+        }
         config.setRegistrationConfig(regConfig);
 
         if (config.getProperty("mediator.heartbeats")!=null && "true".equalsIgnoreCase(config.getProperty("mediator.heartbeats"))) {
