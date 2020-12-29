@@ -46,7 +46,7 @@ public class DailyDeathCountOrchestratorTest {
         testConfig.setProperties("mediator-unit-test.properties");
 
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
-        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockRegistry.class));
+        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
     }
 
@@ -97,6 +97,7 @@ public class DailyDeathCountOrchestratorTest {
             for (Object o : out) {
                 if (o instanceof FinishRequest) {
                     foundResponse = true;
+                    break;
                 }
             }
 
@@ -104,11 +105,11 @@ public class DailyDeathCountOrchestratorTest {
         }};
     }
 
-    private static class MockRegistry extends MockHTTPConnector {
+    private static class MockHdr extends MockHTTPConnector {
         private final String response;
         private final List<DailyDeathCount> payloadConvertedIntoArrayList;
 
-        public MockRegistry() throws IOException {
+        public MockHdr() throws IOException {
             response = "successful test response";
             payloadConvertedIntoArrayList = (List<DailyDeathCount>) CsvAdapterUtils.csvToArrayList(csvPayload, DailyDeathCount.class);
 

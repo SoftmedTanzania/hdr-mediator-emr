@@ -46,7 +46,7 @@ public class BedOccupancyOrchestratorTest {
         testConfig.setProperties("mediator-unit-test.properties");
 
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
-        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockRegistry.class));
+        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
     }
 
@@ -97,6 +97,7 @@ public class BedOccupancyOrchestratorTest {
             for (Object o : out) {
                 if (o instanceof FinishRequest) {
                     foundResponse = true;
+                    break;
                 }
             }
 
@@ -104,11 +105,11 @@ public class BedOccupancyOrchestratorTest {
         }};
     }
 
-    private static class MockRegistry extends MockHTTPConnector {
+    private static class MockHdr extends MockHTTPConnector {
         private final String response;
         private final List<BedOccupancy> payloadConvertedIntoArrayList;
 
-        public MockRegistry() throws IOException {
+        public MockHdr() throws IOException {
             response = "successful test response";
             payloadConvertedIntoArrayList = (List<BedOccupancy>) CsvAdapterUtils.csvToArrayList(csvPayload, BedOccupancy.class);
 
