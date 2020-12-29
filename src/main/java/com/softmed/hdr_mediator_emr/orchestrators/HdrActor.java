@@ -13,7 +13,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +39,11 @@ public class HdrActor extends UntypedActor {
             scheme = "http";
         }
 
+        List<Pair<String, String>> params = new ArrayList<>();
         MediatorHTTPRequest request = new MediatorHTTPRequest(
                 requestHandler, getSelf(), "HDR", "POST", scheme,
                 config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
-                message, headers, (List<Pair<String, String>>) Collections.<String, String>emptyMap()
+                message, headers, params
         );
 
         ActorSelection httpConnector = getContext().actorSelection(config.userPathFor("http-connector"));

@@ -9,13 +9,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.softmed.hdr_mediator_emr.domain.ServiceReceived;
 import com.softmed.hdr_mediator_emr.messages.HdrRequestMessage;
+import org.apache.http.HttpStatus;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
+import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
+import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
@@ -32,6 +35,7 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
     private final List<ServiceReceived> validReceivedList = new ArrayList<>();
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private String errorMessage = "";
+    private MediatorHTTPRequest originalRequest;
 
 
     public ServiceReceivedOrchestrator(MediatorConfig config) {
@@ -41,7 +45,7 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
     @Override
     public void onReceive(Object msg) throws Exception {
         if (msg instanceof MediatorHTTPRequest) {
-
+            originalRequest = (MediatorHTTPRequest) msg;
             List<ServiceReceived> serviceReceivedList;
 
             /*
@@ -51,30 +55,31 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
             try {
                 Type listType = new TypeToken<List<ServiceReceived>>() {
                 }.getType();
-                serviceReceivedList = new Gson().fromJson(((MediatorHTTPRequest) msg).getBody(), listType);
+                serviceReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
             } catch (com.google.gson.JsonSyntaxException ex) {
-                serviceReceivedList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList(((MediatorHTTPRequest) msg).getBody(), ServiceReceived.class);
+                serviceReceivedList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList((originalRequest).getBody(), ServiceReceived.class);
             }
 
             log.info("Received payload in JSON = " + new Gson().toJson(serviceReceivedList));
             validateData(serviceReceivedList);
 
-            log.info("Sending data to Hdr Actor");
-            HdrRequestMessage hdrRequestMessage = parseMessage(((MediatorHTTPRequest) msg).getHeaders().get("x-openhim-clientid"));
-            ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config));
-            actor.tell(
-                    new SimpleMediatorRequest<>(
-                            ((MediatorHTTPRequest) msg).getRequestHandler(),
-                            getSelf(),
-                            hdrRequestMessage), getSelf());
+            if (!errorMessage.isEmpty()) {
+                FinishRequest finishRequest = new FinishRequest("Failed to process the following entries with patient ids: " + errorMessage, "text/plain", HttpStatus.SC_BAD_REQUEST);
+                (originalRequest).getRequestHandler().tell(finishRequest, getSelf());
+            } else {
+                log.info("Sending data to Hdr Actor");
+                HdrRequestMessage hdrRequestMessage = parseMessage((originalRequest).getHeaders().get("x-openhim-clientid"));
+                ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config));
+                actor.tell(
+                        new SimpleMediatorRequest<>(
+                                ((MediatorHTTPRequest) msg).getRequestHandler(),
+                                getSelf(),
+                                hdrRequestMessage), getSelf());
+            }
 
-//            FinishRequest finishRequest;
-//            if (!errorMessage.isEmpty()) {
-//                finishRequest = new FinishRequest("Failed to process the following entries with patient ids: " + errorMessage, "text/plain", HttpStatus.SC_BAD_REQUEST);
-//            } else {
-//                finishRequest = new FinishRequest("SUCCESSFUL processed the payload", "text/plain", HttpStatus.SC_OK);
-//            }
-//            ((MediatorHTTPRequest) msg).getRequestHandler().tell(finishRequest, getSelf());
+        } else if (msg instanceof MediatorHTTPResponse) { //respond
+            log.info("Received response from HDR");
+            originalRequest.getRequestHandler().tell(((MediatorHTTPResponse) msg).toFinishRequest(), getSelf());
         } else {
             unhandled(msg);
         }
