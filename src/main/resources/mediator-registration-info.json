@@ -17,7 +17,9 @@
       "name": "HDR mediator",
       "urlPattern": "^/emr$",
       "type": "http",
-      "allow": ["hdrmediator"],
+      "allow": [
+        "hdrmediator"
+      ],
       "routes": [
         {
           "name": "HDR mediator Route",
@@ -43,7 +45,8 @@
           "displayName": "Local Department ID",
           "description": "Department ID received from source system",
           "type": "number"
-        }, {
+        },
+        {
           "param": "departmentName",
           "displayName": "Department Name",
           "description": "Department Name",
@@ -63,7 +66,8 @@
           "displayName": "Local Ward ID",
           "description": "Ward ID received from source system",
           "type": "number"
-        }, {
+        },
+        {
           "param": "wardName",
           "displayName": "Ward Name",
           "description": "Name of the Ward",
@@ -95,17 +99,25 @@
           "displayName": "Local Payer ID",
           "description": "Local Payer ID",
           "type": "number"
-        }, {
+        },
+        {
           "param": "payerName",
           "displayName": "Payer Name",
           "description": "Payer Name",
           "type": "string"
-        }, {
+        },
+        {
           "param": "HdrPayerCategories",
           "displayName": "Payer Categories",
           "description": "HDR Payer Categories",
           "type": "option",
-          "values": ["Cash", "NHIF","Other insurance","Exemption","Cost Sharing"]
+          "values": [
+            "Cash",
+            "NHIF",
+            "Other insurance",
+            "Exemption",
+            "Cost Sharing"
+          ]
         }
       ]
     },
@@ -121,17 +133,28 @@
           "displayName": "Local Exemption ID",
           "description": "Local Exemption ID obtained from source system",
           "type": "number"
-        }, {
+        },
+        {
           "param": "exemptionName",
           "displayName": "Exemption Name",
           "description": "Name of the exemption",
           "type": "string"
-        }, {
+        },
+        {
           "param": "hdrExemptionCategories",
           "displayName": "HDR Exemption Categories",
           "description": "HDR Exemption Categories",
           "type": "option",
-          "values": ["Aged (>60)", "Children (<5)","HIV/TB","Cancer","Pregnant Women","Social Problem","PSYCHIATRIC (Mental Health Problem)","Other"]
+          "values": [
+            "Aged (>60)",
+            "Children (<5)",
+            "HIV/TB",
+            "Cancer",
+            "Pregnant Women",
+            "Social Problem",
+            "PSYCHIATRIC (Mental Health Problem)",
+            "Other"
+          ]
         }
       ]
     }

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ServiceReceivedOrchestratorTest {
@@ -57,6 +58,7 @@ public class ServiceReceivedOrchestratorTest {
 
     @Test
     public void testMediatorHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
         new JavaTestKit(system) {{
             final ActorRef serviceReceivedOrchestrator = system.actorOf(Props.create(ServiceReceivedOrchestrator.class, testConfig));
 

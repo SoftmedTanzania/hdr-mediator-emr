@@ -66,12 +66,12 @@ public class HdrActor extends UntypedActor {
     public void onReceive(Object msg) throws Exception {
         if (SimpleMediatorRequest.isInstanceOf(HdrRequestMessage.class, msg)) { //process message
             log.info("Sending data HDR ...");
-            processMsg((SimpleMediatorRequest<HdrRequestMessage>)  msg);
+            processMsg((SimpleMediatorRequest<HdrRequestMessage>) msg);
 
         } else if (msg instanceof MediatorHTTPResponse) { //respond
             log.info("Received response from HDR");
             finalizeResponse((MediatorHTTPResponse) msg);
-            ActorUtils.addOrchestrationResponse("Sending data to HDR",forwardToHdrRequest,(MediatorHTTPResponse)msg,requestHandler,getSelf());
+            ActorUtils.addOrchestrationResponse("Sending data to HDR", forwardToHdrRequest, (MediatorHTTPResponse) msg, requestHandler, getSelf());
         } else {
             unhandled(msg);
         }
