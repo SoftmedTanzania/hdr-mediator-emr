@@ -21,6 +21,7 @@ import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +62,9 @@ public class ServiceReceivedOrchestratorTest {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
             final ActorRef serviceReceivedOrchestrator = system.actorOf(Props.create(ServiceReceivedOrchestrator.class, testConfig));
-
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "text/plain");
+            headers.put("x-openhim-clientid", "csv-sync-service");
             MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
                     getRef(),
                     getRef(),
@@ -73,7 +76,7 @@ public class ServiceReceivedOrchestratorTest {
                     "/service_received",
                     "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                             "SVCREC,Masana,108627-1,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224",
-                    Collections.<String, String>singletonMap("Content-Type", "text/plain"),
+                    headers,
                     Collections.<Pair<String, String>>emptyList()
             );
 
@@ -129,6 +132,7 @@ public class ServiceReceivedOrchestratorTest {
 
         @Override
         public void executeOnReceive(MediatorHTTPRequest msg) {
+            System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
             JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
