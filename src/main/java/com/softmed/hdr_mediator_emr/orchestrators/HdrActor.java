@@ -12,6 +12,7 @@ import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
+import tz.go.moh.him.mediator.core.actors.ActorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class HdrActor extends UntypedActor {
     private final MediatorConfig config;
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private ActorRef requestHandler;
+    private MediatorHTTPRequest forwardToHdrRequest;
 
 
     public HdrActor(MediatorConfig config) {
@@ -40,14 +42,14 @@ public class HdrActor extends UntypedActor {
         }
 
         List<Pair<String, String>> params = new ArrayList<>();
-        MediatorHTTPRequest request = new MediatorHTTPRequest(
+        forwardToHdrRequest = new MediatorHTTPRequest(
                 requestHandler, getSelf(), "HDR", "POST", scheme,
                 config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
                 message, headers, params
         );
 
         ActorSelection httpConnector = getContext().actorSelection(config.userPathFor("http-connector"));
-        httpConnector.tell(request, getSelf());
+        httpConnector.tell(forwardToHdrRequest, getSelf());
     }
 
     private void processMsg(SimpleMediatorRequest<HdrRequestMessage> msg) {
@@ -64,11 +66,12 @@ public class HdrActor extends UntypedActor {
     public void onReceive(Object msg) throws Exception {
         if (SimpleMediatorRequest.isInstanceOf(HdrRequestMessage.class, msg)) { //process message
             log.info("Sending data HDR ...");
-            processMsg((SimpleMediatorRequest<HdrRequestMessage>) msg);
+            processMsg((SimpleMediatorRequest<HdrRequestMessage>)  msg);
 
         } else if (msg instanceof MediatorHTTPResponse) { //respond
             log.info("Received response from HDR");
             finalizeResponse((MediatorHTTPResponse) msg);
+            ActorUtils.addOrchestrationResponse("Sending data to HDR",forwardToHdrRequest,(MediatorHTTPResponse)msg,requestHandler,getSelf());
         } else {
             unhandled(msg);
         }
