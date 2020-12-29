@@ -60,7 +60,7 @@ public class HdrRequestMessage {
         Date eventDate;
         String openHimClientId;
         String mediatorVersion;
-        JSONObject payload;
+        Object payload;
 
         public String getEventType() {
             return eventType;
@@ -94,11 +94,11 @@ public class HdrRequestMessage {
             this.mediatorVersion = mediatorVersion;
         }
 
-        public JSONObject getPayload() {
+        public Object getPayload() {
             return payload;
         }
 
-        public void setPayload(JSONObject payload) {
+        public void setPayload(Object payload) {
             this.payload = payload;
         }
     }

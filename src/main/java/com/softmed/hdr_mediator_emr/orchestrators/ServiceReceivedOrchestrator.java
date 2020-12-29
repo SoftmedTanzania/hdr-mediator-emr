@@ -14,7 +14,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
@@ -129,7 +128,7 @@ public class ServiceReceivedOrchestrator extends UntypedActor {
             Model model = reader.read(new FileReader("pom.xml"));
 
             hdrEvent.setMediatorVersion(model.getVersion());
-            hdrEvent.setPayload(new JSONObject(new Gson().toJson(serviceReceived)));
+            hdrEvent.setPayload(serviceReceived);
 
             hdrEvents.add(hdrEvent);
         }
