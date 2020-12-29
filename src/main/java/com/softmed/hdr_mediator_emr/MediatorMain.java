@@ -3,7 +3,9 @@ package com.softmed.hdr_mediator_emr;
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import com.softmed.hdr_mediator_emr.orchestrators.BedOccupancyOrchestrator;
 import com.softmed.hdr_mediator_emr.orchestrators.DailyDeathCountOrchestrator;
+import com.softmed.hdr_mediator_emr.orchestrators.RevenueReceivedOrchestrator;
 import com.softmed.hdr_mediator_emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -23,9 +25,10 @@ public class MediatorMain {
     private static RoutingTable buildRoutingTable() throws RoutingTable.RouteAlreadyMappedException {
         RoutingTable routingTable = new RoutingTable();
 
-        //Configuring various routes here
         routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
         routingTable.addRoute("/daily_death_count", DailyDeathCountOrchestrator.class);
+        routingTable.addRoute("/bed_occupancy", BedOccupancyOrchestrator.class);
+        routingTable.addRoute("/revenue_received", RevenueReceivedOrchestrator.class);
 
         return routingTable;
     }

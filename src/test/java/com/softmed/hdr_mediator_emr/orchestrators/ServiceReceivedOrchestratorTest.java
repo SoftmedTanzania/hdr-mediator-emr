@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public class ServiceReceivedOrchestratorTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
-                    "SVCREC,Masana,108627-1,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
+                    "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
     private static ActorSystem system;
     private MediatorConfig testConfig;
 

@@ -5,7 +5,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
-import com.softmed.hdr_mediator_emr.domain.DailyDeathCount;
+import com.softmed.hdr_mediator_emr.domain.RevenueReceived;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.junit.After;
@@ -30,10 +30,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class DailyDeathCountOrchestratorTest {
+public class RevenueReceivedOrchestratorTest {
     private static final String csvPayload =
-            "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
-                    "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20201225";
+            "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
+                    "REV,12231,Muhimbili,105651-4,20201225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
     private static ActorSystem system;
     private MediatorConfig testConfig;
 
@@ -61,7 +61,7 @@ public class DailyDeathCountOrchestratorTest {
     public void testMediatorHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
-            final ActorRef dailyDeathCountOrchestrator = system.actorOf(Props.create(DailyDeathCountOrchestrator.class, testConfig));
+            final ActorRef revenueReceivedOrchestrator = system.actorOf(Props.create(RevenueReceivedOrchestrator.class, testConfig));
             Map<String, String> headers = new HashMap<>();
             headers.put("Content-Type", "text/plain");
             headers.put("x-openhim-clientid", "csv-sync-service");
@@ -73,13 +73,13 @@ public class DailyDeathCountOrchestratorTest {
                     "http",
                     null,
                     null,
-                    "/daily_death_count",
+                    "/revenue_received",
                     csvPayload,
                     headers,
                     Collections.<Pair<String, String>>emptyList()
             );
 
-            dailyDeathCountOrchestrator.tell(POST_Request, getRef());
+            revenueReceivedOrchestrator.tell(POST_Request, getRef());
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -106,11 +106,11 @@ public class DailyDeathCountOrchestratorTest {
 
     private static class MockRegistry extends MockHTTPConnector {
         private final String response;
-        private final List<DailyDeathCount> payloadConvertedIntoArrayList;
+        private final List<RevenueReceived> payloadConvertedIntoArrayList;
 
         public MockRegistry() throws IOException {
             response = "successful test response";
-            payloadConvertedIntoArrayList = (List<DailyDeathCount>) CsvAdapterUtils.csvToArrayList(csvPayload, DailyDeathCount.class);
+            payloadConvertedIntoArrayList = (List<RevenueReceived>) CsvAdapterUtils.csvToArrayList(csvPayload, RevenueReceived.class);
 
         }
 
@@ -135,20 +135,23 @@ public class DailyDeathCountOrchestratorTest {
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
             JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
 
-            DailyDeathCount expectedPayload = payloadConvertedIntoArrayList.get(0);
+            RevenueReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
 
-            DailyDeathCount receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), DailyDeathCount.class);
+            RevenueReceived receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), RevenueReceived.class);
 
             assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
-            assertEquals(expectedPayload.getWardName(), receivedObjectInMessage.getWardName());
-            assertEquals(expectedPayload.getWardId(), receivedObjectInMessage.getWardId());
+            assertEquals(expectedPayload.getSystemTransID(), receivedObjectInMessage.getSystemTransID());
+            assertEquals(expectedPayload.getTransactionDate(), receivedObjectInMessage.getTransactionDate());
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
             assertEquals(expectedPayload.getDob(), receivedObjectInMessage.getDob());
             assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
-            assertEquals(expectedPayload.getDiseaseCode(), receivedObjectInMessage.getDiseaseCode());
+            assertEquals(expectedPayload.getBilledAmount(), receivedObjectInMessage.getBilledAmount());
+            assertEquals(expectedPayload.getWaivedAmount(), receivedObjectInMessage.getWaivedAmount());
+            assertEquals(expectedPayload.getExemptionCategoryId(), receivedObjectInMessage.getExemptionCategoryId());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getDateDeathOccurred(), receivedObjectInMessage.getDateDeathOccurred());
+            assertEquals(expectedPayload.getMedSvcCode(), receivedObjectInMessage.getMedSvcCode());
+            assertEquals(expectedPayload.getPayerId(), receivedObjectInMessage.getPayerId());
 
             System.out.println("message is okay ");
         }
