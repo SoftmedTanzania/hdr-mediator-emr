@@ -42,18 +42,11 @@ public class HdrActor extends UntypedActor {
 
         List<Pair<String, String>> params = new ArrayList<>();
 
-        if (config.getProperty("hdr.use_uri").equals("false")) {
-            forwardToHdrRequest = new MediatorHTTPRequest(
-                    requestHandler, getSelf(), "HDR Server", "POST", scheme,
-                    config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
-                    message, headers, params
-            );
-        } else {
-            forwardToHdrRequest = new MediatorHTTPRequest(
-                    requestHandler, getSelf(), "HDR Server", "POST", config.getProperty("hdr.uri"),
-                    message, headers, params
-            );
-        }
+        forwardToHdrRequest = new MediatorHTTPRequest(
+                requestHandler, getSelf(), "HDR Server", "POST", scheme,
+                config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
+                message, headers, params
+        );
 
         ActorSelection httpConnector = getContext().actorSelection(config.userPathFor("http-connector"));
         httpConnector.tell(forwardToHdrRequest, getSelf());
