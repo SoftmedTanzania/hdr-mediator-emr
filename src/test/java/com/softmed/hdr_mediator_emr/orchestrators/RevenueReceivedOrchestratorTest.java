@@ -1,12 +1,9 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
 import com.softmed.hdr_mediator_emr.domain.RevenueReceived;
-import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +18,6 @@ import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class RevenueReceivedOrchestratorTest {
+public class RevenueReceivedOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
                     "REV,12231,Muhimbili,105651-4,20201225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
@@ -61,25 +57,7 @@ public class RevenueReceivedOrchestratorTest {
     public void testMediatorHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
-            final ActorRef revenueReceivedOrchestrator = system.actorOf(Props.create(RevenueReceivedOrchestrator.class, testConfig));
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Content-Type", "text/plain");
-            headers.put("x-openhim-clientid", "csv-sync-service");
-            MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
-                    getRef(),
-                    getRef(),
-                    "unit-test",
-                    "POST",
-                    "http",
-                    null,
-                    null,
-                    "/revenue_received",
-                    csvPayload,
-                    headers,
-                    Collections.<Pair<String, String>>emptyList()
-            );
-
-            revenueReceivedOrchestrator.tell(POST_Request, getRef());
+            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, RevenueReceivedOrchestrator.class, "/revenue_received");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {

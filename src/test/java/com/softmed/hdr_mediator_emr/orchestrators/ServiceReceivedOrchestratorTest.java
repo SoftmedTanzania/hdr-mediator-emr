@@ -30,7 +30,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class ServiceReceivedOrchestratorTest {
+public class ServiceReceivedOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                     "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
@@ -104,6 +104,37 @@ public class ServiceReceivedOrchestratorTest {
             assertTrue("Must send FinishRequest", foundResponse);
         }};
     }
+
+    @Test
+    public void testInValidMapping() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, ServiceReceivedOrchestrator.class, "/service_received");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            boolean foundResponse = false;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    foundResponse = true;
+                    break;
+                }
+            }
+
+            assertTrue("Must send FinishRequest", foundResponse);
+        }};
+    }
+
 
     private static class MockHdr extends MockHTTPConnector {
         private final String response;

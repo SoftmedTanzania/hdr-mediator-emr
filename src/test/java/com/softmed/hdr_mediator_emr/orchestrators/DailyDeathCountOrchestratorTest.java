@@ -1,12 +1,9 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.actor.Props;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
 import com.softmed.hdr_mediator_emr.domain.DailyDeathCount;
-import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -21,7 +18,6 @@ import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class DailyDeathCountOrchestratorTest {
+public class DailyDeathCountOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
                     "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20201225";
@@ -61,25 +57,7 @@ public class DailyDeathCountOrchestratorTest {
     public void testMediatorHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
-            final ActorRef dailyDeathCountOrchestrator = system.actorOf(Props.create(DailyDeathCountOrchestrator.class, testConfig));
-            Map<String, String> headers = new HashMap<>();
-            headers.put("Content-Type", "text/plain");
-            headers.put("x-openhim-clientid", "csv-sync-service");
-            MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
-                    getRef(),
-                    getRef(),
-                    "unit-test",
-                    "POST",
-                    "http",
-                    null,
-                    null,
-                    "/daily_death_count",
-                    csvPayload,
-                    headers,
-                    Collections.<Pair<String, String>>emptyList()
-            );
-
-            dailyDeathCountOrchestrator.tell(POST_Request, getRef());
+            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, DailyDeathCountOrchestrator.class, "/daily_death_count");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
