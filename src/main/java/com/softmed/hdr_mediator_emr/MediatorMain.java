@@ -25,10 +25,10 @@ public class MediatorMain {
     private static RoutingTable buildRoutingTable() throws RoutingTable.RouteAlreadyMappedException {
         RoutingTable routingTable = new RoutingTable();
 
-        routingTable.addRoute("hdr_mediator/service_received", ServiceReceivedOrchestrator.class);
-        routingTable.addRoute("hdr_mediator/daily_death_count", DailyDeathCountOrchestrator.class);
-        routingTable.addRoute("hdr_mediator/bed_occupancy", BedOccupancyOrchestrator.class);
-        routingTable.addRoute("hdr_mediator/revenue_received", RevenueReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator/service_received", ServiceReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator/daily_death_count", DailyDeathCountOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator/bed_occupancy", BedOccupancyOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator/revenue_received", RevenueReceivedOrchestrator.class);
 
         return routingTable;
     }
