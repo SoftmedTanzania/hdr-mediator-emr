@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
 
 public class BedOccupancyOrchestrator extends BaseOrchestrator {
     public BedOccupancyOrchestrator(MediatorConfig config) {

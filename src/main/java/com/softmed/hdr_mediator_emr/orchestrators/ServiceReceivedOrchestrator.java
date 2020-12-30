@@ -21,10 +21,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_DEPARTMENT_NOT_MAPPED;
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
-import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_DEPARTMENT_NOT_MAPPED;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 
 
 public class ServiceReceivedOrchestrator extends BaseOrchestrator {
