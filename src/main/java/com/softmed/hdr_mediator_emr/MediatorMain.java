@@ -25,10 +25,10 @@ public class MediatorMain {
     private static RoutingTable buildRoutingTable() throws RoutingTable.RouteAlreadyMappedException {
         RoutingTable routingTable = new RoutingTable();
 
-        routingTable.addRoute("/service_received", ServiceReceivedOrchestrator.class);
-        routingTable.addRoute("/daily_death_count", DailyDeathCountOrchestrator.class);
-        routingTable.addRoute("/bed_occupancy", BedOccupancyOrchestrator.class);
-        routingTable.addRoute("/revenue_received", RevenueReceivedOrchestrator.class);
+        routingTable.addRoute("hdr_mediator/service_received", ServiceReceivedOrchestrator.class);
+        routingTable.addRoute("hdr_mediator/daily_death_count", DailyDeathCountOrchestrator.class);
+        routingTable.addRoute("hdr_mediator/bed_occupancy", BedOccupancyOrchestrator.class);
+        routingTable.addRoute("hdr_mediator/revenue_received", RevenueReceivedOrchestrator.class);
 
         return routingTable;
     }
@@ -100,6 +100,9 @@ public class MediatorMain {
         }
 
         MediatorConfig config = loadConfig(configPath);
+
+        //TODO this should be removed in production environments it is unsafe
+        config.setSSLContext(new MediatorConfig.SSLContext(true));
 
         final MediatorServer server = new MediatorServer(system, config);
 
