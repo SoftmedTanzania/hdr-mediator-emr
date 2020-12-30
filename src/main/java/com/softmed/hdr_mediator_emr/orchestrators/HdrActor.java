@@ -22,7 +22,6 @@ public class HdrActor extends UntypedActor {
     private final MediatorConfig config;
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private ActorRef requestHandler;
-    private MediatorHTTPRequest forwardToHdrRequest;
 
 
     public HdrActor(MediatorConfig config) {
@@ -42,7 +41,7 @@ public class HdrActor extends UntypedActor {
 
         List<Pair<String, String>> params = new ArrayList<>();
 
-        forwardToHdrRequest = new MediatorHTTPRequest(
+        MediatorHTTPRequest forwardToHdrRequest = new MediatorHTTPRequest(
                 requestHandler, getSelf(), "HDR Server", "POST", scheme,
                 config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
                 message, headers, params
