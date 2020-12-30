@@ -133,8 +133,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
-            String invalidPayload =
-                    "Message Type";
+            String invalidPayload = "Message Type";
             createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/service_received");
 
             final Object[] out =

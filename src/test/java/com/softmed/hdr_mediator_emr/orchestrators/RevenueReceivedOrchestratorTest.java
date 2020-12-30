@@ -101,8 +101,8 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
                 }
             }
 
-            assertEquals(400, responseStatus);
             assertTrue(responseMessage.contains(ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+            assertEquals(400, responseStatus);
         }};
     }
 
@@ -114,7 +114,6 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
             String invalidPayload =
                     "Message Type";
             createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, RevenueReceivedOrchestrator.class, "/revenue_received");
-
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
                         @Override
@@ -126,8 +125,9 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
                         }
                     }.get();
 
-            int responseStatus = 0;
+
             String responseMessage = "";
+            int responseStatus = 0;
 
             for (Object o : out) {
                 if (o instanceof FinishRequest) {

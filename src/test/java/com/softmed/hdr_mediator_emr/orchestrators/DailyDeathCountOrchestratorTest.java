@@ -57,7 +57,6 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
                     }.get();
 
             boolean foundResponse = false;
-
             for (Object o : out) {
                 if (o instanceof FinishRequest) {
                     foundResponse = true;

@@ -135,8 +135,8 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
                         }
                     }.get();
 
-            int responseStatus = 0;
             String responseMessage = "";
+            int responseStatus = 0;
 
             for (Object o : out) {
                 if (o instanceof FinishRequest) {

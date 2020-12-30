@@ -37,20 +37,20 @@ public class DailyDeathCount {
         return messageType;
     }
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
-
-    public String getOrgName() {
-        return orgName;
-    }
-
     public void setOrgName(String orgName) {
         this.orgName = orgName;
     }
 
     public String getLocalOrgID() {
         return localOrgID;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
+    public String getOrgName() {
+        return orgName;
     }
 
     public void setLocalOrgID(String localOrgID) {
@@ -63,14 +63,6 @@ public class DailyDeathCount {
 
     public void setWardId(String wardId) {
         this.wardId = wardId;
-    }
-
-    public String getWardName() {
-        return wardName;
-    }
-
-    public void setWardName(String wardName) {
-        this.wardName = wardName;
     }
 
     public String getPatID() {
@@ -87,6 +79,14 @@ public class DailyDeathCount {
 
     public void setDiseaseCode(String diseaseCode) {
         this.diseaseCode = diseaseCode;
+    }
+
+    public String getWardName() {
+        return wardName;
+    }
+
+    public void setWardName(String wardName) {
+        this.wardName = wardName;
     }
 
     public String getGender() {
