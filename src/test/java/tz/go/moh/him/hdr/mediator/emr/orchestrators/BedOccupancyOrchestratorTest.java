@@ -2,7 +2,6 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
-import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Test;
@@ -11,6 +10,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
 import org.openhim.mediator.engine.testing.MockLauncher;
 import org.openhim.mediator.engine.testing.TestingUtils;
+import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
@@ -19,12 +19,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
 
 public class BedOccupancyOrchestratorTest extends BaseTest {
     private static final String csvPayload =
