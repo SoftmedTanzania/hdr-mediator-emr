@@ -12,7 +12,6 @@ import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
-import tz.go.moh.him.mediator.core.actors.ActorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +78,6 @@ public class HdrActor extends UntypedActor {
         } else if (msg instanceof MediatorHTTPResponse) { //respond
             log.info("Received response from HDR");
             finalizeResponse((MediatorHTTPResponse) msg);
-            ActorUtils.addOrchestrationResponse("Sending data to HDR", forwardToHdrRequest, (MediatorHTTPResponse) msg, requestHandler, getSelf());
         } else {
             unhandled(msg);
         }
