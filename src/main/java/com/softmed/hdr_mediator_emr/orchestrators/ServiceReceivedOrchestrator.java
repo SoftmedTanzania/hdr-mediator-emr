@@ -8,7 +8,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.json.JSONArray;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
@@ -19,9 +18,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_DEPARTMENT_NOT_MAPPED;
 import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
 import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
 import static com.softmed.hdr_mediator_emr.Constants.ErrorMessages.ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
@@ -89,11 +86,6 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 continue;
             }
 
-            if (!departmentIDMappingValidation(serviceReceived)) {
-                errorMessage += serviceReceived.getPatID() + ERROR_DEPARTMENT_NOT_MAPPED;
-                continue;
-            }
-
             if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), "yyyymmdd")) {
                 errorMessage += serviceReceived.getPatID() + ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
                 continue;
@@ -133,20 +125,6 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
         hdrRequestMessage.setHdrEvents(hdrEvents);
 
         return hdrRequestMessage;
-    }
-
-    private boolean departmentIDMappingValidation(ServiceReceived serviceReceived) {
-        Map<String, Object> mapping = config.getDynamicConfig();
-        if (mapping != null && mapping.get("departmentMappings") != null) {
-            JSONArray mappingJSONArray = new JSONArray(new Gson().toJson(mapping.get("departmentMappings")));
-            for (int i = 0; i < mappingJSONArray.length(); i++) {
-                String localDepartmentID = String.valueOf(mappingJSONArray.getJSONObject(i).getInt("localDepartmentId"));
-                if (localDepartmentID.equals(serviceReceived.getDeptID()))
-                    return true;
-            }
-            return false;
-        }
-        return true;
     }
 
 }
