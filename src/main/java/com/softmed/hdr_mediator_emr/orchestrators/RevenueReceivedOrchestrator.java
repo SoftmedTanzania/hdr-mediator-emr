@@ -68,8 +68,9 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     @Override
     protected List<?> validateData(List<?> receivedList) {
         List<RevenueReceived> validReceivedList = new ArrayList<>();
-        if (receivedList.size() == 0) {
+        if (receivedList==null || receivedList.size() == 0) {
             errorMessage += ERROR_INVALID_PAYLOAD;
+            return validReceivedList;
         }
 
         for (Object object : receivedList) {

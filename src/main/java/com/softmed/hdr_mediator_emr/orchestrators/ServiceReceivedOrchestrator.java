@@ -67,8 +67,9 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<ServiceReceived> validReceivedList = new ArrayList<>();
 
-        if (receivedList.size() == 0) {
+        if (receivedList == null || receivedList.size() == 0) {
             errorMessage += ERROR_INVALID_PAYLOAD;
+            return validReceivedList;
         }
 
         for (Object object : receivedList) {

@@ -61,8 +61,9 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<BedOccupancy> validReceivedList = new ArrayList<>();
 
-        if (receivedList.size() == 0) {
+        if (receivedList == null || receivedList.size() == 0) {
             errorMessage += ERROR_INVALID_PAYLOAD;
+            return receivedList;
         }
 
         for (Object object : receivedList) {
