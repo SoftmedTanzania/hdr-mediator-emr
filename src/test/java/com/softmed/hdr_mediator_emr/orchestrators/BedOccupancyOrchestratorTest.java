@@ -22,7 +22,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -81,6 +84,110 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
 
             assertTrue("Must send FinishRequest", foundResponse);
         }};
+    }
+
+
+    @Test
+    public void testInValidAdmissionDate() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidAdmissionDate =
+                    "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
+                            "BEDOCC,Muhimbili,105651-4,1,20501220,20201225,1,Pediatric";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidAdmissionDate, BedOccupancyOrchestrator.class, "/bed_occupancy");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+        }};
+    }
+
+    @Test
+    public void testInValidPayload() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidPayload =
+                    "Message Type";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+        }};
+    }
+
+
+    @Test
+    public void validateRequiredFields() {
+        BedOccupancy bedOccupancy = new BedOccupancy();
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setMessageType("messageType");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setAdmissionDate("20201101");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setOrgName("Organization name");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setWardId("22");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setWardName("OPD");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setLocalOrgID("localid");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
+        bedOccupancy.setPatID("patId");
+
+        //Valid payload
+        assertTrue(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
     }
 
     private static class MockHdr extends MockHTTPConnector {

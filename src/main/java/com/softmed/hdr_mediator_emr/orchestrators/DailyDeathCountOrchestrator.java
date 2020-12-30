@@ -6,6 +6,7 @@ import com.softmed.hdr_mediator_emr.domain.DailyDeathCount;
 import com.softmed.hdr_mediator_emr.messages.HdrRequestMessage;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
@@ -18,11 +19,36 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+
 public class DailyDeathCountOrchestrator extends BaseOrchestrator {
     public DailyDeathCountOrchestrator(MediatorConfig config) {
         super(config);
     }
 
+    public static boolean validateRequiredFields(DailyDeathCount dailyDeathCount) {
+        if (StringUtils.isBlank(dailyDeathCount.getMessageType()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getOrgName()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getLocalOrgID()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getWardName()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getWardId()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getPatID()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getGender()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getDiseaseCode()))
+            return false;
+        if (StringUtils.isBlank(dailyDeathCount.getDob()))
+            return false;
+        return !StringUtils.isBlank(dailyDeathCount.getDateDeathOccurred());
+    }
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
@@ -41,13 +67,27 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<DailyDeathCount> validReceivedList = new ArrayList<>();
 
+        if (receivedList.size() == 0) {
+            errorMessage += ERROR_INVALID_PAYLOAD;
+        }
+
         for (Object object : receivedList) {
             DailyDeathCount dailyDeathCount = null;
             if (object != null && DailyDeathCount.class.isAssignableFrom(object.getClass()))
                 dailyDeathCount = (DailyDeathCount) object;
 
+            if (dailyDeathCount == null) {
+                errorMessage += ERROR_INVALID_PAYLOAD;
+                continue;
+            }
+
+            if (!validateRequiredFields(dailyDeathCount)) {
+                errorMessage += dailyDeathCount.getPatID() + ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+                continue;
+            }
+
             if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDateDeathOccurred(), "yyyymmdd")) {
-                errorMessage += dailyDeathCount.getPatID() + " - date death occurred is of invalid format/is not a valid past date;";
+                errorMessage += dailyDeathCount.getPatID() + ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
                 continue;
             }
             //TODO implement additional data validations checks

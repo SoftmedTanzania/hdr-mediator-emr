@@ -22,7 +22,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -81,6 +84,120 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
 
             assertTrue("Must send FinishRequest", foundResponse);
         }};
+    }
+
+    @Test
+    public void testInValidTransactionDate() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidTransactionDate =
+                    "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
+                            "REV,12231,Muhimbili,105651-4,20501225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidTransactionDate, RevenueReceivedOrchestrator.class, "/revenue_received");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+        }};
+    }
+
+    @Test
+    public void testInValidPayload() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidPayload =
+                    "Message Type";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, RevenueReceivedOrchestrator.class, "/revenue_received");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+        }};
+    }
+
+    @Test
+    public void validateRequiredFields() {
+        RevenueReceived revenueReceived = new RevenueReceived();
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setMessageType("messageType");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setOrgName("Organization name");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setSystemTransID("23323323");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setTransactionDate("20200101");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setBilledAmount("3000.00");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setWaivedAmount("3000.00");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setLocalOrgID("localid");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setPatID("patId");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setGender("Male");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setMedSvcCode("2000");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
+        revenueReceived.setPayerId("23");
+
+        //Valid payload
+        assertTrue(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
     }
 
     private static class MockHdr extends MockHTTPConnector {

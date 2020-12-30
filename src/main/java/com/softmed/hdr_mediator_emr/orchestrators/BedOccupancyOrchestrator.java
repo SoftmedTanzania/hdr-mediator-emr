@@ -6,6 +6,7 @@ import com.softmed.hdr_mediator_emr.domain.BedOccupancy;
 import com.softmed.hdr_mediator_emr.messages.HdrRequestMessage;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
@@ -18,11 +19,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+
 public class BedOccupancyOrchestrator extends BaseOrchestrator {
     public BedOccupancyOrchestrator(MediatorConfig config) {
         super(config);
     }
 
+    public static boolean validateRequiredFields(BedOccupancy bedOccupancy) {
+        if (StringUtils.isBlank(bedOccupancy.getMessageType()))
+            return false;
+        if (StringUtils.isBlank(bedOccupancy.getAdmissionDate()))
+            return false;
+        if (StringUtils.isBlank(bedOccupancy.getOrgName()))
+            return false;
+        if (StringUtils.isBlank(bedOccupancy.getLocalOrgID()))
+            return false;
+        if (StringUtils.isBlank(bedOccupancy.getWardId()))
+            return false;
+        if (StringUtils.isBlank(bedOccupancy.getWardName()))
+            return false;
+        return !StringUtils.isBlank(bedOccupancy.getPatID());
+    }
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
@@ -41,15 +61,30 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<BedOccupancy> validReceivedList = new ArrayList<>();
 
+        if (receivedList.size() == 0) {
+            errorMessage += ERROR_INVALID_PAYLOAD;
+        }
+
         for (Object object : receivedList) {
             BedOccupancy bedOccupancy = null;
             if (object != null && BedOccupancy.class.isAssignableFrom(object.getClass()))
                 bedOccupancy = (BedOccupancy) object;
 
-            if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
-                errorMessage += bedOccupancy.getPatID() + " - date death occurred is of invalid format/is not a valid past date;";
+            if (bedOccupancy == null) {
+                errorMessage += ERROR_INVALID_PAYLOAD;
                 continue;
             }
+
+            if (!validateRequiredFields(bedOccupancy)) {
+                errorMessage += bedOccupancy.getPatID() + ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+                continue;
+            }
+
+            if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
+                errorMessage += bedOccupancy.getPatID() + ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+                continue;
+            }
+
             //TODO implement additional data validations checks
             validReceivedList.add(bedOccupancy);
         }

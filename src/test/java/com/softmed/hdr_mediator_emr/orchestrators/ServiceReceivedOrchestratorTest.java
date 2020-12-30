@@ -26,7 +26,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -106,10 +109,14 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
     }
 
     @Test
-    public void testInValidMapping() throws Exception {
+    public void testInValidServiceDate() throws Exception {
         assertNotNull(testConfig);
+
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, ServiceReceivedOrchestrator.class, "/service_received");
+            String invalidServiceDate =
+                    "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
+                            "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20501224";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidServiceDate, ServiceReceivedOrchestrator.class, "/service_received");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -122,17 +129,91 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
                         }
                     }.get();
 
-            boolean foundResponse = false;
+            int responseStatus = 0;
+            String responseMessage = "";
 
             for (Object o : out) {
                 if (o instanceof FinishRequest) {
-                    foundResponse = true;
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
                     break;
                 }
             }
 
-            assertTrue("Must send FinishRequest", foundResponse);
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
         }};
+    }
+
+    @Test
+    public void testInValidPayload() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidPayload =
+                    "Message Type";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/service_received");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+        }};
+    }
+
+    @Test
+    public void validateRequiredFields() {
+        ServiceReceived serviceReceived = new ServiceReceived();
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setMessageType("messageType");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setOrgName("Organization name");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setLocalOrgID("localid");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setDeptName("deptname");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setDeptID("deptId");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setPatID("patId");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setGender("Male");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setMedSvcCode("2000");
+        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+
+        serviceReceived.setServiceDate("20201201");
+
+        //Valid payload
+        assertTrue(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
     }
 
 

@@ -6,6 +6,7 @@ import com.softmed.hdr_mediator_emr.domain.RevenueReceived;
 import com.softmed.hdr_mediator_emr.messages.HdrRequestMessage;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
@@ -18,11 +19,38 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+
 public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     public RevenueReceivedOrchestrator(MediatorConfig config) {
         super(config);
     }
 
+    public static boolean validateRequiredFields(RevenueReceived revenueReceived) {
+        if (StringUtils.isBlank(revenueReceived.getMessageType()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getSystemTransID()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getOrgName()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getLocalOrgID()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getTransactionDate()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getBilledAmount()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getWaivedAmount()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getPatID()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getGender()))
+            return false;
+        if (StringUtils.isBlank(revenueReceived.getMedSvcCode()))
+            return false;
+        return !StringUtils.isBlank(revenueReceived.getPayerId());
+    }
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
@@ -40,14 +68,27 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     @Override
     protected List<?> validateData(List<?> receivedList) {
         List<RevenueReceived> validReceivedList = new ArrayList<>();
+        if (receivedList.size() == 0) {
+            errorMessage += ERROR_INVALID_PAYLOAD;
+        }
 
         for (Object object : receivedList) {
             RevenueReceived revenueReceived = null;
             if (object != null && RevenueReceived.class.isAssignableFrom(object.getClass()))
                 revenueReceived = (RevenueReceived) object;
 
+            if (revenueReceived == null) {
+                errorMessage += ERROR_INVALID_PAYLOAD;
+                continue;
+            }
+
+            if (!validateRequiredFields(revenueReceived)) {
+                errorMessage += revenueReceived.getPatID() + ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+                continue;
+            }
+
             if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), "yyyymmdd")) {
-                errorMessage += revenueReceived.getPatID() + " - date death occurred is of invalid format/is not a valid past date;";
+                errorMessage += revenueReceived.getPatID() + ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
                 continue;
             }
             //TODO implement additional data validations checks

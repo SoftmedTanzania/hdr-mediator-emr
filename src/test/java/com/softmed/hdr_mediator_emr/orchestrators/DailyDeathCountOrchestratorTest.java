@@ -22,7 +22,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -81,6 +84,119 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
 
             assertTrue("Must send FinishRequest", foundResponse);
         }};
+    }
+
+
+    @Test
+    public void testInValidDateDeathOccurred() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidDeathDate =
+                    "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
+                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20501225";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidDeathDate, DailyDeathCountOrchestrator.class, "/daily_death_count");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+        }};
+    }
+
+    @Test
+    public void testInValidPayload() throws Exception {
+        assertNotNull(testConfig);
+
+        new JavaTestKit(system) {{
+            String invalidPayload =
+                    "Message Type";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, DailyDeathCountOrchestrator.class, "/daily_death_count");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+            String responseMessage = "";
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
+
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+        }};
+    }
+
+
+    @Test
+    public void validateRequiredFields() {
+        DailyDeathCount dailyDeathCount = new DailyDeathCount();
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setMessageType("messageType");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setOrgName("Organization name");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setWardId("22");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setWardName("OPD");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setLocalOrgID("localid");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setPatID("patId");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setGender("Male");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setDiseaseCode("2000");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setDob("19800101");
+        assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
+
+        dailyDeathCount.setDateDeathOccurred("20201201");
+
+        //Valid payload
+        assertTrue(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
     }
 
     private static class MockHdr extends MockHTTPConnector {
