@@ -2,7 +2,7 @@ package com.softmed.hdr_mediator_emr;
 
 public class Constants {
 
-    public interface ERROR_MESSAGES {
+    public interface errorMessages {
         String ERROR_DEPARTMENT_NOT_MAPPED = " - Department not mapped;";
         String ERROR_REQUIRED_FIELDS_CHECK_FAILED = " - Required fields are empty;";
         String ERROR_INVALID_PAYLOAD = "Invalid payload;";

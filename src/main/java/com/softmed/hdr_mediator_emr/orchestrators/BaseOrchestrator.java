@@ -12,7 +12,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
-import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 
 import java.io.IOException;
@@ -38,10 +37,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
             log.info("Received payload in JSON = " + new Gson().toJson(objects));
 
             List<?> validatedObjects = validateData(objects);
-            sendDataToHdr(msg,validatedObjects);
-        } else if (msg instanceof MediatorHTTPResponse) { //respond
-            log.info("Received response from HDR");
-            originalRequest.getRequestHandler().tell(((MediatorHTTPResponse) msg).toFinishRequest(), getSelf());
+            sendDataToHdr(msg, validatedObjects);
         } else {
             unhandled(msg);
         }
@@ -60,7 +56,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
             (originalRequest).getRequestHandler().tell(finishRequest, getSelf());
         } else {
             log.info("Sending data to Hdr Actor");
-            HdrRequestMessage hdrRequestMessage = parseMessage((originalRequest).getHeaders().get("x-openhim-clientid"),validatedObjects);
+            HdrRequestMessage hdrRequestMessage = parseMessage((originalRequest).getHeaders().get("x-openhim-clientid"), validatedObjects);
             ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config));
             actor.tell(
                     new SimpleMediatorRequest<>(

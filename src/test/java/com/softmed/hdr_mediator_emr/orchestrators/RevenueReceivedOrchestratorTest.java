@@ -1,14 +1,10 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
 import com.softmed.hdr_mediator_emr.domain.RevenueReceived;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
@@ -22,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,27 +29,14 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
                     "REV,12231,Muhimbili,105651-4,20201225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
-    private static ActorSystem system;
-    private MediatorConfig testConfig;
 
-    @Before
+    @Override
     public void before() throws Exception {
-        system = ActorSystem.create();
-
-        testConfig = new MediatorConfig();
-        testConfig.setName("hdr-mediator-emr-tests");
-        testConfig.setProperties("mediator-unit-test.properties");
+        super.before();
 
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
         toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
-    }
-
-    @After
-    public void after() {
-        TestingUtils.clearRootContext(system, testConfig.getName());
-        JavaTestKit.shutdownActorSystem(system);
-        system = null;
     }
 
     @Test
@@ -167,10 +150,13 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
         revenueReceived.setMessageType("messageType");
         assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
 
+        revenueReceived.setSystemTransID("23323323");
+        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
+
         revenueReceived.setOrgName("Organization name");
         assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
 
-        revenueReceived.setSystemTransID("23323323");
+        revenueReceived.setLocalOrgID("localid");
         assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
 
         revenueReceived.setTransactionDate("20200101");
@@ -180,9 +166,6 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
         assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
 
         revenueReceived.setWaivedAmount("3000.00");
-        assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
-
-        revenueReceived.setLocalOrgID("localid");
         assertFalse(RevenueReceivedOrchestrator.validateRequiredFields(revenueReceived));
 
         revenueReceived.setPatID("patId");

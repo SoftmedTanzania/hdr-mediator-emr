@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_TRANSACTION_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 
 public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     public RevenueReceivedOrchestrator(MediatorConfig config) {

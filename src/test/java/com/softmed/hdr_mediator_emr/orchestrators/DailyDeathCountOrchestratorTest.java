@@ -1,14 +1,10 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
 import com.softmed.hdr_mediator_emr.domain.DailyDeathCount;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
@@ -22,8 +18,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,27 +29,14 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
                     "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20201225";
-    private static ActorSystem system;
-    private MediatorConfig testConfig;
 
-    @Before
+    @Override
     public void before() throws Exception {
-        system = ActorSystem.create();
-
-        testConfig = new MediatorConfig();
-        testConfig.setName("hdr-mediator-emr-tests");
-        testConfig.setProperties("mediator-unit-test.properties");
+        super.before();
 
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
-        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
+        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", DailyDeathCountOrchestratorTest.MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
-    }
-
-    @After
-    public void after() {
-        TestingUtils.clearRootContext(system, testConfig.getName());
-        JavaTestKit.shutdownActorSystem(system);
-        system = null;
     }
 
     @Test
@@ -172,13 +155,13 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
         dailyDeathCount.setOrgName("Organization name");
         assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
 
-        dailyDeathCount.setWardId("22");
+        dailyDeathCount.setLocalOrgID("localid");
         assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
 
         dailyDeathCount.setWardName("OPD");
         assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
 
-        dailyDeathCount.setLocalOrgID("localid");
+        dailyDeathCount.setWardId("22");
         assertFalse(DailyDeathCountOrchestrator.validateRequiredFields(dailyDeathCount));
 
         dailyDeathCount.setPatID("patId");

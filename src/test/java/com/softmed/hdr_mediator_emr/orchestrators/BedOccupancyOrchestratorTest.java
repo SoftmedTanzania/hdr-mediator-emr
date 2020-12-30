@@ -1,14 +1,11 @@
 package com.softmed.hdr_mediator_emr.orchestrators;
 
-import akka.actor.ActorSystem;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
 import com.softmed.hdr_mediator_emr.domain.BedOccupancy;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
@@ -22,8 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,16 +30,10 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
                     "BEDOCC,Muhimbili,105651-4,1,20201220,20201225,1,Pediatric";
-    private static ActorSystem system;
-    private MediatorConfig testConfig;
 
-    @Before
+    @Override
     public void before() throws Exception {
-        system = ActorSystem.create();
-
-        testConfig = new MediatorConfig();
-        testConfig.setName("hdr-mediator-emr-tests");
-        testConfig.setProperties("mediator-unit-test.properties");
+        super.before();
 
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
         toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
@@ -175,13 +166,13 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
         bedOccupancy.setOrgName("Organization name");
         assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
 
+        bedOccupancy.setLocalOrgID("localid");
+        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
+
         bedOccupancy.setWardId("22");
         assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
 
         bedOccupancy.setWardName("OPD");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setLocalOrgID("localid");
         assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
 
         bedOccupancy.setPatID("patId");

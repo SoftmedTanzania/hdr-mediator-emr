@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_INVALID_PAYLOAD;
-import static com.softmed.hdr_mediator_emr.Constants.ERROR_MESSAGES.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_DATE_DEATH_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_INVALID_PAYLOAD;
+import static com.softmed.hdr_mediator_emr.Constants.errorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
 
 public class DailyDeathCountOrchestrator extends BaseOrchestrator {
     public DailyDeathCountOrchestrator(MediatorConfig config) {
