@@ -1,7 +1,5 @@
 package com.softmed.hdr_mediator_emr.messages;
 
-import org.json.JSONObject;
-
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class HdrRequestMessage {
     public static class HdrClient {
         private String openHimClientId;
         private String name;
-        private JSONObject payload;
+        private Object payload;
 
         public String getOpenHimClientId() {
             return openHimClientId;
@@ -46,11 +44,11 @@ public class HdrRequestMessage {
             this.name = name;
         }
 
-        public JSONObject getPayload() {
+        public Object getPayload() {
             return payload;
         }
 
-        public void setPayload(JSONObject payload) {
+        public void setPayload(Object payload) {
             this.payload = payload;
         }
     }
