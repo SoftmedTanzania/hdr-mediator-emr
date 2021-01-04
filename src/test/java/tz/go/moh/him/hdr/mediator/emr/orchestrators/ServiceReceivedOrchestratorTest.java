@@ -159,7 +159,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+            assertTrue(responseMessage.equals(ERROR_INVALID_PAYLOAD));
         }};
     }
 

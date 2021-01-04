@@ -6,16 +6,18 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
-import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import org.apache.http.HttpStatus;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
+import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 
 import java.io.IOException;
 import java.util.List;
+
+import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
 
 public abstract class BaseOrchestrator extends UntypedActor {
     protected final MediatorConfig config;
@@ -52,7 +54,13 @@ public abstract class BaseOrchestrator extends UntypedActor {
 
     private void sendDataToHdr(Object msg, List<?> validatedObjects) throws IOException, XmlPullParserException {
         if (!errorMessage.isEmpty()) {
-            FinishRequest finishRequest = new FinishRequest("Failed to process the following entries with patient ids: " + errorMessage, "text/plain", HttpStatus.SC_BAD_REQUEST);
+            String errorMessageTobeSent = "";
+            if (errorMessage.equals(ERROR_INVALID_PAYLOAD)) {
+                errorMessageTobeSent = ERROR_INVALID_PAYLOAD;
+            } else {
+                errorMessageTobeSent = "Failed to process the following entries with patient ids: " + errorMessage;
+            }
+            FinishRequest finishRequest = new FinishRequest(errorMessageTobeSent, "text/plain", HttpStatus.SC_BAD_REQUEST);
             (originalRequest).getRequestHandler().tell(finishRequest, getSelf());
         } else {
             log.info("Sending data to Hdr Actor");
