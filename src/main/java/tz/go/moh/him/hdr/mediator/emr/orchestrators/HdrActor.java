@@ -42,7 +42,7 @@ public class HdrActor extends UntypedActor {
         List<Pair<String, String>> params = new ArrayList<>();
 
         MediatorHTTPRequest forwardToHdrRequest = new MediatorHTTPRequest(
-                requestHandler, getSelf(), "HDR Server", "POST", scheme,
+                requestHandler, getSelf(), "Sending Data to the HDR Server", "POST", scheme,
                 config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
                 message, headers, params
         );
