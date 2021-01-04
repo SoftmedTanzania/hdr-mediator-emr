@@ -2,12 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.softmed</groupId>
+    <groupId>tz.go.moh.him</groupId>
     <artifactId>hdr-mediator-emr</artifactId>
     <version>0.1.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <repositories>
+        <repository>
+            <id>local-maven-repo</id>
+            <url>file:///${project.basedir}/local-maven-repo</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -35,7 +41,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.softmed.hdr_mediator_emr.MediatorMain</mainClass>
+                                    <mainClass>tz.go.moh.him.hdr.mediator.emr.MediatorMain</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
@@ -82,9 +88,14 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.openhim</groupId>
-            <artifactId>mediator-engine</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>tz.go.moh.him</groupId>
+            <artifactId>mediator-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
         <!-- Testing dependencies -->
         <dependency>
