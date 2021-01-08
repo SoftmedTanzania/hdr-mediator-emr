@@ -40,34 +40,34 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
     public List<ResultDetail> validateRequiredFields(DailyDeathCount dailyDeathCount) {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
         if (StringUtils.isBlank(dailyDeathCount.getDob()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getMessageType()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getDateDeathOccurred()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getOrgName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getWardName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getDiseaseCode()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DISEASE_CODE_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DISEASE_CODE_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getWardId()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getPatID()))
-            resultDetailsList.add(new ResultDetail("Error", dailyDeathCountErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, dailyDeathCountErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
 
         if (StringUtils.isBlank(dailyDeathCount.getGender()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), dailyDeathCount.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), dailyDeathCount.getPatID()), null));
 
 
         return resultDetailsList;
@@ -101,25 +101,25 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                 dailyDeathCount = (DailyDeathCount) object;
 
             if (dailyDeathCount == null) {
-                resultDetailsList.add(new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
+                resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
 
             } else {
                 resultDetailsList.addAll(validateRequiredFields(dailyDeathCount));
 
                 try {
                     if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDateDeathOccurred(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
                 }
 
                 try {
                     if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDob(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail("Error", String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
                 }
             }
 

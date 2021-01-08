@@ -41,26 +41,26 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
 
         if (StringUtils.isBlank(bedOccupancy.getPatID()))
-            resultDetailsList.add(new ResultDetail("Error", bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
 
 
         if (StringUtils.isBlank(bedOccupancy.getAdmissionDate()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         if (StringUtils.isBlank(bedOccupancy.getMessageType()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         if (StringUtils.isBlank(bedOccupancy.getOrgName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         if (StringUtils.isBlank(bedOccupancy.getWardId()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         if (StringUtils.isBlank(bedOccupancy.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         if (StringUtils.isBlank(bedOccupancy.getWardName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
 
         return resultDetailsList;
     }
@@ -93,16 +93,16 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
                 bedOccupancy = (BedOccupancy) object;
 
             if (bedOccupancy == null) {
-                resultDetailsList.add(new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
+                resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
             } else {
                 resultDetailsList.addAll(validateRequiredFields(bedOccupancy));
 
                 try {
                     if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), new Gson().toJson(e.getStackTrace())));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), new Gson().toJson(e.getStackTrace())));
                 }
             }
             //TODO implement additional data validations checks

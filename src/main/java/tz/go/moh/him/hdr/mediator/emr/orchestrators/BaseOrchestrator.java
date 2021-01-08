@@ -58,7 +58,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
                 //In-case of an exception creating an error message with the stack trace
                 ErrorMessage errorMessage = new ErrorMessage(
                         originalRequest.getBody(),
-                        Arrays.asList(new ResultDetail("Error", e.getMessage(), StringUtils.writeStackTraceToString(e)))
+                        Arrays.asList(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, e.getMessage(), StringUtils.writeStackTraceToString(e)))
                 );
                 errorMessages.add(errorMessage);
             }
@@ -70,7 +70,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
                 ErrorMessage errorMessage = new ErrorMessage(
                         originalRequest.getBody(),
                         Arrays.asList(
-                                new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null)
+                                new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null)
                         )
                 );
                 errorMessages.add(errorMessage);

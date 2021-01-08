@@ -41,31 +41,31 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
     public List<ResultDetail> validateRequiredFields(ServiceReceived serviceReceived) {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
         if (StringUtils.isBlank(serviceReceived.getPatID()))
-            resultDetailsList.add(new ResultDetail("Error", serviceReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, serviceReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
 
         if (StringUtils.isBlank(serviceReceived.getMessageType()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getOrgName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getDeptName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getDeptID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getGender()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getMedSvcCode()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
 
         if (StringUtils.isBlank(serviceReceived.getServiceDate()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
 
         return resultDetailsList;
     }
@@ -98,15 +98,15 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 serviceReceived = (ServiceReceived) object;
 
             if (serviceReceived == null) {
-                resultDetailsList.add(new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
+                resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
             } else {
                 resultDetailsList.addAll(validateRequiredFields(serviceReceived));
                 try {
                     if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"),serviceReceived.getPatID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"),serviceReceived.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail("Error", String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_INVALID_FORMAT"),serviceReceived.getPatID()), new Gson().toJson(e.getStackTrace())));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_INVALID_FORMAT"),serviceReceived.getPatID()), new Gson().toJson(e.getStackTrace())));
                 }
             }
 

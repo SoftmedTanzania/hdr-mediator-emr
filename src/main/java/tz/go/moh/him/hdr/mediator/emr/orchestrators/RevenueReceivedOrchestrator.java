@@ -40,37 +40,37 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     public List<ResultDetail> validateRequiredFields(RevenueReceived revenueReceived) {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
         if (StringUtils.isBlank(revenueReceived.getPatID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getMessageType()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getSystemTransID()))
-            resultDetailsList.add(new ResultDetail("Error", revenueReceivedErrorMessageResource.getString("ERROR_SYSTEM_TRANS_ID_IS_BLANK"), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, revenueReceivedErrorMessageResource.getString("ERROR_SYSTEM_TRANS_ID_IS_BLANK"), null));
 
         if (StringUtils.isBlank(revenueReceived.getOrgName()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getTransactionDate()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getBilledAmount()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_BILLED_AMOUNT_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_BILLED_AMOUNT_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getWaivedAmount()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_WAIVED_AMOUNT_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_WAIVED_AMOUNT_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getGender()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getMedSvcCode()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         if (StringUtils.isBlank(revenueReceived.getPayerId()))
-            resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_PAYER_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_PAYER_ID_IS_BLANK"), revenueReceived.getSystemTransID()), null));
 
         return resultDetailsList;
     }
@@ -103,16 +103,16 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 revenueReceived = (RevenueReceived) object;
 
             if (revenueReceived == null) {
-                resultDetailsList.add(new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
+                resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
             } else {
                 resultDetailsList.addAll(validateRequiredFields(revenueReceived));
 
                 try {
                     if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"),revenueReceived.getSystemTransID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"),revenueReceived.getSystemTransID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail("Error", String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"),revenueReceived.getSystemTransID()), new Gson().toJson(e.getStackTrace())));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"),revenueReceived.getSystemTransID()), new Gson().toJson(e.getStackTrace())));
                 }
             }
             //TODO implement additional data validations checks
