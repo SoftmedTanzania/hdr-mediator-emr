@@ -4,7 +4,6 @@ import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.testkit.JavaTestKit;
 import com.google.gson.Gson;
-import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceived;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -13,6 +12,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
 import org.openhim.mediator.engine.testing.MockLauncher;
 import org.openhim.mediator.engine.testing.TestingUtils;
+import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceived;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
@@ -22,10 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -33,11 +30,13 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                     "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
+    protected JSONObject serviceReceivedErrorMessageResource;
 
     @Override
     public void before() throws Exception {
         super.before();
 
+        serviceReceivedErrorMessageResource = errorMessageResource.getJSONObject("SERVICE_RECEIVED_ERROR_MESSAGES");
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
         toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
@@ -124,7 +123,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(ERROR_SERVICE_DATE_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), 1)));
         }};
     }
 
@@ -159,43 +158,53 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.equals(ERROR_INVALID_PAYLOAD));
+            assertTrue(responseMessage.contains(errorMessageResource.getString("ERROR_INVALID_PAYLOAD")));
         }};
     }
 
     @Test
     public void validateRequiredFields() {
-        ServiceReceived serviceReceived = new ServiceReceived();
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+        assertNotNull(testConfig);
 
-        serviceReceived.setMessageType("messageType");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+        new JavaTestKit(system) {{
+            String invalidPayload = "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
+                    ",,,,,,,,,,";
 
-        serviceReceived.setOrgName("Organization name");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/service_received");
 
-        serviceReceived.setLocalOrgID("localid");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
 
-        serviceReceived.setDeptName("deptname");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+            String responseMessage = "";
+            int responseStatus = 0;
 
-        serviceReceived.setDeptID("deptId");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    responseMessage = ((FinishRequest) o).getResponse();
+                    break;
+                }
+            }
 
-        serviceReceived.setPatID("patId");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
-
-        serviceReceived.setGender("Male");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
-
-        serviceReceived.setMedSvcCode("2000");
-        assertFalse(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
-
-        serviceReceived.setServiceDate("20201201");
-
-        //Valid payload
-        assertTrue(ServiceReceivedOrchestrator.validateRequiredFields(serviceReceived));
+            assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(serviceReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"),"")));
+        }};
     }
 
 

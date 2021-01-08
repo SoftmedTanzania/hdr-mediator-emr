@@ -20,21 +20,21 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
 
 public class BedOccupancyOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
                     "BEDOCC,Muhimbili,105651-4,1,20201220,20201225,1,Pediatric";
 
+    protected JSONObject bedOccupancyErrorMessageResource;
+
     @Override
     public void before() throws Exception {
         super.before();
 
+        bedOccupancyErrorMessageResource = errorMessageResource.getJSONObject("BED_OCCUPANCY_ERROR_MESSAGES");
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
         toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
@@ -111,17 +111,24 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"),1)));
         }};
     }
 
     @Test
     public void testInValidPayload() throws Exception {
+        String invalidPayload = "Message Type";
+        testInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/bed_occupancy");
+    }
+
+
+    @Test
+    public void validateRequiredFields() {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
-            String invalidPayload =
-                    "Message Type";
+            String invalidPayload = "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
+                    ",,,,,,,";
             createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
 
             final Object[] out =
@@ -147,38 +154,14 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(ERROR_INVALID_PAYLOAD));
+            assertTrue(responseMessage.contains(bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"),"")));
         }};
-    }
-
-
-    @Test
-    public void validateRequiredFields() {
-        BedOccupancy bedOccupancy = new BedOccupancy();
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setMessageType("messageType");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setAdmissionDate("20201101");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setOrgName("Organization name");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setLocalOrgID("localid");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setWardId("22");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setWardName("OPD");
-        assertFalse(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
-
-        bedOccupancy.setPatID("patId");
-
-        //Valid payload
-        assertTrue(BedOccupancyOrchestrator.validateRequiredFields(bedOccupancy));
     }
 
     private static class MockHdr extends MockHTTPConnector {
