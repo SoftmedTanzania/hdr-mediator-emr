@@ -108,7 +108,7 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        TestInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/daily_death_count");
+        testInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/daily_death_count");
     }
 
 

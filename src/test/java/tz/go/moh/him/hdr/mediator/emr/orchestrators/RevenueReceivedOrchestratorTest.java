@@ -108,7 +108,7 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        TestInvalidPayload(RevenueReceivedOrchestrator.class, invalidPayload, "/revenue_received");
+        testInvalidPayload(RevenueReceivedOrchestrator.class, invalidPayload, "/revenue_received");
     }
 
     @Test

@@ -118,7 +118,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        TestInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/bed_occupancy");
+        testInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/bed_occupancy");
     }
 
 

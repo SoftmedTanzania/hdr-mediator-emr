@@ -72,7 +72,7 @@ public abstract class BaseTest {
         orchestratorActor.tell(POST_Request, sender);
     }
 
-    public void TestInvalidPayload(Class aClass,String invalidPayload,String path){
+    public void testInvalidPayload(Class aClass, String invalidPayload, String path){
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
