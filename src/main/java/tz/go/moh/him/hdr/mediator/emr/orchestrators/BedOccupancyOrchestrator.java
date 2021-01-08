@@ -2,46 +2,67 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
-import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
+import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
+import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
+import tz.go.moh.him.mediator.core.domain.ErrorMessage;
+import tz.go.moh.him.mediator.core.domain.ResultDetail;
 import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_INVALID_PAYLOAD;
-import static tz.go.moh.him.hdr.mediator.emr.Constants.ErrorMessages.ERROR_REQUIRED_FIELDS_CHECK_FAILED;
-
 public class BedOccupancyOrchestrator extends BaseOrchestrator {
+    protected JSONObject bedOccupancyErrorMessageResource;
+
     public BedOccupancyOrchestrator(MediatorConfig config) {
         super(config);
+        bedOccupancyErrorMessageResource = errorMessageResource.getJSONObject("BED_OCCUPANCY_ERROR_MESSAGES");
     }
 
-    public static boolean validateRequiredFields(BedOccupancy bedOccupancy) {
-        if (StringUtils.isBlank(bedOccupancy.getMessageType()))
-            return false;
+    /**
+     * Validate bed Occupancy Required Fields
+     *
+     * @param bedOccupancy to be validated
+     * @return array list of validation results details incase of failed validations
+     */
+    public List<ResultDetail> validateRequiredFields(BedOccupancy bedOccupancy) {
+        List<ResultDetail> resultDetailsList = new ArrayList<>();
+
+        if (StringUtils.isBlank(bedOccupancy.getPatID()))
+            resultDetailsList.add(new ResultDetail("Error", bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
+
+
         if (StringUtils.isBlank(bedOccupancy.getAdmissionDate()))
-            return false;
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), bedOccupancy.getPatID()), null));
+
+        if (StringUtils.isBlank(bedOccupancy.getMessageType()))
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), bedOccupancy.getPatID()), null));
+
         if (StringUtils.isBlank(bedOccupancy.getOrgName()))
-            return false;
-        if (StringUtils.isBlank(bedOccupancy.getLocalOrgID()))
-            return false;
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+
         if (StringUtils.isBlank(bedOccupancy.getWardId()))
-            return false;
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+
+        if (StringUtils.isBlank(bedOccupancy.getLocalOrgID()))
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+
         if (StringUtils.isBlank(bedOccupancy.getWardName()))
-            return false;
-        return !StringUtils.isBlank(bedOccupancy.getPatID());
+            resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+
+        return resultDetailsList;
     }
 
     @Override
@@ -61,33 +82,39 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
     protected List<?> validateData(List<?> receivedList) {
         List<BedOccupancy> validReceivedList = new ArrayList<>();
 
-        if (receivedList == null || receivedList.size() == 0) {
-            errorMessage += ERROR_INVALID_PAYLOAD;
-            return receivedList;
-        }
-
         for (Object object : receivedList) {
+            ErrorMessage errorMessage = new ErrorMessage();
+            errorMessage.setSource(new Gson().toJson(object));
+
+            List<ResultDetail> resultDetailsList = new ArrayList<>();
+
             BedOccupancy bedOccupancy = null;
             if (object != null && BedOccupancy.class.isAssignableFrom(object.getClass()))
                 bedOccupancy = (BedOccupancy) object;
 
             if (bedOccupancy == null) {
-                errorMessage += ERROR_INVALID_PAYLOAD;
-                continue;
-            }
+                resultDetailsList.add(new ResultDetail("Error", errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
+            } else {
+                resultDetailsList.addAll(validateRequiredFields(bedOccupancy));
 
-            if (!validateRequiredFields(bedOccupancy)) {
-                errorMessage += bedOccupancy.getPatID() + ERROR_REQUIRED_FIELDS_CHECK_FAILED;
-                continue;
+                try {
+                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
+                        resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
+                    }
+                } catch (ParseException e) {
+                    resultDetailsList.add(new ResultDetail("Error", String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), new Gson().toJson(e.getStackTrace())));
+                }
             }
-
-            if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
-                errorMessage += bedOccupancy.getPatID() + ERROR_ADMISSION_DATE_OCCURRED_IS_OF_INVALID_FORMAT_IS_NOT_A_VALID_PAST_DATE;
-                continue;
-            }
-
             //TODO implement additional data validations checks
-            validReceivedList.add(bedOccupancy);
+            if (resultDetailsList.size() == 0) {
+                //No errors were found during data validation
+                //adding the service received to the valid payload to be sent to HDR
+                validReceivedList.add(bedOccupancy);
+            } else {
+                //Adding the validation results to the Error message object
+                errorMessage.setResultsDetails(resultDetailsList);
+                errorMessages.add(errorMessage);
+            }
         }
         return validReceivedList;
     }
