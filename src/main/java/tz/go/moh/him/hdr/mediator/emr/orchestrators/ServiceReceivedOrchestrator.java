@@ -139,7 +139,7 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setJson(serviceReceived);
+            hdrEvent.setPayload(serviceReceived);
 
             hdrEvents.add(hdrEvent);
         }

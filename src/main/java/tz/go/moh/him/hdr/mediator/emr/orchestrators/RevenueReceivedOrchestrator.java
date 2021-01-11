@@ -148,7 +148,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setJson(revenueReceived);
+            hdrEvent.setPayload(revenueReceived);
 
             hdrEvents.add(hdrEvent);
         }

@@ -31,7 +31,7 @@ public class HdrRequestMessageTest {
         assertEquals(expectedHdrEventJsonObject.getString("eventType"), payloadHdrEvent.getEventType());
         assertEquals(expectedHdrEventJsonObject.getString("openHimClientId"), payloadHdrEvent.getOpenHimClientId());
         assertEquals(expectedHdrEventJsonObject.getString("mediatorVersion"), payloadHdrEvent.getMediatorVersion());
-        assertEquals(expectedHdrEventJsonObject.getJSONObject("json").toString(), new Gson().toJson(payloadHdrEvent.getJson()));
+        assertEquals(expectedHdrEventJsonObject.getJSONObject("json").toString(), new Gson().toJson(payloadHdrEvent.getPayload()));
 
         Date date = new Date();
         payloadHdrEvent.setEventDate(date);

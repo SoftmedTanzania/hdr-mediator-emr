@@ -138,7 +138,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
             hdrEvent.setEventDate(new Date());
             hdrEvent.setOpenHimClientId(openHimClientId);
 
-            hdrEvent.setJson(bedOccupancy);
+            hdrEvent.setPayload(bedOccupancy);
 
             hdrEvents.add(hdrEvent);
         }

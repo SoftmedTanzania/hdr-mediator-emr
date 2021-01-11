@@ -155,7 +155,7 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setJson(dailyDeathCount);
+            hdrEvent.setPayload(dailyDeathCount);
 
             hdrEvents.add(hdrEvent);
         }
