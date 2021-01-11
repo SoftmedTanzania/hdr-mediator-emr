@@ -2,8 +2,6 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONObject;
@@ -15,7 +13,6 @@ import tz.go.moh.him.mediator.core.domain.ErrorMessage;
 import tz.go.moh.him.mediator.core.domain.ResultDetail;
 import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -140,10 +137,8 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
             hdrEvent.setEventDate(new Date());
             hdrEvent.setOpenHimClientId(openHimClientId);
 
-            MavenXpp3Reader reader = new MavenXpp3Reader();
-            Model model = reader.read(new FileReader("pom.xml"));
-
-            hdrEvent.setMediatorVersion(model.getVersion());
+            JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
+            hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
             hdrEvent.setJson(serviceReceived);
 
             hdrEvents.add(hdrEvent);
