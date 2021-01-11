@@ -196,14 +196,14 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
 
             assertEquals(400, responseStatus);
             assertTrue(responseMessage.contains(serviceReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"), "")));
         }};
     }
 
@@ -237,7 +237,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
         public void executeOnReceive(MediatorHTTPRequest msg) {
             System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
-            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
+            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
             ServiceReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
 

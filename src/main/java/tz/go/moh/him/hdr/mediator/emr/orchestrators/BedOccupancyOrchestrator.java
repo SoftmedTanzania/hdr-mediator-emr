@@ -3,7 +3,6 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
@@ -99,7 +98,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), new Gson().toJson(e.getStackTrace())));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
             }
             //TODO implement additional data validations checks
@@ -117,7 +116,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
     }
 
     @Override
-    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) throws IOException, XmlPullParserException {
+    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) {
         //create hdr messages and send them to HDR
 
         HdrRequestMessage.HdrClient hdrClient = new HdrRequestMessage.HdrClient();
@@ -138,7 +137,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
             hdrEvent.setEventDate(new Date());
             hdrEvent.setOpenHimClientId(openHimClientId);
 
-            hdrEvent.setJson(bedOccupancy);
+            hdrEvent.setPayload(bedOccupancy);
 
             hdrEvents.add(hdrEvent);
         }

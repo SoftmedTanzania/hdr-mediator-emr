@@ -3,7 +3,6 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.DailyDeathCount;
@@ -108,7 +107,7 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT"), dailyDeathCount.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
 
                 try {
@@ -116,7 +115,7 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_INVALID_FORMAT"), dailyDeathCount.getPatID()), null));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_INVALID_FORMAT"), dailyDeathCount.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
             }
 
@@ -135,7 +134,7 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
     }
 
     @Override
-    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) throws IOException, XmlPullParserException {
+    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) {
         //create hdr messages and send them to HDR
 
         HdrRequestMessage.HdrClient hdrClient = new HdrRequestMessage.HdrClient();
@@ -155,7 +154,7 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setJson(dailyDeathCount);
+            hdrEvent.setPayload(dailyDeathCount);
 
             hdrEvents.add(hdrEvent);
         }

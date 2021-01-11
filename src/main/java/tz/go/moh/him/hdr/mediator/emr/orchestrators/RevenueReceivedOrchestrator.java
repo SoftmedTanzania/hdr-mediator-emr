@@ -3,7 +3,6 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.RevenueReceived;
@@ -106,10 +105,10 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
                 try {
                     if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), "yyyymmdd")) {
-                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"),revenueReceived.getSystemTransID()), null));
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"), revenueReceived.getSystemTransID()), null));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"),revenueReceived.getSystemTransID()), new Gson().toJson(e.getStackTrace())));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"), revenueReceived.getSystemTransID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
             }
             //TODO implement additional data validations checks
@@ -127,7 +126,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
     }
 
     @Override
-    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) throws IOException, XmlPullParserException {
+    protected HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) {
         //create hdr messages and send them to HDR
 
         HdrRequestMessage.HdrClient hdrClient = new HdrRequestMessage.HdrClient();
@@ -144,11 +143,11 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
             hdrEvent.setOpenHimClientId(openHimClientId);
             hdrEvent.setEventDate(new Date());
-            hdrEvent.setEventType("save-daily-death-count");
+            hdrEvent.setEventType("save-revenue-received");
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setJson(revenueReceived);
+            hdrEvent.setPayload(revenueReceived);
 
             hdrEvents.add(hdrEvent);
         }

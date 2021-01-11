@@ -12,7 +12,7 @@ public class HdrRequestMessageTest {
 
     @Test
     public void testHdrRequestMessage() {
-        String payload = "{\"hdrClient\":{\"openHimClientId\":\"emr-filedrop-sync-service\",\"name\":\"emr-filedrop-sync-service\"},\"hdrEvents\":[{\"eventType\":\"save-bed-occupancy\",\"eventDate\":\"Dec 30, 2020 5:18:41 PM\",\"openHimClientId\":\"emr-filedrop-sync-service\",\"mediatorVersion\":\"0.1.0\",\"json\":{\"messageType\":\"BEDOCC\"}}]}";
+        String payload = "{\"hdrClient\":{\"openHimClientId\":\"emr-filedrop-sync-service\",\"name\":\"emr-filedrop-sync-service\"},\"hdrEvents\":[{\"eventType\":\"save-bed-occupancy\",\"eventDate\":\"Dec 30, 2020 5:18:41 PM\",\"openHimClientId\":\"emr-filedrop-sync-service\",\"mediatorVersion\":\"0.1.0\",\"payload\":{\"messageType\":\"BEDOCC\"}}]}";
         JSONObject expectedPayloadJsonObject = new JSONObject(payload);
         HdrRequestMessage hdrRequestMessage = new Gson().fromJson(payload, HdrRequestMessage.class);
 
@@ -31,7 +31,7 @@ public class HdrRequestMessageTest {
         assertEquals(expectedHdrEventJsonObject.getString("eventType"), payloadHdrEvent.getEventType());
         assertEquals(expectedHdrEventJsonObject.getString("openHimClientId"), payloadHdrEvent.getOpenHimClientId());
         assertEquals(expectedHdrEventJsonObject.getString("mediatorVersion"), payloadHdrEvent.getMediatorVersion());
-        assertEquals(expectedHdrEventJsonObject.getJSONObject("json").toString(), new Gson().toJson(payloadHdrEvent.getJson()));
+        assertEquals(expectedHdrEventJsonObject.getJSONObject("payload").toString(), new Gson().toJson(payloadHdrEvent.getPayload()));
 
         Date date = new Date();
         payloadHdrEvent.setEventDate(date);

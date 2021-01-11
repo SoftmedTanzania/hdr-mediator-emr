@@ -8,7 +8,6 @@ import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
@@ -32,7 +31,11 @@ public abstract class BaseOrchestrator extends UntypedActor {
     protected MediatorHTTPRequest originalRequest;
     protected JSONObject errorMessageResource;
 
-
+    /**
+     * Initializes a new instance of the {@link BaseOrchestrator} class.
+     *
+     * @param config The mediator configuration.
+     */
     public BaseOrchestrator(MediatorConfig config) {
         this.config = config;
         InputStream stream = getClass().getClassLoader().getResourceAsStream("error-messages.json");
@@ -45,8 +48,13 @@ public abstract class BaseOrchestrator extends UntypedActor {
         }
     }
 
+    /**
+     * Handles the received message.
+     *
+     * @param msg The received message.
+     */
     @Override
-    public void onReceive(Object msg) throws Exception {
+    public void onReceive(Object msg){
         if (msg instanceof MediatorHTTPRequest) {
             originalRequest = (MediatorHTTPRequest) msg;
 
@@ -90,7 +98,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
      *
      * @param msg payload to be converted
      * @return list of POJO
-     * @throws IOException
+     * @throws IOException if an I/O exception occurs
      */
     protected abstract List<?> convertMessageBodyToPojoList(String msg) throws IOException;
 
@@ -109,16 +117,14 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * @param validatedObjects list of valid objects to be added to the payload to be sent to HDR
      * @return HDR Request Message object to be sent to HDR
      */
-    protected abstract HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects) throws IOException, XmlPullParserException;
+    protected abstract HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects);
 
     /**
      * Method that handles sending of data to the HDR
      *
      * @param validatedObjects list of objects that passed data validations to be sent to HDR
-     * @throws IOException
-     * @throws XmlPullParserException
      */
-    private void sendDataToHdr(List<?> validatedObjects) throws IOException, XmlPullParserException {
+    private void sendDataToHdr(List<?> validatedObjects) {
         if (!errorMessages.isEmpty()) {
             FinishRequest finishRequest = new FinishRequest(new Gson().toJson(errorMessages), "text/plain", HttpStatus.SC_BAD_REQUEST);
             (originalRequest).getRequestHandler().tell(finishRequest, getSelf());
