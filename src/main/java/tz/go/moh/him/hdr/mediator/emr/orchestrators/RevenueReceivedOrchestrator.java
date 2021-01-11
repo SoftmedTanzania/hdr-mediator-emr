@@ -143,7 +143,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
             hdrEvent.setOpenHimClientId(openHimClientId);
             hdrEvent.setEventDate(new Date());
-            hdrEvent.setEventType("save-daily-death-count");
+            hdrEvent.setEventType("save-revenue-received");
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
