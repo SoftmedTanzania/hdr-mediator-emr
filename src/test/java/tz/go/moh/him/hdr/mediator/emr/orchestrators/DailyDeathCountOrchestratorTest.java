@@ -108,7 +108,7 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        testInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/daily_death_count");
+        testInvalidPayload(BedOccupancyOrchestrator.class, invalidPayload, "/daily_death_count");
     }
 
 
@@ -186,7 +186,7 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
         public void executeOnReceive(MediatorHTTPRequest msg) {
             System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
-            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
+            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
             DailyDeathCount expectedPayload = payloadConvertedIntoArrayList.get(0);
 

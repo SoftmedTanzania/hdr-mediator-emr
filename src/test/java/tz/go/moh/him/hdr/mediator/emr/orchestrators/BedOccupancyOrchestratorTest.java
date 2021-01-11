@@ -111,14 +111,14 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"),1)));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), 1)));
         }};
     }
 
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        testInvalidPayload(BedOccupancyOrchestrator.class,invalidPayload,"/bed_occupancy");
+        testInvalidPayload(BedOccupancyOrchestrator.class, invalidPayload, "/bed_occupancy");
     }
 
 
@@ -155,12 +155,12 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
 
             assertEquals(400, responseStatus);
             assertTrue(responseMessage.contains(bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"),"")));
-            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"),"")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), "")));
         }};
     }
 
@@ -193,7 +193,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
         public void executeOnReceive(MediatorHTTPRequest msg) {
             System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
-            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
+            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
             BedOccupancy expectedPayload = payloadConvertedIntoArrayList.get(0);
 

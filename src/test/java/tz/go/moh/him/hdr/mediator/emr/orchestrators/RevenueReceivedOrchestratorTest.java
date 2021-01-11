@@ -187,7 +187,7 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
         public void executeOnReceive(MediatorHTTPRequest msg) {
             System.out.println(msg.getBody());
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
-            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("json");
+            JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
             RevenueReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
 
