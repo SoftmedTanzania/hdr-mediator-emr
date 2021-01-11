@@ -10,9 +10,11 @@ import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.openhim.mediator.engine.MediatorConfig;
+import org.openhim.mediator.engine.RegistrationConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.TestingUtils;
+import tz.go.moh.him.hdr.mediator.emr.MediatorMain;
 
 import java.io.InputStream;
 import java.util.Collections;
@@ -36,6 +38,14 @@ public abstract class BaseTest {
         testConfig = new MediatorConfig();
         testConfig.setName("hdr-mediator-emr-tests");
         testConfig.setProperties("mediator-unit-test.properties");
+
+        InputStream regInfo = MediatorMain.class.getClassLoader().getResourceAsStream("mediator-registration-info.json");
+        RegistrationConfig regConfig = null;
+        if (regInfo != null) {
+            regConfig = new RegistrationConfig(regInfo);
+        }
+
+        testConfig.setRegistrationConfig(regConfig);
 
         InputStream stream = getClass().getClassLoader().getResourceAsStream("error-messages.json");
         if (stream != null) {
@@ -72,7 +82,7 @@ public abstract class BaseTest {
         orchestratorActor.tell(POST_Request, sender);
     }
 
-    public void testInvalidPayload(Class aClass, String invalidPayload, String path){
+    public void testInvalidPayload(Class aClass, String invalidPayload, String path) {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
