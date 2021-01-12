@@ -96,6 +96,14 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
                 try {
                     if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
+                    } else {
+                        //Reformatting the date to the format required by the HDR
+                        bedOccupancy.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getAdmissionDate())));
+                    }
+
+                    if (!StringUtils.isBlank(bedOccupancy.getDischargeDate())) {
+                        //Reformatting the date to the format required by the HDR
+                        bedOccupancy.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getDischargeDate())));
                     }
                 } catch (ParseException e) {
                     resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));

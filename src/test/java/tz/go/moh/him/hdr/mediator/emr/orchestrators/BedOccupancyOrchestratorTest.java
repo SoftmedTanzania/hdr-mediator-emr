@@ -14,10 +14,13 @@ import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -75,6 +78,15 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
 
             assertTrue("Must send FinishRequest", foundResponse);
         }};
+    }
+
+    @Test
+    public void test() throws Exception {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("+0300"));
+
+        System.out.println(sdf.format(date));
     }
 
 
@@ -205,8 +217,8 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getAdmissionDate(), receivedObjectInMessage.getAdmissionDate());
-            assertEquals(expectedPayload.getDischargeDate(), receivedObjectInMessage.getDischargeDate());
+            assertEquals("2020-12-19T21:00:00Z", receivedObjectInMessage.getAdmissionDate());
+            assertEquals("2020-12-24T21:00:00Z", receivedObjectInMessage.getDischargeDate());
 
             System.out.println("message is okay ");
         }

@@ -100,6 +100,14 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 try {
                     if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), "yyyymmdd")) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), serviceReceived.getPatID()), null));
+                    } else {
+                        //Reformatting the date to the format required by the HDR
+                        serviceReceived.setServiceDate(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getServiceDate())));
+                    }
+
+                    if (!StringUtils.isBlank(serviceReceived.getDob())) {
+                        //Reformatting the date to the format required by the HDR
+                        serviceReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getDob())));
                     }
                 } catch (ParseException e) {
                     resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_INVALID_FORMAT"), serviceReceived.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
