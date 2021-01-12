@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimeZone;
 
 public abstract class BaseOrchestrator extends UntypedActor {
     protected final MediatorConfig config;
@@ -32,7 +31,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
     protected List<ErrorMessage> errorMessages = new ArrayList<>();
     protected MediatorHTTPRequest originalRequest;
     protected JSONObject errorMessageResource;
-    protected SimpleDateFormat hdrDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    protected SimpleDateFormat hdrDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
     protected SimpleDateFormat emrDateFormat = new SimpleDateFormat("yyyyMMdd");
 
     /**
@@ -50,7 +49,6 @@ public abstract class BaseOrchestrator extends UntypedActor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        hdrDateFormat.setTimeZone(TimeZone.getTimeZone("+0300"));
     }
 
     /**

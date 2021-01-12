@@ -217,8 +217,8 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals("2020-12-19T21:00:00Z", receivedObjectInMessage.getAdmissionDate());
-            assertEquals("2020-12-24T21:00:00Z", receivedObjectInMessage.getDischargeDate());
+            assertEquals("2020-12-20T00:00:00", receivedObjectInMessage.getAdmissionDate());
+            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getDischargeDate());
 
             System.out.println("message is okay ");
         }
