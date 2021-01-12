@@ -108,5 +108,38 @@
     }
   ],
   "configDefs": [
+    {
+      "param": "hdrConnectionProperties",
+      "displayName": "HDR Connection Properties",
+      "description": "Configuration to set the hostname, port and path for the HDR server",
+      "type": "struct",
+      "template": [
+        {
+          "param": "hdrHost",
+          "displayName": "HDR Host Name",
+          "description": "IP address/hostname of the HDR server. e.g 192.168.1.1",
+          "type": "string"
+        },
+        {
+          "param": "hdrPort",
+          "displayName": "HDR Port Number",
+          "description": "The port number of that the hdr is running on. e.g 8080",
+          "type": "number"
+        },
+        {
+          "param": "hdrPath",
+          "displayName": "HDR Path",
+          "description": "The the path to the correct endpoint for receiving of data from the HIM. eg /hdr",
+          "type": "string"
+        },
+        {
+          "param": "hdrScheme",
+          "displayName": "HDR Scheme",
+          "description": "Whether the hdr is using HTTP or HTTPS requests",
+          "type": "option",
+          "values": ["http", "https"]
+        }
+      ]
+    }
   ]
 }

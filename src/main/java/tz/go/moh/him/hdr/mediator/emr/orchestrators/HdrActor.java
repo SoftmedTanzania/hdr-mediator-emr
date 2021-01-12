@@ -6,12 +6,13 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
-import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import org.apache.commons.lang3.tuple.Pair;
+import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
+import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,17 +34,32 @@ public class HdrActor extends UntypedActor {
         headers.put("Content-Type", "application/json");
 
         String scheme;
-        if (config.getProperty("hdr.secure").equals("true")) {
-            scheme = "https";
+        String host;
+        String path;
+        int portNumber;
+        if (config.getDynamicConfig().isEmpty()) {
+            if (config.getProperty("hdr.secure").equals("true")) {
+                scheme = "https";
+            } else {
+                scheme = "http";
+            }
+
+            host = config.getProperty("hdr.host");
+            portNumber = Integer.parseInt(config.getProperty("hdr.api.port"));
+            path = config.getProperty("hdr.api.path");
         } else {
-            scheme = "http";
+            JSONObject connectionProperties = new JSONObject(config.getDynamicConfig().get("hdrConnectionProperties"));
+            host = connectionProperties.getString("hdrHost");
+            portNumber = connectionProperties.getInt("hdrPort");
+            path = connectionProperties.getString("hdrPath");
+            scheme = connectionProperties.getString("hdrScheme");
         }
 
         List<Pair<String, String>> params = new ArrayList<>();
 
         MediatorHTTPRequest forwardToHdrRequest = new MediatorHTTPRequest(
                 requestHandler, getSelf(), "Sending Data to the HDR Server", "POST", scheme,
-                config.getProperty("hdr.host"), Integer.parseInt(config.getProperty("hdr.api.port")), config.getProperty("hdr.api.path"),
+                host, portNumber, path,
                 message, headers, params
         );
 
