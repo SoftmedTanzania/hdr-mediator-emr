@@ -48,7 +48,8 @@ public class HdrActor extends UntypedActor {
             portNumber = Integer.parseInt(config.getProperty("hdr.api.port"));
             path = config.getProperty("hdr.api.path");
         } else {
-            JSONObject connectionProperties = new JSONObject(config.getDynamicConfig().get("hdrConnectionProperties"));
+            JSONObject connectionProperties = new JSONObject(config.getDynamicConfig()).getJSONObject("hdrConnectionProperties");
+
             host = connectionProperties.getString("hdrHost");
             portNumber = connectionProperties.getInt("hdrPort");
             path = connectionProperties.getString("hdrPath");
