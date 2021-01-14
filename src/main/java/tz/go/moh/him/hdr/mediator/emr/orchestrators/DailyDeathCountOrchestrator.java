@@ -105,6 +105,10 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                 try {
                     if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDateDeathOccurred(), "yyyymmdd")) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
+                    } else {
+                        //Reformatting the date to the format required by the HDR
+                        dailyDeathCount.setDateDeathOccurred(hdrDateFormat.format(emrDateFormat.parse(dailyDeathCount.getDateDeathOccurred())));
+
                     }
                 } catch (ParseException e) {
                     resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT"), dailyDeathCount.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
@@ -113,6 +117,9 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                 try {
                     if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDob(), "yyyymmdd")) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
+                    } else {
+                        //Reformatting the date to the format required by the HDR
+                        dailyDeathCount.setDob(hdrDateFormat.format(emrDateFormat.parse(dailyDeathCount.getDob())));
                     }
                 } catch (ParseException e) {
                     resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_INVALID_FORMAT"), dailyDeathCount.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));

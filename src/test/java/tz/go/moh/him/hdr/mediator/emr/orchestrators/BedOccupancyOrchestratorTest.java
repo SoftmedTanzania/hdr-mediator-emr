@@ -77,7 +77,6 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
         }};
     }
 
-
     @Test
     public void testInValidAdmissionDate() throws Exception {
         assertNotNull(testConfig);
@@ -205,8 +204,8 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getAdmissionDate(), receivedObjectInMessage.getAdmissionDate());
-            assertEquals(expectedPayload.getDischargeDate(), receivedObjectInMessage.getDischargeDate());
+            assertEquals("2020-12-20T00:00:00", receivedObjectInMessage.getAdmissionDate());
+            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getDischargeDate());
 
             System.out.println("message is okay ");
         }

@@ -106,7 +106,16 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 try {
                     if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), "yyyymmdd")) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"), revenueReceived.getSystemTransID()), null));
+                    } else {
+                        //Reformatting the date to the format required by the HDR
+                        revenueReceived.setTransactionDate(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getTransactionDate())));
                     }
+
+                    if (!StringUtils.isBlank(revenueReceived.getDob())) {
+                        //Reformatting the date to the format required by the HDR
+                        revenueReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getDob())));
+                    }
+
                 } catch (ParseException e) {
                     resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"), revenueReceived.getSystemTransID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }

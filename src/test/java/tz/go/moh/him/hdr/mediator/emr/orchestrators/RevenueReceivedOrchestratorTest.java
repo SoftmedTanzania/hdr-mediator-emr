@@ -195,9 +195,9 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
 
             assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
             assertEquals(expectedPayload.getSystemTransID(), receivedObjectInMessage.getSystemTransID());
-            assertEquals(expectedPayload.getTransactionDate(), receivedObjectInMessage.getTransactionDate());
+            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getTransactionDate());
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
-            assertEquals(expectedPayload.getDob(), receivedObjectInMessage.getDob());
+            assertEquals("1989-01-01T00:00:00", receivedObjectInMessage.getDob());
             assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
             assertEquals(expectedPayload.getBilledAmount(), receivedObjectInMessage.getBilledAmount());
             assertEquals(expectedPayload.getWaivedAmount(), receivedObjectInMessage.getWaivedAmount());

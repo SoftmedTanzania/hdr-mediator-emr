@@ -247,13 +247,13 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             assertEquals(expectedPayload.getDeptName(), receivedObjectInMessage.getDeptName());
             assertEquals(expectedPayload.getDeptID(), receivedObjectInMessage.getDeptID());
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
-            assertEquals(expectedPayload.getDob(), receivedObjectInMessage.getDob());
+            assertEquals("1990-01-31T00:00:00", receivedObjectInMessage.getDob());
             assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
             assertEquals(expectedPayload.getIcd10Code(), receivedObjectInMessage.getIcd10Code());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getMedSvcCode(), receivedObjectInMessage.getMedSvcCode());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getServiceDate(), receivedObjectInMessage.getServiceDate());
+            assertEquals("2020-12-24T00:00:00", receivedObjectInMessage.getServiceDate());
 
             System.out.println("message is okay ");
         }

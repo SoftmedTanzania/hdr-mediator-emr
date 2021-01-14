@@ -196,12 +196,12 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
             assertEquals(expectedPayload.getWardName(), receivedObjectInMessage.getWardName());
             assertEquals(expectedPayload.getWardId(), receivedObjectInMessage.getWardId());
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
-            assertEquals(expectedPayload.getDob(), receivedObjectInMessage.getDob());
+            assertEquals("1985-01-01T00:00:00", receivedObjectInMessage.getDob());
             assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
             assertEquals(expectedPayload.getDiseaseCode(), receivedObjectInMessage.getDiseaseCode());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getDateDeathOccurred(), receivedObjectInMessage.getDateDeathOccurred());
+            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getDateDeathOccurred());
 
             System.out.println("message is okay ");
         }

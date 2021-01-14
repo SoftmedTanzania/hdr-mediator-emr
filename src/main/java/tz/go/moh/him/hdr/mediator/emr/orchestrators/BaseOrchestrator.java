@@ -20,6 +20,7 @@ import tz.go.moh.him.mediator.core.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,8 @@ public abstract class BaseOrchestrator extends UntypedActor {
     protected List<ErrorMessage> errorMessages = new ArrayList<>();
     protected MediatorHTTPRequest originalRequest;
     protected JSONObject errorMessageResource;
+    protected SimpleDateFormat hdrDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    protected SimpleDateFormat emrDateFormat = new SimpleDateFormat("yyyyMMdd");
 
     /**
      * Initializes a new instance of the {@link BaseOrchestrator} class.
@@ -54,7 +57,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * @param msg The received message.
      */
     @Override
-    public void onReceive(Object msg){
+    public void onReceive(Object msg) {
         if (msg instanceof MediatorHTTPRequest) {
             originalRequest = (MediatorHTTPRequest) msg;
 
