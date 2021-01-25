@@ -133,6 +133,7 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
 
                     default:
                         actor = null;
+                        break;
                 }
 
                 //Forwarding the request to the correct orchestrator based on the payload message type
