@@ -121,7 +121,7 @@
         <dependency>
             <groupId>tz.go.moh.him</groupId>
             <artifactId>mediator-core</artifactId>
-            <version>0.1.1-SNAPSHOT</version>
+            <version>0.1.2-SNAPSHOT</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
