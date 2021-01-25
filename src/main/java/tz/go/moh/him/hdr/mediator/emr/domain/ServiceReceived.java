@@ -2,13 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ServiceReceived {
-    /**
-     * Defines the Message type - will contain value of SVCREC for this object
-     */
-    @JsonProperty("Message Type")
-    private String messageType;
-
+public class ServiceReceived extends EmrPayload {
     /**
      * Common name of submitting facility
      */
@@ -68,14 +62,6 @@ public class ServiceReceived {
      */
     @JsonProperty("Service Date")
     private String serviceDate;
-
-    public String getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
 
     public String getOrgName() {
         return orgName;

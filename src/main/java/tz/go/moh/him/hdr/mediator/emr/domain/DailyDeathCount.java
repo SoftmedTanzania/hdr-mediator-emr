@@ -2,12 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DailyDeathCount {
-    /**
-     * Defines the Message type - will contain value of DDC for this object
-     */
-    @JsonProperty("Message Type")
-    private String messageType;
+public class DailyDeathCount extends EmrPayload {
 
     /**
      * Common name of submitting facility
@@ -63,28 +58,20 @@ public class DailyDeathCount {
     @JsonProperty("Date Death Occurred")
     private String dateDeathOccurred;
 
-    public String getMessageType() {
-        return messageType;
-    }
-
-    public void setOrgName(String orgName) {
-        this.orgName = orgName;
-    }
-
     public String getLocalOrgID() {
         return localOrgID;
     }
 
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
+    public void setLocalOrgID(String localOrgID) {
+        this.localOrgID = localOrgID;
     }
 
     public String getOrgName() {
         return orgName;
     }
 
-    public void setLocalOrgID(String localOrgID) {
-        this.localOrgID = localOrgID;
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
     }
 
     public String getWardId() {

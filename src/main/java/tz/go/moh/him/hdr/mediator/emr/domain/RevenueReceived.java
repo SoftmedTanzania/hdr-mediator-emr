@@ -2,13 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RevenueReceived {
-    /**
-     * Defines the Message type - will contain value of REV for this object
-     */
-    @JsonProperty("Message Type")
-    private String messageType;
-
+public class RevenueReceived extends EmrPayload {
     /**
      * This data element uniquely identifies a financial transaction so that if duplicates are transmitted/received, they will be identified by concatenate it with Med svcs code.
      */
@@ -80,14 +74,6 @@ public class RevenueReceived {
      */
     @JsonProperty("Waived Amount")
     private String waivedAmount;
-
-    public String getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(String messageType) {
-        this.messageType = messageType;
-    }
 
     public String getSystemTransID() {
         return systemTransID;

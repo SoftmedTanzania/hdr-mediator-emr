@@ -5,6 +5,7 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.BedOccupancyOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.DailyDeathCountOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
@@ -43,6 +44,7 @@ public class MediatorMain {
         routingTable.addRoute("/hdr_mediator/daily_death_count", DailyDeathCountOrchestrator.class);
         routingTable.addRoute("/hdr_mediator/bed_occupancy", BedOccupancyOrchestrator.class);
         routingTable.addRoute("/hdr_mediator/revenue_received", RevenueReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator", GenericEmrPayloadOrchestrator.class);
 
         return routingTable;
     }
