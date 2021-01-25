@@ -20,8 +20,16 @@ import java.util.Date;
 import java.util.List;
 
 public class BedOccupancyOrchestrator extends BaseOrchestrator {
+    /**
+     * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
+     */
     protected JSONObject bedOccupancyErrorMessageResource;
 
+    /**
+     * Initializes a new instance of the {@link BedOccupancyOrchestrator} class.
+     *
+     * @param config The mediator configuration.
+     */
     public BedOccupancyOrchestrator(MediatorConfig config) {
         super(config);
         bedOccupancyErrorMessageResource = errorMessageResource.getJSONObject("BED_OCCUPANCY_ERROR_MESSAGES");

@@ -26,11 +26,24 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class BaseTest {
-
+    /**
+     * Represents the system actor.
+     */
     protected static ActorSystem system;
+
+    /**
+     * Represents the configuration.
+     */
     protected MediatorConfig testConfig;
+
+    /**
+     * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
+     */
     protected JSONObject errorMessageResource;
 
+    /**
+     * Runs initialization before each class execution.
+     */
     @Before
     public void before() throws Exception {
         system = ActorSystem.create();
@@ -53,6 +66,9 @@ public abstract class BaseTest {
         }
     }
 
+    /**
+     * Runs cleanup after class execution.
+     */
     @After
     public void after() {
         TestingUtils.clearRootContext(system, testConfig.getName());
@@ -60,6 +76,16 @@ public abstract class BaseTest {
         system = null;
     }
 
+    /**
+     * Method for initiating actors, creating requests and sending request to the actor.
+     *
+     * @param system     the actor system used to initialize the destination actor
+     * @param testConfig the configuration used
+     * @param sender     the sending actor
+     * @param csvPayload    the payload
+     * @param type       class type of the destination orchestrator
+     * @param path       to send the request
+     */
     public void createActorAndSendRequest(ActorSystem system, MediatorConfig testConfig, ActorRef sender, String csvPayload, Class<?> type, String path) {
         final ActorRef orchestratorActor = system.actorOf(Props.create(type, testConfig));
         Map<String, String> headers = new HashMap<>();
@@ -82,6 +108,12 @@ public abstract class BaseTest {
         orchestratorActor.tell(POST_Request, sender);
     }
 
+    /**
+     * tests an invalid payload
+     * @param aClass
+     * @param invalidPayload
+     * @param path
+     */
     public void testInvalidPayload(Class aClass, String invalidPayload, String path) {
         assertNotNull(testConfig);
 
