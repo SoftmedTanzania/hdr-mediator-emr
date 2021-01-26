@@ -26,12 +26,41 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseOrchestrator extends UntypedActor {
+    /**
+     * The mediator configuration.
+     */
     protected final MediatorConfig config;
+
+    /**
+     * The logger instance.
+     */
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
+    /**
+     * Represents a list of error messages, if any,that have been caught during payload data validation to be returned to the source system as response.
+     */
     protected List<ErrorMessage> errorMessages = new ArrayList<>();
+
+    /**
+     * Handles the received message.
+     *
+     * @param msg The received message.
+     */
     protected MediatorHTTPRequest originalRequest;
+
+    /**
+     * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
+     */
     protected JSONObject errorMessageResource;
+
+    /**
+     * Simple Date Format used for payloads to be sent to the Health Data Repository
+     */
     protected SimpleDateFormat hdrDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    /**
+     * Simple Date Format used in payloads from EMR systems
+     */
     protected SimpleDateFormat emrDateFormat = new SimpleDateFormat("yyyyMMdd");
 
     /**
@@ -60,6 +89,8 @@ public abstract class BaseOrchestrator extends UntypedActor {
     public void onReceive(Object msg) {
         if (msg instanceof MediatorHTTPRequest) {
             originalRequest = (MediatorHTTPRequest) msg;
+
+            log.info("Received request: " + originalRequest.getHost() + " " + originalRequest.getMethod() + " " + originalRequest.getPath());
 
             //Converting the received request body to POJO List
             List<?> objects = new ArrayList<>();

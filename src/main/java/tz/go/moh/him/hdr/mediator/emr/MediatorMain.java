@@ -5,6 +5,7 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.BedOccupancyOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.DailyDeathCountOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
@@ -20,24 +21,51 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class MediatorMain {
 
+/**
+ * Represents the main application.
+ */
+public class MediatorMain {
+    /**
+     * Represents the mediator registration info.
+     */
+    public static final String MEDIATOR_REGISTRATION_INFO_JSON = "mediator-registration-info.json";
+
+    /**
+     * Builds the routing table.
+     *
+     * @return Returns the routing table.
+     * @throws RoutingTable.RouteAlreadyMappedException if the route is already mapped
+     */
     private static RoutingTable buildRoutingTable() throws RoutingTable.RouteAlreadyMappedException {
         RoutingTable routingTable = new RoutingTable();
 
-        routingTable.addRoute("/hdr_mediator/service_received", ServiceReceivedOrchestrator.class);
-        routingTable.addRoute("/hdr_mediator/daily_death_count", DailyDeathCountOrchestrator.class);
-        routingTable.addRoute("/hdr_mediator/bed_occupancy", BedOccupancyOrchestrator.class);
-        routingTable.addRoute("/hdr_mediator/revenue_received", RevenueReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr-service-received", ServiceReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr-daily-death-count", DailyDeathCountOrchestrator.class);
+        routingTable.addRoute("/hdr-bed-occupancy", BedOccupancyOrchestrator.class);
+        routingTable.addRoute("/hdr-revenue-received", RevenueReceivedOrchestrator.class);
+        routingTable.addRoute("/hdr_mediator", GenericEmrPayloadOrchestrator.class);
 
         return routingTable;
     }
 
+    /**
+     * Builds the startup actors configuration.
+     *
+     * @return Returns the startup actors configuration.
+     */
     private static StartupActorsConfig buildStartupActorsConfig() {
-        //You can Add additional startup single instance actors here
         return new StartupActorsConfig();
     }
 
+    /**
+     * Loads the configuration.
+     *
+     * @param configPath The path of the configuration.
+     * @return Returns the configuration instance.
+     * @throws IOException                              if an IO exception occurs
+     * @throws RoutingTable.RouteAlreadyMappedException if the route is already mapped
+     */
     private static MediatorConfig loadConfig(String configPath) throws IOException, RoutingTable.RouteAlreadyMappedException {
         MediatorConfig config = new MediatorConfig();
 
@@ -68,7 +96,7 @@ public class MediatorMain {
         config.setRoutingTable(buildRoutingTable());
         config.setStartupActors(buildStartupActorsConfig());
 
-        InputStream regInfo = MediatorMain.class.getClassLoader().getResourceAsStream("mediator-registration-info.json");
+        InputStream regInfo = MediatorMain.class.getClassLoader().getResourceAsStream(MEDIATOR_REGISTRATION_INFO_JSON);
         RegistrationConfig regConfig = null;
         if (regInfo != null) {
             regConfig = new RegistrationConfig(regInfo);
@@ -82,13 +110,20 @@ public class MediatorMain {
         return config;
     }
 
+    /**
+     * The main entry point of the application.
+     *
+     * @param args The arguments.
+     * @throws Exception if an exception occurs
+     */
     public static void main(String... args) throws Exception {
         //setup actor system
         final ActorSystem system = ActorSystem.create("mediator");
+
         //setup logger for main
         final LoggingAdapter log = Logging.getLogger(system, "main");
 
-        //setup actors
+        // setup logger for main
         log.info("Initializing mediator actors...");
 
         String configPath = null;

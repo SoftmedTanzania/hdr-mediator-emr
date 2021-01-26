@@ -20,15 +20,36 @@ import java.util.List;
 import java.util.Map;
 
 public class HdrActor extends UntypedActor {
+    /**
+     * The mediator configuration.
+     */
     private final MediatorConfig config;
+
+    /**
+     * The logger instance.
+     */
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+
+    /**
+     * The request handler that handles requests and responses.
+     */
     private ActorRef requestHandler;
 
 
+    /**
+     * Initializes a new instance of the {@link HdrActor} class.
+     *
+     * @param config The mediator configuration.
+     */
     public HdrActor(MediatorConfig config) {
         this.config = config;
     }
 
+    /**
+     * Forwards the message to the Health Data Repository
+     *
+     * @param message to be sent to the HDR
+     */
     private void forwardToHdr(String message) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Content-Type", "application/json");
@@ -68,25 +89,21 @@ public class HdrActor extends UntypedActor {
         httpConnector.tell(forwardToHdrRequest, getSelf());
     }
 
-    private void processMsg(SimpleMediatorRequest<HdrRequestMessage> msg) {
-        requestHandler = msg.getRequestHandler();
-        forwardToHdr(new Gson().toJson(msg.getRequestObject()));
-    }
-
-    private void finalizeResponse(MediatorHTTPResponse response) {
-        requestHandler.tell(response.toFinishRequest(), getSelf());
-    }
-
-
+    /**
+     * Handles the received message.
+     *
+     * @param msg The received message.
+     */
     @Override
     public void onReceive(Object msg) throws Exception {
         if (SimpleMediatorRequest.isInstanceOf(HdrRequestMessage.class, msg)) { //process message
             log.info("Sending data HDR ...");
-            processMsg((SimpleMediatorRequest<HdrRequestMessage>) msg);
+            requestHandler = ((SimpleMediatorRequest) msg).getRequestHandler();
+            forwardToHdr(new Gson().toJson(((SimpleMediatorRequest) msg).getRequestObject()));
 
         } else if (msg instanceof MediatorHTTPResponse) { //respond
             log.info("Received response from HDR");
-            finalizeResponse((MediatorHTTPResponse) msg);
+            requestHandler.tell(((MediatorHTTPResponse) msg).toFinishRequest(), getSelf());
         } else {
             unhandled(msg);
         }
