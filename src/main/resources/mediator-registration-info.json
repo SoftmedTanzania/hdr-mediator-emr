@@ -8,100 +8,100 @@
       "name": "HDR mediator Service Received Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr_mediator/service_received",
+      "path": "/hdr-service-received",
       "type": "http"
     },
     {
       "name": "HDR mediator Daily Death Count Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr_mediator/daily_death_count",
+      "path": "/hdr-daily-death-count",
       "type": "http"
     },
     {
       "name": "HDR mediator Bed Occupancy Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr_mediator/bed_occupancy",
+      "path": "/hdr-bed-occupancy",
       "type": "http"
     },
     {
       "name": "HDR mediator Revenue Received Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr_mediator/revenue_received",
+      "path": "/hdr-revenue-received",
       "type": "http"
     }
   ],
   "defaultChannelConfig": [
     {
-      "name": "HDR Services Received mediator",
+      "name": "HDR Services Received Channel",
       "urlPattern": "^/services_received$",
-      "description": "OpenHIM Mediator for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
           "name": "HDR mediator Service Received Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr_mediator/service_received",
+          "path": "/hdr-service-received",
           "type": "http"
         }
       ]
     },
     {
-      "name": "HDR Daily Death Count mediator",
+      "name": "HDR Daily Death Count Channel",
       "urlPattern": "^/daily_death_count$",
-      "description": "OpenHIM Mediator for processing daily death count payload sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing daily death count payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
           "name": "HDR mediator Daily Death Count Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr_mediator/daily_death_count",
+          "path": "/hdr-daily-death-count",
           "type": "http"
         }
       ]
     },
     {
-      "name": "HDR Bed Occupancy mediator",
+      "name": "HDR Bed Occupancy Channel",
       "urlPattern": "^/bed_occupancy$",
-      "description": "OpenHIM Mediator for processing bed occupancy payload sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing bed occupancy payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
           "name": "HDR mediator Bed Occupancy Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr_mediator/bed_occupancy",
+          "path": "/hdr-bed-occupancy",
           "type": "http"
         }
       ]
     },
     {
-      "name": "HDR Revenue Received mediator",
+      "name": "HDR Revenue Received Channel",
       "urlPattern": "^/revenue_received$",
-      "description": "OpenHIM Mediator for processing revenue received payload sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing revenue received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
           "name": "HDR mediator Revenue Received Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr_mediator/revenue_received",
+          "path": "/hdr-revenue-received",
           "type": "http"
         }
       ]
