@@ -5,6 +5,13 @@
   "description": "An OpenHIM mediator for processing data to be sent to HDR from EMR systems",
   "endpoints": [
     {
+      "name": "HDR mediator Generic Route",
+      "host": "localhost",
+      "port": "3000",
+      "path": "/hdr-mediator",
+      "type": "http"
+    },
+    {
       "name": "HDR mediator Service Received Route",
       "host": "localhost",
       "port": "3000",
@@ -35,8 +42,26 @@
   ],
   "defaultChannelConfig": [
     {
+      "name": "HDR Channel",
+      "urlPattern": "^/hdr$",
+      "description": "OpenHIM Channel for processing payloads sent by EMR systems to Tanzania Health Data Repository",
+      "type": "http",
+      "allow": [
+        "emr-role"
+      ],
+      "routes": [
+        {
+          "name": "HDR mediator Generic Route",
+          "host": "localhost",
+          "port": "3000",
+          "path": "/hdr_mediator",
+          "type": "http"
+        }
+      ]
+    },
+    {
       "name": "HDR Services Received Channel",
-      "urlPattern": "^/services_received$",
+      "urlPattern": "^/hdr-services-received$",
       "description": "OpenHIM Channel for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
@@ -137,7 +162,10 @@
           "displayName": "HDR Scheme",
           "description": "Whether the hdr is using HTTP or HTTPS requests",
           "type": "option",
-          "values": ["http", "https"]
+          "values": [
+            "http",
+            "https"
+          ]
         }
       ]
     }

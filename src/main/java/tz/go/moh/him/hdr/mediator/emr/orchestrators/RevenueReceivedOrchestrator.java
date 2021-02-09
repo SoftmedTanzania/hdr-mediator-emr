@@ -20,8 +20,16 @@ import java.util.Date;
 import java.util.List;
 
 public class RevenueReceivedOrchestrator extends BaseOrchestrator {
+    /**
+     * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
+     */
     protected JSONObject revenueReceivedErrorMessageResource;
 
+    /**
+     * Initializes a new instance of the {@link RevenueReceivedOrchestrator} class.
+     *
+     * @param config The mediator configuration.
+     */
     public RevenueReceivedOrchestrator(MediatorConfig config) {
         super(config);
         revenueReceivedErrorMessageResource = errorMessageResource.getJSONObject("REVENUE_RECEIVED_ERROR_MESSAGES");

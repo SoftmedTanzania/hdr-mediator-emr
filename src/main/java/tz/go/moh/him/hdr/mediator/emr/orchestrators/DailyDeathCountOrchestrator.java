@@ -20,8 +20,16 @@ import java.util.Date;
 import java.util.List;
 
 public class DailyDeathCountOrchestrator extends BaseOrchestrator {
+    /**
+     * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
+     */
     protected JSONObject dailyDeathCountErrorMessageResource;
 
+    /**
+     * Initializes a new instance of the {@link DailyDeathCountOrchestrator} class.
+     *
+     * @param config The mediator configuration.
+     */
     public DailyDeathCountOrchestrator(MediatorConfig config) {
         super(config);
         dailyDeathCountErrorMessageResource = errorMessageResource.getJSONObject("DAILY_DEATH_COUNT_ERROR_MESSAGES");
