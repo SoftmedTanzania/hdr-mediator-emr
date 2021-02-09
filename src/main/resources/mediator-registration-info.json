@@ -8,7 +8,7 @@
       "name": "HDR mediator Generic Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr_mediator",
+      "path": "/hdr-mediator",
       "type": "http"
     },
     {
@@ -42,12 +42,12 @@
   ],
   "defaultChannelConfig": [
     {
-      "name": "HDR mediator",
+      "name": "HDR Channel",
       "urlPattern": "^/hdr$",
-      "description": "OpenHIM Mediator for processing payloads sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing payloads sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
@@ -60,12 +60,12 @@
       ]
     },
     {
-      "name": "HDR Services Received mediator",
+      "name": "HDR Services Received Channel",
       "urlPattern": "^/hdr-services-received$",
-      "description": "OpenHIM Mediator for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
+      "description": "OpenHIM Channel for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
@@ -78,12 +78,12 @@
       ]
     },
     {
-      "name": "HDR Daily Death Count mediator",
-      "urlPattern": "^/hdr-daily-death-count$",
-      "description": "OpenHIM Mediator for processing daily death count payload sent by EMR systems to Tanzania Health Data Repository",
+      "name": "HDR Daily Death Count Channel",
+      "urlPattern": "^/daily_death_count$",
+      "description": "OpenHIM Channel for processing daily death count payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
@@ -96,12 +96,12 @@
       ]
     },
     {
-      "name": "HDR Bed Occupancy mediator",
-      "urlPattern": "^/hdr-bed-occupancy$",
-      "description": "OpenHIM Mediator for processing bed occupancy payload sent by EMR systems to Tanzania Health Data Repository",
+      "name": "HDR Bed Occupancy Channel",
+      "urlPattern": "^/bed_occupancy$",
+      "description": "OpenHIM Channel for processing bed occupancy payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {
@@ -114,12 +114,12 @@
       ]
     },
     {
-      "name": "HDR Revenue Received mediator",
-      "urlPattern": "^/hdr-revenue-received$",
-      "description": "OpenHIM Mediator for processing revenue received payload sent by EMR systems to Tanzania Health Data Repository",
+      "name": "HDR Revenue Received Channel",
+      "urlPattern": "^/revenue_received$",
+      "description": "OpenHIM Channel for processing revenue received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
-        "hdr-mediator"
+        "emr-role"
       ],
       "routes": [
         {

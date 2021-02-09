@@ -44,7 +44,8 @@ public class MediatorMain {
         routingTable.addRoute("/hdr-daily-death-count", DailyDeathCountOrchestrator.class);
         routingTable.addRoute("/hdr-bed-occupancy", BedOccupancyOrchestrator.class);
         routingTable.addRoute("/hdr-revenue-received", RevenueReceivedOrchestrator.class);
-        routingTable.addRoute("/hdr_mediator", GenericEmrPayloadOrchestrator.class);
+        routingTable.addRoute("/hdr-mediator", GenericEmrPayloadOrchestrator.class);
+
 
         return routingTable;
     }
