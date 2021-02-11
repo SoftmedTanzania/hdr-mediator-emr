@@ -20,9 +20,11 @@ import tz.go.moh.him.mediator.core.utils.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public abstract class BaseOrchestrator extends UntypedActor {
@@ -59,11 +61,6 @@ public abstract class BaseOrchestrator extends UntypedActor {
     protected SimpleDateFormat hdrDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     /**
-     * Simple Date Format used in payloads from EMR systems
-     */
-    protected SimpleDateFormat emrDateFormat = new SimpleDateFormat("yyyyMMdd");
-
-    /**
      * Initializes a new instance of the {@link BaseOrchestrator} class.
      *
      * @param config The mediator configuration.
@@ -78,6 +75,27 @@ public abstract class BaseOrchestrator extends UntypedActor {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Handles checking for the correct date string format from a varierity of formats
+     *
+     * @param dateString of the date
+     * @return the matching date string format
+     */
+    public static String CheckDateFormatStrings(String dateString) {
+        List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd");
+
+        for (String formatString : formatStrings) {
+            try {
+                Date date = new SimpleDateFormat(formatString).parse(dateString);
+                return formatString;
+            } catch (ParseException e) {
+                //Invalid Date String
+            }
+        }
+
+        return "";
     }
 
     /**
@@ -125,7 +143,6 @@ public abstract class BaseOrchestrator extends UntypedActor {
             unhandled(msg);
         }
     }
-
 
     /**
      * Abstract method to handle Convertion the msg string payload to Correct POJO list

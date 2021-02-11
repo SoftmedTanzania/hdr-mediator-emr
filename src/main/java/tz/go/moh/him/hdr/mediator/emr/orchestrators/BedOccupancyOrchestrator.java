@@ -15,6 +15,7 @@ import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -101,15 +102,22 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
             } else {
                 resultDetailsList.addAll(validateRequiredFields(bedOccupancy));
 
+
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), CheckDateFormatStrings(bedOccupancy.getAdmissionDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
                     } else {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(bedOccupancy.getAdmissionDate()));
+
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getAdmissionDate())));
                     }
 
                     if (!StringUtils.isBlank(bedOccupancy.getDischargeDate())) {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(bedOccupancy.getDischargeDate()));
+
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getDischargeDate())));
                     }

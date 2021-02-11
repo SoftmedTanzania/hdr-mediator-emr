@@ -15,6 +15,7 @@ import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -112,14 +113,20 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 resultDetailsList.addAll(validateRequiredFields(revenueReceived));
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), CheckDateFormatStrings(revenueReceived.getTransactionDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"), revenueReceived.getSystemTransID()), null));
                     } else {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(revenueReceived.getTransactionDate()));
+
                         //Reformatting the date to the format required by the HDR
                         revenueReceived.setTransactionDate(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getTransactionDate())));
                     }
 
                     if (!StringUtils.isBlank(revenueReceived.getDob())) {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(revenueReceived.getDob()));
+
                         //Reformatting the date to the format required by the HDR
                         revenueReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getDob())));
                     }

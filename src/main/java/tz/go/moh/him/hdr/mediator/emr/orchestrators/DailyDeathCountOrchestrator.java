@@ -15,6 +15,7 @@ import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,9 +112,13 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                 resultDetailsList.addAll(validateRequiredFields(dailyDeathCount));
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDateDeathOccurred(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDateDeathOccurred(), CheckDateFormatStrings(dailyDeathCount.getDateDeathOccurred()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     } else {
+
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(dailyDeathCount.getDateDeathOccurred()));
+
                         //Reformatting the date to the format required by the HDR
                         dailyDeathCount.setDateDeathOccurred(hdrDateFormat.format(emrDateFormat.parse(dailyDeathCount.getDateDeathOccurred())));
 
@@ -123,9 +128,12 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
                 }
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDob(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(dailyDeathCount.getDob(), CheckDateFormatStrings(dailyDeathCount.getDob()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(dailyDeathCountErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), dailyDeathCount.getPatID()), null));
                     } else {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(dailyDeathCount.getDob()));
+
                         //Reformatting the date to the format required by the HDR
                         dailyDeathCount.setDob(hdrDateFormat.format(emrDateFormat.parse(dailyDeathCount.getDob())));
                     }
