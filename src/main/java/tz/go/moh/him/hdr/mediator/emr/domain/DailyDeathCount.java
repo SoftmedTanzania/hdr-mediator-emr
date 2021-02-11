@@ -55,7 +55,7 @@ public class DailyDeathCount extends EmrPayload {
     /**
      * The date that the patient died
      */
-    @JsonProperty("Date Death Occurred")
+    @JsonProperty("Date Death Occured")
     private String dateDeathOccurred;
 
     public String getLocalOrgID() {

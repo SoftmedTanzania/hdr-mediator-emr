@@ -74,8 +74,8 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
 
         new JavaTestKit(system) {{
             String invalidDeathDate =
-                    "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
-                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20501225";
+                    "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occured\n" +
+                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,2020-02-06 22:12:32";
             createActorAndSendRequest(system, testConfig, getRef(), invalidDeathDate, DailyDeathCountOrchestrator.class, "/daily_death_count");
 
             final Object[] out =
@@ -117,7 +117,7 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
-            String invalidPayload = "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
+            String invalidPayload = "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occured\n" +
                     ",,,,,,,,,";
             createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, DailyDeathCountOrchestrator.class, "/bed_occupancy");
 
