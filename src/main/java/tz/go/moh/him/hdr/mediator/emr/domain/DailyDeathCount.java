@@ -1,5 +1,6 @@
 package tz.go.moh.him.hdr.mediator.emr.domain;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DailyDeathCount extends EmrPayload {
@@ -55,7 +56,8 @@ public class DailyDeathCount extends EmrPayload {
     /**
      * The date that the patient died
      */
-    @JsonProperty("Date Death Occured")
+    @JsonProperty("Date Death Occurred")
+    @JsonAlias({"Date Death Occured", "date death occured","DATE DEATH OCCURED"})
     private String dateDeathOccurred;
 
     public String getLocalOrgID() {
