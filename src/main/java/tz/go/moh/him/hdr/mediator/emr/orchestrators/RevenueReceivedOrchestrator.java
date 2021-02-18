@@ -3,9 +3,12 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.RevenueReceived;
+import tz.go.moh.him.hdr.mediator.emr.domain.RevenueReceivedJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
@@ -82,13 +85,43 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<RevenueReceived> revenueReceivedList;
+        List<RevenueReceived> revenueReceivedList = new ArrayList<>();
         try {
-            Type listType = new TypeToken<List<RevenueReceived>>() {
-            }.getType();
-            revenueReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
+            Object json = new JSONTokener(msg).nextValue();
+            if (json instanceof JSONObject) {
+
+                //converting the Revenue Received Json Request to the normal Revenue Received Object also used by CSV Payloads
+                RevenueReceivedJsonRequest revenueReceivedJsonRequest = new Gson().fromJson(msg, RevenueReceivedJsonRequest.class);
+                for (RevenueReceivedJsonRequest.Item item : revenueReceivedJsonRequest.getItems()) {
+                    RevenueReceived revenueReceived = new RevenueReceived();
+                    revenueReceived.setMessageType(revenueReceivedJsonRequest.getMessageType());
+                    revenueReceived.setLocalOrgID(revenueReceivedJsonRequest.getLocalOrgID());
+                    revenueReceived.setOrgName(revenueReceivedJsonRequest.getOrgName());
+
+                    revenueReceived.setTransactionDate(item.getTransactionDate());
+                    revenueReceived.setDob(item.getDob());
+                    revenueReceived.setBilledAmount(item.getBilledAmount());
+                    revenueReceived.setWaivedAmount(item.getWaivedAmount());
+                    revenueReceived.setExemptionCategoryId(item.getExemptionCategoryId());
+                    revenueReceived.setMedSvcCode(item.getMedSvcCode());
+                    revenueReceived.setGender(item.getGender());
+                    revenueReceived.setPatID(item.getPatID());
+                    revenueReceived.setSystemTransID(item.getSystemTransID());
+                    revenueReceived.setPayerId(item.getPayerId());
+
+                    revenueReceivedList.add(revenueReceived);
+                }
+            } else if (json instanceof JSONArray) {
+                //the payload is a JSONArray
+                Type listType = new TypeToken<List<RevenueReceived>>() {
+                }.getType();
+                revenueReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
+            } else if (json instanceof String) {
+                //the payload is a CSV string
+                revenueReceivedList = (List<RevenueReceived>) CsvAdapterUtils.csvToArrayList(msg, RevenueReceived.class);
+            }
         } catch (com.google.gson.JsonSyntaxException ex) {
-            revenueReceivedList = (List<RevenueReceived>) CsvAdapterUtils.csvToArrayList(msg, RevenueReceived.class);
+            ex.printStackTrace();
         }
         return revenueReceivedList;
     }

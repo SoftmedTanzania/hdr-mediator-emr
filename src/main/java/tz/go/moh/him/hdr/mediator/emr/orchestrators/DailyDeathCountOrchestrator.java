@@ -3,9 +3,12 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.DailyDeathCount;
+import tz.go.moh.him.hdr.mediator.emr.domain.DailyDeathCountJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
@@ -80,13 +83,40 @@ public class DailyDeathCountOrchestrator extends BaseOrchestrator {
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<DailyDeathCount> dailyDeathCountList;
+        List<DailyDeathCount> dailyDeathCountList = new ArrayList<>();
         try {
-            Type listType = new TypeToken<List<DailyDeathCount>>() {
-            }.getType();
-            dailyDeathCountList = new Gson().fromJson((originalRequest).getBody(), listType);
+            Object json = new JSONTokener(msg).nextValue();
+            if (json instanceof JSONObject) {
+
+                //converting the Death by Disease Count Json Request to the normal Daily Death Count Object also used by CSV Payloads
+                DailyDeathCountJsonRequest dailyDeathCountJsonRequest = new Gson().fromJson(msg, DailyDeathCountJsonRequest.class);
+                for (DailyDeathCountJsonRequest.Item item : dailyDeathCountJsonRequest.getItems()) {
+                    DailyDeathCount dailyDeathCount = new DailyDeathCount();
+                    dailyDeathCount.setMessageType(dailyDeathCountJsonRequest.getMessageType());
+                    dailyDeathCount.setLocalOrgID(dailyDeathCountJsonRequest.getLocalOrgID());
+                    dailyDeathCount.setOrgName(dailyDeathCountJsonRequest.getOrgName());
+
+                    dailyDeathCount.setDateDeathOccurred(item.getDateDeathOccurred());
+                    dailyDeathCount.setDob(item.getDob());
+                    dailyDeathCount.setDiseaseCode(item.getDiseaseCode());
+                    dailyDeathCount.setGender(item.getGender());
+                    dailyDeathCount.setPatID(item.getPatID());
+                    dailyDeathCount.setWardId(item.getWardId());
+                    dailyDeathCount.setWardName(item.getWardName());
+
+                    dailyDeathCountList.add(dailyDeathCount);
+                }
+            } else if (json instanceof JSONArray) {
+                //the payload is a JSONArray
+                Type listType = new TypeToken<List<DailyDeathCount>>() {
+                }.getType();
+                dailyDeathCountList = new Gson().fromJson((originalRequest).getBody(), listType);
+            } else if (json instanceof String) {
+                //the payload is a CSV string
+                dailyDeathCountList = (List<DailyDeathCount>) CsvAdapterUtils.csvToArrayList(msg, DailyDeathCount.class);
+            }
         } catch (com.google.gson.JsonSyntaxException ex) {
-            dailyDeathCountList = (List<DailyDeathCount>) CsvAdapterUtils.csvToArrayList(msg, DailyDeathCount.class);
+            ex.printStackTrace();
         }
         return dailyDeathCountList;
     }
