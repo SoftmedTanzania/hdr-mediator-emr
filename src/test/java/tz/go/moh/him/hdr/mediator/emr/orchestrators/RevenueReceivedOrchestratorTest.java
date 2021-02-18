@@ -39,7 +39,7 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
     }
 
     @Test
-    public void testMediatorHTTPRequest() throws Exception {
+    public void testMediatorCsvPayloadHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
             createActorAndSendRequest(system, testConfig, getRef(), csvPayload, RevenueReceivedOrchestrator.class, "/revenue_received");
@@ -65,6 +65,38 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
             }
 
             assertTrue("Must send FinishRequest", foundResponse);
+        }};
+    }
+
+    @Test
+    public void testMediatorJSONPayloadHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+
+            String jsonPayload = "{\"messageType\":\"REV\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"systemTransID\":\"12231\",\"transactionDate\":\"20201225\",\"patID\":\"1\",\"gender\":\"Male\",\"dob\":\"19890101\",\"medSvcCode\":\"002923, 00277, 002772\",\"payerId\":\"33\",\"exemptionCategoryId\":\"47\",\"billedAmount\":\"10000.00\",\"waivedAmount\":\"0.00\"}]}";
+            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, RevenueReceivedOrchestrator.class, "/revenue_received");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    break;
+                }
+            }
+
+            assertEquals(200, responseStatus);
         }};
     }
 

@@ -33,7 +33,7 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
      * @throws Exception if an exception occurs
      */
     @Test
-    public void testServiceReceivedHTTPRequest() throws Exception {
+    public void testServiceReceivedCsvHTTPRequest() throws Exception {
         String servicesReceivedCsvPayload =
                 "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                         "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";

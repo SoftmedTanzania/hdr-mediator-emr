@@ -48,7 +48,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     }
 
     @Test
-    public void testMediatorHTTPRequest() throws Exception {
+    public void testMediatorCsvPayloadHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
             createActorAndSendRequest(system, testConfig, getRef(), csvPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
@@ -74,6 +74,38 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertTrue("Must send FinishRequest", foundResponse);
+        }};
+    }
+
+    @Test
+    public void testMediatorJSONPayloadHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+
+            String jsonPayload = "{\"messageType\":\"BEDOCC\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"wardId\":\"1\",\"wardName\":\"Pediatric\",\"patID\":\"1\",\"admissionDate\":\"20201220\",\"dischargeDate\":\"20201225\"}]}";
+            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    break;
+                }
+            }
+
+            assertEquals(200, responseStatus);
         }};
     }
 
@@ -110,6 +142,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
+            System.out.println(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), 1));
             assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), 1)));
         }};
     }

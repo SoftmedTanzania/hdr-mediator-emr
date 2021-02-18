@@ -67,6 +67,38 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
         }};
     }
 
+    @Test
+    public void testMediatorJSONPayloadHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+
+            String jsonPayload = "{\"messageType\":\"DDC\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"wardId\":\"1\",\"wardName\":\"Pediatric\",\"patID\":\"1\",\"diseaseCode\":\"B50.9\",\"gender\":\"Male\",\"dob\":\"19850101\",\"dateDeathOccurred\":\"20201225\"}]}";
+            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, DailyDeathCountOrchestrator.class, "/daily_death_count");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    break;
+                }
+            }
+
+            assertEquals(200, responseStatus);
+        }};
+    }
+
 
     @Test
     public void testInValidDateDeathOccurred() throws Exception {
@@ -75,7 +107,7 @@ public class DailyDeathCountOrchestratorTest extends BaseTest {
         new JavaTestKit(system) {{
             String invalidDeathDate =
                     "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occured\n" +
-                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,2020-02-06 22:12:32";
+                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,2050-02-06 22:12:32";
             createActorAndSendRequest(system, testConfig, getRef(), invalidDeathDate, DailyDeathCountOrchestrator.class, "/daily_death_count");
 
             final Object[] out =
