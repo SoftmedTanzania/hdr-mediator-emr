@@ -139,11 +139,11 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
             } else {
                 resultDetailsList.addAll(validateRequiredFields(serviceReceived));
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), CheckDateFormatStrings(serviceReceived.getServiceDate()))) {
+                    if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), checkDateFormatStrings(serviceReceived.getServiceDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), serviceReceived.getPatID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(serviceReceived.getServiceDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getServiceDate()));
 
                         //Reformatting the date to the format required by the HDR
                         serviceReceived.setServiceDate(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getServiceDate())));
@@ -151,7 +151,7 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
 
                     if (!StringUtils.isBlank(serviceReceived.getDob())) {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(serviceReceived.getDob()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getDob()));
 
                         //Reformatting the date to the format required by the HDR
                         serviceReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getDob())));

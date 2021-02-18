@@ -146,11 +146,11 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 resultDetailsList.addAll(validateRequiredFields(revenueReceived));
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), CheckDateFormatStrings(revenueReceived.getTransactionDate()))) {
+                    if (!DateValidatorUtils.isValidPastDate(revenueReceived.getTransactionDate(), checkDateFormatStrings(revenueReceived.getTransactionDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"), revenueReceived.getSystemTransID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(revenueReceived.getTransactionDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(revenueReceived.getTransactionDate()));
 
                         //Reformatting the date to the format required by the HDR
                         revenueReceived.setTransactionDate(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getTransactionDate())));
@@ -158,7 +158,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
                     if (!StringUtils.isBlank(revenueReceived.getDob())) {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(revenueReceived.getDob()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(revenueReceived.getDob()));
 
                         //Reformatting the date to the format required by the HDR
                         revenueReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(revenueReceived.getDob())));

@@ -131,11 +131,11 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
 
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), CheckDateFormatStrings(bedOccupancy.getAdmissionDate()))) {
+                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), checkDateFormatStrings(bedOccupancy.getAdmissionDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(bedOccupancy.getAdmissionDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getAdmissionDate()));
 
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getAdmissionDate())));
@@ -143,7 +143,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
 
                     if (!StringUtils.isBlank(bedOccupancy.getDischargeDate())) {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(bedOccupancy.getDischargeDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getDischargeDate()));
 
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getDischargeDate())));

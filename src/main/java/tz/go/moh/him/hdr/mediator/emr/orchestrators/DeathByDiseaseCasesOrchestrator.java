@@ -142,12 +142,12 @@ public class DeathByDiseaseCasesOrchestrator extends BaseOrchestrator {
                 resultDetailsList.addAll(validateRequiredFields(deathByDiseaseCases));
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(deathByDiseaseCases.getDateDeathOccurred(), CheckDateFormatStrings(deathByDiseaseCases.getDateDeathOccurred()))) {
+                    if (!DateValidatorUtils.isValidPastDate(deathByDiseaseCases.getDateDeathOccurred(), checkDateFormatStrings(deathByDiseaseCases.getDateDeathOccurred()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), deathByDiseaseCases.getPatID()), null));
                     } else {
 
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(deathByDiseaseCases.getDateDeathOccurred()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(deathByDiseaseCases.getDateDeathOccurred()));
 
                         //Reformatting the date to the format required by the HDR
                         deathByDiseaseCases.setDateDeathOccurred(hdrDateFormat.format(emrDateFormat.parse(deathByDiseaseCases.getDateDeathOccurred())));
@@ -158,11 +158,11 @@ public class DeathByDiseaseCasesOrchestrator extends BaseOrchestrator {
                 }
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(deathByDiseaseCases.getDob(), CheckDateFormatStrings(deathByDiseaseCases.getDob()))) {
+                    if (!DateValidatorUtils.isValidPastDate(deathByDiseaseCases.getDob(), checkDateFormatStrings(deathByDiseaseCases.getDob()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DOB_IS_NOT_A_VALID_PAST_DATE"), deathByDiseaseCases.getPatID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(CheckDateFormatStrings(deathByDiseaseCases.getDob()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(deathByDiseaseCases.getDob()));
 
                         //Reformatting the date to the format required by the HDR
                         deathByDiseaseCases.setDob(hdrDateFormat.format(emrDateFormat.parse(deathByDiseaseCases.getDob())));

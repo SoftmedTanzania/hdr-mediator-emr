@@ -83,7 +83,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * @param dateString of the date
      * @return the matching date string format
      */
-    public static String CheckDateFormatStrings(String dateString) {
+    public static String checkDateFormatStrings(String dateString) {
         List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd","yyyyMMdd");
 
         for (String formatString : formatStrings) {
