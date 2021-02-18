@@ -3,7 +3,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DailyDeathCount extends EmrPayload {
+public class DeathByDiseaseCases extends EmrPayload {
 
     /**
      * Common name of submitting facility

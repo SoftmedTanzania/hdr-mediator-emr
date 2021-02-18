@@ -39,7 +39,7 @@
     "ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE": "Record with Patient Id %s failed validation, Admission Date is not a valid past date",
     "ERROR_ADMISSION_DATE_INVALID_FORMAT": "Record with Patient Id %s failed validation, Admission Date is not of a valid date format yyymmdd"
   },
-  "DAILY_DEATH_COUNT_ERROR_MESSAGES": {
+  "DEATH_BY_DISEASE_CASES_ERROR_MESSAGES": {
     "ERROR_PATIENT_ID_IS_BLANK": "Record failed validation, Patient ID must not be blank",
     "ERROR_MESSAGE_TYPE_IS_BLANK": "Record with Patient Id %s failed validation, Message Type must not be blank",
     "ERROR_ORG_NAME_IS_BLANK": "Record with Patient Id %s failed validation, OrgName must not be blank",

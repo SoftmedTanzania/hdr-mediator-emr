@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class DailyDeathCountJsonRequest extends EmrPayload {
+public class DeathByDiseaseCasesJsonRequest extends EmrPayload {
 
     /**
      * Common name of submitting facility
@@ -19,7 +19,7 @@ public class DailyDeathCountJsonRequest extends EmrPayload {
     private String localOrgID;
 
     /**
-     * List of daily death count items
+     * List of death by disease cases items
      */
     private List<Item> items;
 
