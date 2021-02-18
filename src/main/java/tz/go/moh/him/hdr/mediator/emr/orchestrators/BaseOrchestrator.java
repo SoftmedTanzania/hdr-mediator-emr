@@ -24,7 +24,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 public abstract class BaseOrchestrator extends UntypedActor {
@@ -88,7 +87,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
 
         for (String formatString : formatStrings) {
             try {
-                Date date = new SimpleDateFormat(formatString).parse(dateString);
+                new SimpleDateFormat(formatString).parse(dateString);
                 return formatString;
             } catch (ParseException e) {
                 //Invalid Date String
