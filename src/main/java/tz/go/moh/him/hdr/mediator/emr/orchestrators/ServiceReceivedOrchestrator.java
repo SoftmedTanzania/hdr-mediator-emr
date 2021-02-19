@@ -3,9 +3,12 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceived;
+import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceivedJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
@@ -15,6 +18,7 @@ import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -76,13 +80,42 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<ServiceReceived> serviceReceivedList;
+        List<ServiceReceived> serviceReceivedList = new ArrayList<>();
         try {
-            Type listType = new TypeToken<List<ServiceReceived>>() {
-            }.getType();
-            serviceReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
+            Object json = new JSONTokener(msg).nextValue();
+            if (json instanceof JSONObject) {
+
+                //converting the Services Received Json Request to the normal Services Received Object also used by CSV Payloads
+                ServiceReceivedJsonRequest serviceReceivedJsonRequest = new Gson().fromJson(msg, ServiceReceivedJsonRequest.class);
+                for (ServiceReceivedJsonRequest.Item item : serviceReceivedJsonRequest.getItems()) {
+                    ServiceReceived serviceReceived = new ServiceReceived();
+                    serviceReceived.setMessageType(serviceReceivedJsonRequest.getMessageType());
+                    serviceReceived.setLocalOrgID(serviceReceivedJsonRequest.getLocalOrgID());
+                    serviceReceived.setOrgName(serviceReceivedJsonRequest.getOrgName());
+
+                    serviceReceived.setServiceDate(item.getServiceDate());
+                    serviceReceived.setDob(item.getDob());
+                    serviceReceived.setMedSvcCode(item.getMedSvcCode());
+                    serviceReceived.setGender(item.getGender());
+                    serviceReceived.setPatID(item.getPatID());
+                    serviceReceived.setIcd10Code(item.getIcd10Code());
+                    serviceReceived.setDeptID(item.getDeptID());
+                    serviceReceived.setDeptName(item.getDeptName());
+
+                    serviceReceivedList.add(serviceReceived);
+                }
+            } else if (json instanceof JSONArray) {
+                //the payload is a JSONArray
+                Type listType = new TypeToken<List<ServiceReceived>>() {
+                }.getType();
+                serviceReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
+            } else if (json instanceof String) {
+                //the payload is a CSV string
+                serviceReceivedList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList(msg, ServiceReceived.class);
+            }
+
         } catch (com.google.gson.JsonSyntaxException ex) {
-            serviceReceivedList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList(msg, ServiceReceived.class);
+            ex.printStackTrace();
         }
         return serviceReceivedList;
     }
@@ -106,14 +139,20 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
             } else {
                 resultDetailsList.addAll(validateRequiredFields(serviceReceived));
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), checkDateFormatStrings(serviceReceived.getServiceDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), serviceReceived.getPatID()), null));
                     } else {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getServiceDate()));
+
                         //Reformatting the date to the format required by the HDR
                         serviceReceived.setServiceDate(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getServiceDate())));
                     }
 
                     if (!StringUtils.isBlank(serviceReceived.getDob())) {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getDob()));
+
                         //Reformatting the date to the format required by the HDR
                         serviceReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getDob())));
                     }

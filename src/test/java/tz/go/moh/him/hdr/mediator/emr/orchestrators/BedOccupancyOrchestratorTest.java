@@ -48,10 +48,10 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     }
 
     @Test
-    public void testMediatorHTTPRequest() throws Exception {
+    public void testMediatorCsvPayloadHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
+            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, BedOccupancyOrchestrator.class, "/hdr-bed-occupancy");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -78,6 +78,38 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     }
 
     @Test
+    public void testMediatorJSONPayloadHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+
+            String jsonPayload = "{\"messageType\":\"BEDOCC\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"wardId\":\"1\",\"wardName\":\"Pediatric\",\"patID\":\"1\",\"admissionDate\":\"20201220\",\"dischargeDate\":\"20201225\"}]}";
+            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, BedOccupancyOrchestrator.class, "/hdr-bed-occupancy");
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    break;
+                }
+            }
+
+            assertEquals(200, responseStatus);
+        }};
+    }
+
+    @Test
     public void testInValidAdmissionDate() throws Exception {
         assertNotNull(testConfig);
 
@@ -85,7 +117,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             String invalidAdmissionDate =
                     "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
                             "BEDOCC,Muhimbili,105651-4,1,20501220,20201225,1,Pediatric";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidAdmissionDate, BedOccupancyOrchestrator.class, "/bed_occupancy");
+            createActorAndSendRequest(system, testConfig, getRef(), invalidAdmissionDate, BedOccupancyOrchestrator.class, "/hdr-bed-occupancy");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -110,6 +142,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
+            System.out.println(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), 1));
             assertTrue(responseMessage.contains(String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), 1)));
         }};
     }
@@ -117,7 +150,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        testInvalidPayload(BedOccupancyOrchestrator.class, invalidPayload, "/bed_occupancy");
+        testInvalidPayload(BedOccupancyOrchestrator.class, invalidPayload, "/hdr-bed-occupancy");
     }
 
 
@@ -128,7 +161,7 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
         new JavaTestKit(system) {{
             String invalidPayload = "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
                     ",,,,,,,";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, BedOccupancyOrchestrator.class, "/bed_occupancy");
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, BedOccupancyOrchestrator.class, "/hdr-bed-occupancy");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {

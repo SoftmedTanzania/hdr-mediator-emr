@@ -33,7 +33,7 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
      * @throws Exception if an exception occurs
      */
     @Test
-    public void testServiceReceivedHTTPRequest() throws Exception {
+    public void testServiceReceivedCsvHTTPRequest() throws Exception {
         String servicesReceivedCsvPayload =
                 "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                         "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
@@ -41,7 +41,7 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
         setupHdrMock("SVCREC");
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), servicesReceivedCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr_mediator");
+            createActorAndSendRequest(system, testConfig, getRef(), servicesReceivedCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr-mediator");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -81,7 +81,7 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
         setupHdrMock("BEDOCC");
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), bedOccupancyCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr_mediator");
+            createActorAndSendRequest(system, testConfig, getRef(), bedOccupancyCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr-mediator");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -108,20 +108,20 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
     }
 
     /**
-     * Tests sending daily death count payload to the Generic Emr Payload Mediator
+     * Tests sending death by disease cases payload to the Generic Emr Payload Mediator
      *
      * @throws Exception if an exception occurs
      */
     @Test
-    public void testDailyDeathCountHTTPRequest() throws Exception {
-        String dailyDeathCountCsvPayload =
+    public void testDeathByDiseaseCasesHTTPRequest() throws Exception {
+        String deathByDiseaseCasesCsvPayload =
                 "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
                         "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20201225";
 
         assertNotNull(testConfig);
         setupHdrMock("DDC");
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), dailyDeathCountCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr_mediator");
+            createActorAndSendRequest(system, testConfig, getRef(), deathByDiseaseCasesCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr-mediator");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -161,7 +161,7 @@ public class GenericEmrPayloadOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
         setupHdrMock("REV");
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), revenueReceivedCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr_mediator");
+            createActorAndSendRequest(system, testConfig, getRef(), revenueReceivedCsvPayload, GenericEmrPayloadOrchestrator.class, "/hdr-mediator");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {

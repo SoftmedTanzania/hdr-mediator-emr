@@ -43,7 +43,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
     }
 
     @Test
-    public void testMediatorHTTPRequest() throws Exception {
+    public void testMediatorCsvPayloadHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
             final ActorRef serviceReceivedOrchestrator = system.actorOf(Props.create(ServiceReceivedOrchestrator.class, testConfig));
@@ -58,7 +58,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
                     "http",
                     null,
                     null,
-                    "/service_received",
+                    "/hdr-service-received",
                     csvPayload,
                     headers,
                     Collections.<Pair<String, String>>emptyList()
@@ -91,6 +91,57 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
     }
 
     @Test
+    public void testMediatorJSONPayloadHTTPRequest() throws Exception {
+        assertNotNull(testConfig);
+        new JavaTestKit(system) {{
+            String jsonPayload = "{\"messageType\":\"SVCREC\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"deptName\":\"Radiology\",\"deptID\":\"80\",\"patID\":\"1\",\"gender\":\"Male\",\"dob\":\"19900131\",\"medSvcCode\":\"002923, 00277, 002772\",\"icd10Code\":\"A17.8, M60.1\",\"serviceDate\":\"20201224\"}]}";
+
+            final ActorRef serviceReceivedOrchestrator = system.actorOf(Props.create(ServiceReceivedOrchestrator.class, testConfig));
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "text/plain");
+            headers.put("x-openhim-clientid", "csv-sync-service");
+            MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
+                    getRef(),
+                    getRef(),
+                    "unit-test",
+                    "POST",
+                    "http",
+                    null,
+                    null,
+                    "/hdr-service-received",
+                    jsonPayload,
+                    headers,
+                    Collections.<Pair<String, String>>emptyList()
+            );
+
+            serviceReceivedOrchestrator.tell(POST_Request, getRef());
+
+
+            final Object[] out =
+                    new ReceiveWhile<Object>(Object.class, duration("1 second")) {
+                        @Override
+                        protected Object match(Object msg) throws Exception {
+                            if (msg instanceof FinishRequest) {
+                                return msg;
+                            }
+                            throw noMatch();
+                        }
+                    }.get();
+
+            int responseStatus = 0;
+
+            for (Object o : out) {
+                if (o instanceof FinishRequest) {
+                    responseStatus = ((FinishRequest) o).getResponseStatus();
+                    break;
+                }
+            }
+
+            assertEquals(200, responseStatus);
+        }};
+    }
+
+    @Test
     public void testInValidServiceDate() throws Exception {
         assertNotNull(testConfig);
 
@@ -98,7 +149,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             String invalidServiceDate =
                     "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                             "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20501224";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidServiceDate, ServiceReceivedOrchestrator.class, "/service_received");
+            createActorAndSendRequest(system, testConfig, getRef(), invalidServiceDate, ServiceReceivedOrchestrator.class, "/hdr-service-received");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -133,7 +184,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
 
         new JavaTestKit(system) {{
             String invalidPayload = "Message Type";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/service_received");
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/hdr-service-received");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -170,7 +221,7 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             String invalidPayload = "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                     ",,,,,,,,,,";
 
-            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/service_received");
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, ServiceReceivedOrchestrator.class, "/hdr-service-received");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {

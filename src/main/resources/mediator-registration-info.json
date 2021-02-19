@@ -19,10 +19,10 @@
       "type": "http"
     },
     {
-      "name": "HDR mediator Daily Death Count Route",
+      "name": "HDR mediator Death by Disease Cases Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr-daily-death-count",
+      "path": "/hdr-death-by-disease-cases",
       "type": "http"
     },
     {
@@ -42,7 +42,7 @@
   ],
   "defaultChannelConfig": [
     {
-      "name": "HDR Channel",
+      "name": "EMR - HDR CSV Channel",
       "urlPattern": "^/hdr$",
       "description": "OpenHIM Channel for processing payloads sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
@@ -54,13 +54,13 @@
           "name": "HDR mediator Generic Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr_mediator",
+          "path": "/hdr-mediator",
           "type": "http"
         }
       ]
     },
     {
-      "name": "HDR Services Received Channel",
+      "name": "EMR - HDR Services Received Channel",
       "urlPattern": "^/hdr-services-received$",
       "description": "OpenHIM Channel for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
@@ -78,26 +78,26 @@
       ]
     },
     {
-      "name": "HDR Daily Death Count Channel",
-      "urlPattern": "^/daily_death_count$",
-      "description": "OpenHIM Channel for processing daily death count payload sent by EMR systems to Tanzania Health Data Repository",
+      "name": "EMR - HDR Death by Disease Cases Channel",
+      "urlPattern": "^/death-by-disease-cases$",
+      "description": "OpenHIM Channel for processing death by disease cases payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
         "emr-role"
       ],
       "routes": [
         {
-          "name": "HDR mediator Daily Death Count Route",
+          "name": "HDR mediator Death by Disease Cases Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr-daily-death-count",
+          "path": "/hdr-death-by-disease-cases",
           "type": "http"
         }
       ]
     },
     {
-      "name": "HDR Bed Occupancy Channel",
-      "urlPattern": "^/bed_occupancy$",
+      "name": "EMR - HDR Bed Occupancy Channel",
+      "urlPattern": "^/bed-occupancy$",
       "description": "OpenHIM Channel for processing bed occupancy payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
@@ -114,7 +114,7 @@
       ]
     },
     {
-      "name": "HDR Revenue Received Channel",
+      "name": "EMR - HDR Revenue Received Channel",
       "urlPattern": "^/revenue_received$",
       "description": "OpenHIM Channel for processing revenue received payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",

@@ -3,9 +3,12 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.codehaus.plexus.util.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
 import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
+import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancyJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
@@ -15,6 +18,7 @@ import tz.go.moh.him.mediator.core.validator.DateValidatorUtils;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,13 +75,37 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<BedOccupancy> bedOccupancyList;
+        List<BedOccupancy> bedOccupancyList = new ArrayList<>();
         try {
-            Type listType = new TypeToken<List<BedOccupancy>>() {
-            }.getType();
-            bedOccupancyList = new Gson().fromJson((originalRequest).getBody(), listType);
+            Object json = new JSONTokener(msg).nextValue();
+            if (json instanceof JSONObject) {
+                //converting the Bed Occupancy Json Request to the normal BedOccupancy Object also used by CSV Payloads
+                BedOccupancyJsonRequest bedOccupancyJsonRequest = new Gson().fromJson(msg, BedOccupancyJsonRequest.class);
+                for(BedOccupancyJsonRequest.Item item: bedOccupancyJsonRequest.getItems()){
+                    BedOccupancy bedOccupancy = new BedOccupancy();
+                    bedOccupancy.setMessageType(bedOccupancyJsonRequest.getMessageType());
+                    bedOccupancy.setLocalOrgID(bedOccupancyJsonRequest.getLocalOrgID());
+                    bedOccupancy.setOrgName(bedOccupancyJsonRequest.getOrgName());
+
+                    bedOccupancy.setAdmissionDate(item.getAdmissionDate());
+                    bedOccupancy.setDischargeDate(item.getDischargeDate());
+                    bedOccupancy.setPatID(item.getPatID());
+                    bedOccupancy.setWardId(item.getWardId());
+                    bedOccupancy.setWardName(item.getWardName());
+
+                    bedOccupancyList.add(bedOccupancy);
+                }
+            } else if (json instanceof JSONArray) {
+                //the payload is a JSONArray
+                Type listType = new TypeToken<List<BedOccupancy>>() {
+                }.getType();
+                bedOccupancyList = new Gson().fromJson((originalRequest).getBody(), listType);
+            }else if (json instanceof String){
+                //the payload is a CSV string
+                bedOccupancyList = (List<BedOccupancy>) CsvAdapterUtils.csvToArrayList(msg, BedOccupancy.class);
+            }
         } catch (com.google.gson.JsonSyntaxException ex) {
-            bedOccupancyList = (List<BedOccupancy>) CsvAdapterUtils.csvToArrayList(msg, BedOccupancy.class);
+            ex.printStackTrace();
         }
         return bedOccupancyList;
     }
@@ -101,15 +129,22 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
             } else {
                 resultDetailsList.addAll(validateRequiredFields(bedOccupancy));
 
+
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), "yyyymmdd")) {
+                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), checkDateFormatStrings(bedOccupancy.getAdmissionDate()))) {
                         resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
                     } else {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getAdmissionDate()));
+
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getAdmissionDate())));
                     }
 
                     if (!StringUtils.isBlank(bedOccupancy.getDischargeDate())) {
+                        //Simple Date Format used in payloads from EMR systems
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getDischargeDate()));
+
                         //Reformatting the date to the format required by the HDR
                         bedOccupancy.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getDischargeDate())));
                     }
