@@ -28,32 +28,29 @@ import java.util.List;
 
 public abstract class BaseOrchestrator extends UntypedActor {
     /**
+     * Possible date formats used by the source systems
+     */
+    private static List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyyMMdd");
+    /**
      * The mediator configuration.
      */
     protected final MediatorConfig config;
-
     /**
      * The logger instance.
      */
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
-
     /**
      * Represents a list of error messages, if any,that have been caught during payload data validation to be returned to the source system as response.
      */
     protected List<ErrorMessage> errorMessages = new ArrayList<>();
-
     /**
      * Handles the received message.
-     *
-     * @param msg The received message.
      */
     protected MediatorHTTPRequest originalRequest;
-
     /**
      * Represents an Error Messages Definition Resource Object defined in <a href="file:../resources/error-messages.json">/resources/error-messages.json</a>.
      */
     protected JSONObject errorMessageResource;
-
     /**
      * Simple Date Format used for payloads to be sent to the Health Data Repository
      */
@@ -83,8 +80,6 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * @return the matching date string format
      */
     public static String checkDateFormatStrings(String dateString) {
-        List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd","yyyyMMdd");
-
         for (String formatString : formatStrings) {
             try {
                 new SimpleDateFormat(formatString).parse(dateString);
