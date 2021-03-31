@@ -10,7 +10,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
 import org.openhim.mediator.engine.testing.MockLauncher;
 import org.openhim.mediator.engine.testing.TestingUtils;
-import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
+import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancyCsvRequest;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class BedOccupancyOrchestratorTest extends BaseTest {
+public class BedOccupancyCsvRequestOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Pat ID,Admission Date,Discharge Date,Ward ID,Ward Name\n" +
                     "BEDOCC,Muhimbili,105651-4,1,20201220,20201225,1,Pediatric";
@@ -198,11 +198,11 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
 
     private static class MockHdr extends MockHTTPConnector {
         private final String response;
-        private final List<BedOccupancy> payloadConvertedIntoArrayList;
+        private final List<BedOccupancyCsvRequest> payloadConvertedIntoArrayList;
 
         public MockHdr() throws IOException {
             response = "successful test response";
-            payloadConvertedIntoArrayList = (List<BedOccupancy>) CsvAdapterUtils.csvToArrayList(csvPayload, BedOccupancy.class);
+            payloadConvertedIntoArrayList = (List<BedOccupancyCsvRequest>) CsvAdapterUtils.csvToArrayList(csvPayload, BedOccupancyCsvRequest.class);
 
         }
 
@@ -227,9 +227,9 @@ public class BedOccupancyOrchestratorTest extends BaseTest {
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
             JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
-            BedOccupancy expectedPayload = payloadConvertedIntoArrayList.get(0);
+            BedOccupancyCsvRequest expectedPayload = payloadConvertedIntoArrayList.get(0);
 
-            BedOccupancy receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), BedOccupancy.class);
+            BedOccupancyCsvRequest receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), BedOccupancyCsvRequest.class);
 
             assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
             assertEquals(expectedPayload.getWardName(), receivedObjectInMessage.getWardName());

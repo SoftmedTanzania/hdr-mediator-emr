@@ -9,7 +9,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
 import org.openhim.mediator.engine.testing.MockLauncher;
 import org.openhim.mediator.engine.testing.TestingUtils;
-import tz.go.moh.him.hdr.mediator.emr.domain.RevenueReceived;
+import tz.go.moh.him.hdr.mediator.emr.domain.DeathByDiseaseCasesWithinFacilityCsvRequest;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
@@ -22,27 +22,27 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class RevenueReceivedOrchestratorTest extends BaseTest {
+public class DeathByDiseaseCasesWithinFacilityCsvRequestOrchestratorTest extends BaseTest {
     private static final String csvPayload =
-            "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
-                    "REV,12231,Muhimbili,105651-4,20201225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
-    protected JSONObject revenueReceivedErrorMessageResource;
+            "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occurred\n" +
+                    "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,20201225";
+    protected JSONObject deathByDiseaseCasesErrorMessageResource;
 
     @Override
     public void before() throws Exception {
         super.before();
 
-        revenueReceivedErrorMessageResource = errorMessageResource.getJSONObject("REVENUE_RECEIVED_ERROR_MESSAGES");
+        deathByDiseaseCasesErrorMessageResource = errorMessageResource.getJSONObject("DEATH_BY_DISEASE_CASES_ERROR_MESSAGES");
         List<MockLauncher.ActorToLaunch> toLaunch = new LinkedList<>();
-        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", MockHdr.class));
+        toLaunch.add(new MockLauncher.ActorToLaunch("http-connector", DeathByDiseaseCasesWithinFacilityCsvRequestOrchestratorTest.MockHdr.class));
         TestingUtils.launchActors(system, testConfig.getName(), toLaunch);
     }
 
     @Test
-    public void testMediatorCsvPayloadHTTPRequest() throws Exception {
+    public void testMediatorHTTPRequest() throws Exception {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
-            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, RevenueReceivedOrchestrator.class, "/hdr-revenue-received");
+            createActorAndSendRequest(system, testConfig, getRef(), csvPayload, DeathByDiseaseCasesOrchestrator.class, "/hdr-death-by-disease-cases");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -56,7 +56,6 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
                     }.get();
 
             boolean foundResponse = false;
-
             for (Object o : out) {
                 if (o instanceof FinishRequest) {
                     foundResponse = true;
@@ -73,8 +72,8 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
         assertNotNull(testConfig);
         new JavaTestKit(system) {{
 
-            String jsonPayload = "{\"messageType\":\"REV\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"systemTransID\":\"12231\",\"transactionDate\":\"20201225\",\"patID\":\"1\",\"gender\":\"Male\",\"dob\":\"19890101\",\"medSvcCode\":\"002923, 00277, 002772\",\"payerId\":\"33\",\"exemptionCategoryId\":\"47\",\"billedAmount\":\"10000.00\",\"waivedAmount\":\"0.00\"}]}";
-            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, RevenueReceivedOrchestrator.class, "/hdr-revenue-received");
+            String jsonPayload = "{\"messageType\":\"DDC\",\"orgName\":\"Muhimbili\",\"localOrgID\":\"105651-4\",\"items\":[{\"wardId\":\"1\",\"wardName\":\"Pediatric\",\"patID\":\"1\",\"diseaseCode\":\"B50.9\",\"gender\":\"Male\",\"dob\":\"19850101\",\"dateDeathOccurred\":\"20201225\"}]}";
+            createActorAndSendRequest(system, testConfig, getRef(), jsonPayload, DeathByDiseaseCasesOrchestrator.class, "/hdr-death-by-disease-cases");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -100,15 +99,16 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
         }};
     }
 
+
     @Test
-    public void testInValidTransactionDate() throws Exception {
+    public void testInValidDateDeathOccurred() throws Exception {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
-            String invalidTransactionDate =
-                    "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
-                            "REV,12231,Muhimbili,105651-4,20501225,1,Male,19890101,\"002923, 00277, 002772\",33,47,10000.00,0.00";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidTransactionDate, RevenueReceivedOrchestrator.class, "/hdr-revenue-received");
+            String invalidDeathDate =
+                    "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occured\n" +
+                            "DDC,Muhimbili,105651-4,1,Pediatric,1,Male,B50.9,19850101,2050-02-06 22:12:32";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidDeathDate, DeathByDiseaseCasesOrchestrator.class, "/hdr-death-by-disease-cases");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -132,25 +132,26 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
                 }
             }
 
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE"), 12231)));
             assertEquals(400, responseStatus);
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE"), 1)));
         }};
     }
 
     @Test
     public void testInValidPayload() throws Exception {
         String invalidPayload = "Message Type";
-        testInvalidPayload(RevenueReceivedOrchestrator.class, invalidPayload, "/hdr-revenue-received");
+        testInvalidPayload(BedOccupancyOrchestrator.class, invalidPayload, "/hdr-death-by-disease-cases");
     }
+
 
     @Test
     public void validateRequiredFields() {
         assertNotNull(testConfig);
 
         new JavaTestKit(system) {{
-            String invalidPayload = "Message Type,System Trans ID,Org Name,Local Org ID,Transaction Date,Pat ID,Gender,DOB,Med Svc Code,Payer ID,Exemption Category ID,Billed Amount,Waived Amount\n" +
-                    ",,,,,,,,,,,,";
-            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, RevenueReceivedOrchestrator.class, "/hdr-revenue-received");
+            String invalidPayload = "Message Type,Org Name,Local Org ID,Ward ID,Ward Name,Pat ID,Gender,Disease Code,DOB,Date Death Occured\n" +
+                    ",,,,,,,,,";
+            createActorAndSendRequest(system, testConfig, getRef(), invalidPayload, DeathByDiseaseCasesOrchestrator.class, "/hdr-bed-occupancy");
 
             final Object[] out =
                     new ReceiveWhile<Object>(Object.class, duration("1 second")) {
@@ -175,28 +176,26 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
             }
 
             assertEquals(400, responseStatus);
-            assertTrue(responseMessage.contains(revenueReceivedErrorMessageResource.getString("ERROR_SYSTEM_TRANS_ID_IS_BLANK")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_BILLED_AMOUNT_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_WAIVED_AMOUNT_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_PAYER_ID_IS_BLANK"), "")));
-            assertTrue(responseMessage.contains(String.format(revenueReceivedErrorMessageResource.getString("ERROR_TRANSACTION_DATE_INVALID_FORMAT"), "")));
+            assertTrue(responseMessage.contains(deathByDiseaseCasesErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DISEASE_CODE_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DOB_IS_BLANK"), "")));
+            assertTrue(responseMessage.contains(String.format(deathByDiseaseCasesErrorMessageResource.getString("ERROR_DATE_DEATH_OCCURRED_IS_BLANK"), "")));
         }};
+
     }
 
     private static class MockHdr extends MockHTTPConnector {
         private final String response;
-        private final List<RevenueReceived> payloadConvertedIntoArrayList;
+        private final List<DeathByDiseaseCasesWithinFacilityCsvRequest> payloadConvertedIntoArrayList;
 
         public MockHdr() throws IOException {
             response = "successful test response";
-            payloadConvertedIntoArrayList = (List<RevenueReceived>) CsvAdapterUtils.csvToArrayList(csvPayload, RevenueReceived.class);
+            payloadConvertedIntoArrayList = (List<DeathByDiseaseCasesWithinFacilityCsvRequest>) CsvAdapterUtils.csvToArrayList(csvPayload, DeathByDiseaseCasesWithinFacilityCsvRequest.class);
 
         }
 
@@ -221,23 +220,20 @@ public class RevenueReceivedOrchestratorTest extends BaseTest {
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
             JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
-            RevenueReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
+            DeathByDiseaseCasesWithinFacilityCsvRequest expectedPayload = payloadConvertedIntoArrayList.get(0);
 
-            RevenueReceived receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), RevenueReceived.class);
+            DeathByDiseaseCasesWithinFacilityCsvRequest receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), DeathByDiseaseCasesWithinFacilityCsvRequest.class);
 
             assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
-            assertEquals(expectedPayload.getSystemTransID(), receivedObjectInMessage.getSystemTransID());
-            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getTransactionDate());
+            assertEquals(expectedPayload.getWardName(), receivedObjectInMessage.getWardName());
+            assertEquals(expectedPayload.getWardId(), receivedObjectInMessage.getWardId());
             assertEquals(expectedPayload.getMessageType(), receivedObjectInMessage.getMessageType());
-            assertEquals("1989-01-01T00:00:00", receivedObjectInMessage.getDob());
+            assertEquals("1985-01-01T00:00:00", receivedObjectInMessage.getDob());
             assertEquals(expectedPayload.getGender(), receivedObjectInMessage.getGender());
-            assertEquals(expectedPayload.getBilledAmount(), receivedObjectInMessage.getBilledAmount());
-            assertEquals(expectedPayload.getWaivedAmount(), receivedObjectInMessage.getWaivedAmount());
-            assertEquals(expectedPayload.getExemptionCategoryId(), receivedObjectInMessage.getExemptionCategoryId());
+            assertEquals(expectedPayload.getDiseaseCode(), receivedObjectInMessage.getDiseaseCode());
             assertEquals(expectedPayload.getLocalOrgID(), receivedObjectInMessage.getLocalOrgID());
             assertEquals(expectedPayload.getOrgName(), receivedObjectInMessage.getOrgName());
-            assertEquals(expectedPayload.getMedSvcCode(), receivedObjectInMessage.getMedSvcCode());
-            assertEquals(expectedPayload.getPayerId(), receivedObjectInMessage.getPayerId());
+            assertEquals("2020-12-25T00:00:00", receivedObjectInMessage.getDateDeathOccurred());
 
             System.out.println("message is okay ");
         }

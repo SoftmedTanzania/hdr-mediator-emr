@@ -2,7 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RevenueReceived extends EmrPayload {
+public class RevenueReceivedCsvRequest extends EmrPayload {
     /**
      * This data element uniquely identifies a financial transaction so that if duplicates are transmitted/received, they will be identified by concatenate it with Med svcs code.
      */

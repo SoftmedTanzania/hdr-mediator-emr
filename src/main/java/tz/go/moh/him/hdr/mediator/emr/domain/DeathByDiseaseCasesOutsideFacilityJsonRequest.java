@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public class DeathByDiseaseCasesJsonRequest extends EmrPayload {
+public class DeathByDiseaseCasesOutsideFacilityJsonRequest extends EmrPayload {
 
     /**
      * Common name of submitting facility

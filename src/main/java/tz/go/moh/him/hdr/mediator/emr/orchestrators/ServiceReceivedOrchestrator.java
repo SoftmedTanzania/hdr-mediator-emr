@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
-import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceived;
+import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceivedCsvRequest;
 import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceivedJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
@@ -43,44 +43,44 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
     /**
      * Validate Service Received Required Fields
      *
-     * @param serviceReceived to be validated
+     * @param serviceReceivedCsvRequest to be validated
      * @return array list of validation results details incase of failed validations
      */
-    public List<ResultDetail> validateRequiredFields(ServiceReceived serviceReceived) {
+    public List<ResultDetail> validateRequiredFields(ServiceReceivedCsvRequest serviceReceivedCsvRequest) {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
-        if (StringUtils.isBlank(serviceReceived.getPatID()))
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getPatID()))
             resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, serviceReceivedErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
 
-        if (StringUtils.isBlank(serviceReceived.getMessageType()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getMessageType()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getOrgName()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getOrgName()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getLocalOrgID()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getDeptName()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getDeptName()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_NAME_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getDeptID()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getDeptID()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_DEPT_ID_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getGender()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getGender()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_GENDER_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getMedSvcCode()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getMedSvcCode()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_MED_SVC_CODE_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(serviceReceived.getServiceDate()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"), serviceReceived.getPatID()), null));
+        if (StringUtils.isBlank(serviceReceivedCsvRequest.getServiceDate()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_CODE_IS_BLANK"), serviceReceivedCsvRequest.getPatID()), null));
 
         return resultDetailsList;
     }
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<ServiceReceived> serviceReceivedList = new ArrayList<>();
+        List<ServiceReceivedCsvRequest> serviceReceivedCsvRequestList = new ArrayList<>();
         try {
             Object json = new JSONTokener(msg).nextValue();
             if (json instanceof JSONObject) {
@@ -88,41 +88,41 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 //converting the Services Received Json Request to the normal Services Received Object also used by CSV Payloads
                 ServiceReceivedJsonRequest serviceReceivedJsonRequest = new Gson().fromJson(msg, ServiceReceivedJsonRequest.class);
                 for (ServiceReceivedJsonRequest.Item item : serviceReceivedJsonRequest.getItems()) {
-                    ServiceReceived serviceReceived = new ServiceReceived();
-                    serviceReceived.setMessageType(serviceReceivedJsonRequest.getMessageType());
-                    serviceReceived.setLocalOrgID(serviceReceivedJsonRequest.getLocalOrgID());
-                    serviceReceived.setOrgName(serviceReceivedJsonRequest.getOrgName());
+                    ServiceReceivedCsvRequest serviceReceivedCsvRequest = new ServiceReceivedCsvRequest();
+                    serviceReceivedCsvRequest.setMessageType(serviceReceivedJsonRequest.getMessageType());
+                    serviceReceivedCsvRequest.setLocalOrgID(serviceReceivedJsonRequest.getLocalOrgID());
+                    serviceReceivedCsvRequest.setOrgName(serviceReceivedJsonRequest.getOrgName());
 
-                    serviceReceived.setServiceDate(item.getServiceDate());
-                    serviceReceived.setDob(item.getDob());
-                    serviceReceived.setMedSvcCode(item.getMedSvcCode());
-                    serviceReceived.setGender(item.getGender());
-                    serviceReceived.setPatID(item.getPatID());
-                    serviceReceived.setIcd10Code(item.getIcd10Code());
-                    serviceReceived.setDeptID(item.getDeptID());
-                    serviceReceived.setDeptName(item.getDeptName());
+                    serviceReceivedCsvRequest.setServiceDate(item.getServiceDate());
+                    serviceReceivedCsvRequest.setDob(item.getDob());
+                    serviceReceivedCsvRequest.setMedSvcCode(item.getMedSvcCode());
+                    serviceReceivedCsvRequest.setGender(item.getGender());
+                    serviceReceivedCsvRequest.setPatID(item.getPatID());
+                    serviceReceivedCsvRequest.setIcd10Code(item.getIcd10Code());
+                    serviceReceivedCsvRequest.setDeptID(item.getDeptID());
+                    serviceReceivedCsvRequest.setDeptName(item.getDeptName());
 
-                    serviceReceivedList.add(serviceReceived);
+                    serviceReceivedCsvRequestList.add(serviceReceivedCsvRequest);
                 }
             } else if (json instanceof JSONArray) {
                 //the payload is a JSONArray
-                Type listType = new TypeToken<List<ServiceReceived>>() {
+                Type listType = new TypeToken<List<ServiceReceivedCsvRequest>>() {
                 }.getType();
-                serviceReceivedList = new Gson().fromJson((originalRequest).getBody(), listType);
+                serviceReceivedCsvRequestList = new Gson().fromJson((originalRequest).getBody(), listType);
             } else if (json instanceof String) {
                 //the payload is a CSV string
-                serviceReceivedList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList(msg, ServiceReceived.class);
+                serviceReceivedCsvRequestList = (List<ServiceReceivedCsvRequest>) CsvAdapterUtils.csvToArrayList(msg, ServiceReceivedCsvRequest.class);
             }
 
         } catch (com.google.gson.JsonSyntaxException ex) {
             ex.printStackTrace();
         }
-        return serviceReceivedList;
+        return serviceReceivedCsvRequestList;
     }
 
     @Override
     protected List<?> validateData(List<?> receivedList) {
-        List<ServiceReceived> validReceivedList = new ArrayList<>();
+        List<ServiceReceivedCsvRequest> validReceivedList = new ArrayList<>();
 
         for (Object object : receivedList) {
             ErrorMessage errorMessage = new ErrorMessage();
@@ -130,34 +130,34 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
 
             List<ResultDetail> resultDetailsList = new ArrayList<>();
 
-            ServiceReceived serviceReceived = null;
-            if (object != null && ServiceReceived.class.isAssignableFrom(object.getClass()))
-                serviceReceived = (ServiceReceived) object;
+            ServiceReceivedCsvRequest serviceReceivedCsvRequest = null;
+            if (object != null && ServiceReceivedCsvRequest.class.isAssignableFrom(object.getClass()))
+                serviceReceivedCsvRequest = (ServiceReceivedCsvRequest) object;
 
-            if (serviceReceived == null) {
+            if (serviceReceivedCsvRequest == null) {
                 resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
             } else {
-                resultDetailsList.addAll(validateRequiredFields(serviceReceived));
+                resultDetailsList.addAll(validateRequiredFields(serviceReceivedCsvRequest));
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(serviceReceived.getServiceDate(), checkDateFormatStrings(serviceReceived.getServiceDate()))) {
-                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), serviceReceived.getPatID()), null));
+                    if (!DateValidatorUtils.isValidPastDate(serviceReceivedCsvRequest.getServiceDate(), checkDateFormatStrings(serviceReceivedCsvRequest.getServiceDate()))) {
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE"), serviceReceivedCsvRequest.getPatID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getServiceDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceivedCsvRequest.getServiceDate()));
 
                         //Reformatting the date to the format required by the HDR
-                        serviceReceived.setServiceDate(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getServiceDate())));
+                        serviceReceivedCsvRequest.setServiceDate(hdrDateFormat.format(emrDateFormat.parse(serviceReceivedCsvRequest.getServiceDate())));
                     }
 
-                    if (!StringUtils.isBlank(serviceReceived.getDob())) {
+                    if (!StringUtils.isBlank(serviceReceivedCsvRequest.getDob())) {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceived.getDob()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(serviceReceivedCsvRequest.getDob()));
 
                         //Reformatting the date to the format required by the HDR
-                        serviceReceived.setDob(hdrDateFormat.format(emrDateFormat.parse(serviceReceived.getDob())));
+                        serviceReceivedCsvRequest.setDob(hdrDateFormat.format(emrDateFormat.parse(serviceReceivedCsvRequest.getDob())));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_INVALID_FORMAT"), serviceReceived.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(serviceReceivedErrorMessageResource.getString("ERROR_SVC_DATE_INVALID_FORMAT"), serviceReceivedCsvRequest.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
             }
 
@@ -166,7 +166,7 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
             if (resultDetailsList.size() == 0) {
                 //No errors were found during data validation
                 //adding the service received to the valid payload to be sent to HDR
-                validReceivedList.add(serviceReceived);
+                validReceivedList.add(serviceReceivedCsvRequest);
             } else {
                 //Adding the validation results to the Error message object
                 errorMessage.setResultsDetails(resultDetailsList);
@@ -185,7 +185,7 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
         hdrClient.setOpenHimClientId(openHimClientId);
 
         List<HdrRequestMessage.HdrEvent> hdrEvents = new ArrayList<>();
-        for (ServiceReceived serviceReceived : (List<ServiceReceived>) validatedObjects) {
+        for (ServiceReceivedCsvRequest serviceReceivedCsvRequest : (List<ServiceReceivedCsvRequest>) validatedObjects) {
             HdrRequestMessage.HdrEvent hdrEvent = new HdrRequestMessage.HdrEvent();
             hdrEvent.setEventType("save-service-received");
             hdrEvent.setEventDate(new Date());
@@ -193,7 +193,7 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
 
             JSONObject registrationConfig = new JSONObject(config.getRegistrationConfig().getContent());
             hdrEvent.setMediatorVersion(registrationConfig.getString("version"));
-            hdrEvent.setPayload(serviceReceived);
+            hdrEvent.setPayload(serviceReceivedCsvRequest);
 
             hdrEvents.add(hdrEvent);
         }

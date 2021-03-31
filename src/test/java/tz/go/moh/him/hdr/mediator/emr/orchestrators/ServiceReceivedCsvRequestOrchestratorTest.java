@@ -12,7 +12,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
 import org.openhim.mediator.engine.testing.MockLauncher;
 import org.openhim.mediator.engine.testing.TestingUtils;
-import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceived;
+import tz.go.moh.him.hdr.mediator.emr.domain.ServiceReceivedCsvRequest;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class ServiceReceivedOrchestratorTest extends BaseTest {
+public class ServiceReceivedCsvRequestOrchestratorTest extends BaseTest {
     private static final String csvPayload =
             "Message Type,Org Name,Local Org ID,Dept ID,Dept Name,Pat ID,Gender,DOB,Med SVC Code,ICD10 Code,Service Date\n" +
                     "SVCREC,Muhimbili,105651-4,80,Radiology,1,Male,19900131,\"002923, 00277, 002772\",\"A17.8, M60.1\",20201224";
@@ -261,11 +261,11 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
 
     private static class MockHdr extends MockHTTPConnector {
         private final String response;
-        private final List<ServiceReceived> payloadConvertedIntoArrayList;
+        private final List<ServiceReceivedCsvRequest> payloadConvertedIntoArrayList;
 
         public MockHdr() throws IOException {
             response = "successful test response";
-            payloadConvertedIntoArrayList = (List<ServiceReceived>) CsvAdapterUtils.csvToArrayList(csvPayload, ServiceReceived.class);
+            payloadConvertedIntoArrayList = (List<ServiceReceivedCsvRequest>) CsvAdapterUtils.csvToArrayList(csvPayload, ServiceReceivedCsvRequest.class);
 
         }
 
@@ -290,9 +290,9 @@ public class ServiceReceivedOrchestratorTest extends BaseTest {
             JSONObject messageJsonObject = new JSONObject(msg.getBody());
             JSONObject objectPayload = messageJsonObject.getJSONArray("hdrEvents").getJSONObject(0).getJSONObject("payload");
 
-            ServiceReceived expectedPayload = payloadConvertedIntoArrayList.get(0);
+            ServiceReceivedCsvRequest expectedPayload = payloadConvertedIntoArrayList.get(0);
 
-            ServiceReceived receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), ServiceReceived.class);
+            ServiceReceivedCsvRequest receivedObjectInMessage = new Gson().fromJson(String.valueOf(objectPayload), ServiceReceivedCsvRequest.class);
 
             assertEquals(expectedPayload.getPatID(), receivedObjectInMessage.getPatID());
             assertEquals(expectedPayload.getDeptName(), receivedObjectInMessage.getDeptName());

@@ -2,7 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class BedOccupancy extends EmrPayload {
+public class BedOccupancyCsvRequest extends EmrPayload {
 
     /**
      * Common name of submitting facility

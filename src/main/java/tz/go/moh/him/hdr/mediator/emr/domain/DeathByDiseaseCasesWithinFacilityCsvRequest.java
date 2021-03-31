@@ -3,7 +3,7 @@ package tz.go.moh.him.hdr.mediator.emr.domain;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DeathByDiseaseCases extends EmrPayload {
+public class DeathByDiseaseCasesWithinFacilityCsvRequest extends EmrPayload {
 
     /**
      * Common name of submitting facility

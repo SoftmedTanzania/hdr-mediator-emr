@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.openhim.mediator.engine.MediatorConfig;
-import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancy;
+import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancyCsvRequest;
 import tz.go.moh.him.hdr.mediator.emr.domain.BedOccupancyJsonRequest;
 import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
@@ -42,77 +42,77 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
     /**
      * Validate bed Occupancy Required Fields
      *
-     * @param bedOccupancy to be validated
+     * @param bedOccupancyCsvRequest to be validated
      * @return array list of validation results details incase of failed validations
      */
-    public List<ResultDetail> validateRequiredFields(BedOccupancy bedOccupancy) {
+    public List<ResultDetail> validateRequiredFields(BedOccupancyCsvRequest bedOccupancyCsvRequest) {
         List<ResultDetail> resultDetailsList = new ArrayList<>();
 
-        if (StringUtils.isBlank(bedOccupancy.getPatID()))
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getPatID()))
             resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, bedOccupancyErrorMessageResource.getString("ERROR_PATIENT_ID_IS_BLANK"), null));
 
 
-        if (StringUtils.isBlank(bedOccupancy.getAdmissionDate()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getAdmissionDate()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(bedOccupancy.getMessageType()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getMessageType()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_MESSAGE_TYPE_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(bedOccupancy.getOrgName()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getOrgName()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ORG_NAME_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(bedOccupancy.getWardId()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getWardId()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_ID_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(bedOccupancy.getLocalOrgID()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getLocalOrgID()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_LOCAL_ORG_ID_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
-        if (StringUtils.isBlank(bedOccupancy.getWardName()))
-            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), bedOccupancy.getPatID()), null));
+        if (StringUtils.isBlank(bedOccupancyCsvRequest.getWardName()))
+            resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_WARD_NAME_IS_BLANK"), bedOccupancyCsvRequest.getPatID()), null));
 
         return resultDetailsList;
     }
 
     @Override
     protected List<?> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<BedOccupancy> bedOccupancyList = new ArrayList<>();
+        List<BedOccupancyCsvRequest> bedOccupancyCsvRequestList = new ArrayList<>();
         try {
             Object json = new JSONTokener(msg).nextValue();
             if (json instanceof JSONObject) {
                 //converting the Bed Occupancy Json Request to the normal BedOccupancy Object also used by CSV Payloads
                 BedOccupancyJsonRequest bedOccupancyJsonRequest = new Gson().fromJson(msg, BedOccupancyJsonRequest.class);
                 for(BedOccupancyJsonRequest.Item item: bedOccupancyJsonRequest.getItems()){
-                    BedOccupancy bedOccupancy = new BedOccupancy();
-                    bedOccupancy.setMessageType(bedOccupancyJsonRequest.getMessageType());
-                    bedOccupancy.setLocalOrgID(bedOccupancyJsonRequest.getLocalOrgID());
-                    bedOccupancy.setOrgName(bedOccupancyJsonRequest.getOrgName());
+                    BedOccupancyCsvRequest bedOccupancyCsvRequest = new BedOccupancyCsvRequest();
+                    bedOccupancyCsvRequest.setMessageType(bedOccupancyJsonRequest.getMessageType());
+                    bedOccupancyCsvRequest.setLocalOrgID(bedOccupancyJsonRequest.getLocalOrgID());
+                    bedOccupancyCsvRequest.setOrgName(bedOccupancyJsonRequest.getOrgName());
 
-                    bedOccupancy.setAdmissionDate(item.getAdmissionDate());
-                    bedOccupancy.setDischargeDate(item.getDischargeDate());
-                    bedOccupancy.setPatID(item.getPatID());
-                    bedOccupancy.setWardId(item.getWardId());
-                    bedOccupancy.setWardName(item.getWardName());
+                    bedOccupancyCsvRequest.setAdmissionDate(item.getAdmissionDate());
+                    bedOccupancyCsvRequest.setDischargeDate(item.getDischargeDate());
+                    bedOccupancyCsvRequest.setPatID(item.getPatID());
+                    bedOccupancyCsvRequest.setWardId(item.getWardId());
+                    bedOccupancyCsvRequest.setWardName(item.getWardName());
 
-                    bedOccupancyList.add(bedOccupancy);
+                    bedOccupancyCsvRequestList.add(bedOccupancyCsvRequest);
                 }
             } else if (json instanceof JSONArray) {
                 //the payload is a JSONArray
-                Type listType = new TypeToken<List<BedOccupancy>>() {
+                Type listType = new TypeToken<List<BedOccupancyCsvRequest>>() {
                 }.getType();
-                bedOccupancyList = new Gson().fromJson((originalRequest).getBody(), listType);
+                bedOccupancyCsvRequestList = new Gson().fromJson((originalRequest).getBody(), listType);
             }else if (json instanceof String){
                 //the payload is a CSV string
-                bedOccupancyList = (List<BedOccupancy>) CsvAdapterUtils.csvToArrayList(msg, BedOccupancy.class);
+                bedOccupancyCsvRequestList = (List<BedOccupancyCsvRequest>) CsvAdapterUtils.csvToArrayList(msg, BedOccupancyCsvRequest.class);
             }
         } catch (com.google.gson.JsonSyntaxException ex) {
             ex.printStackTrace();
         }
-        return bedOccupancyList;
+        return bedOccupancyCsvRequestList;
     }
 
     @Override
     protected List<?> validateData(List<?> receivedList) {
-        List<BedOccupancy> validReceivedList = new ArrayList<>();
+        List<BedOccupancyCsvRequest> validReceivedList = new ArrayList<>();
 
         for (Object object : receivedList) {
             ErrorMessage errorMessage = new ErrorMessage();
@@ -120,43 +120,43 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
 
             List<ResultDetail> resultDetailsList = new ArrayList<>();
 
-            BedOccupancy bedOccupancy = null;
-            if (object != null && BedOccupancy.class.isAssignableFrom(object.getClass()))
-                bedOccupancy = (BedOccupancy) object;
+            BedOccupancyCsvRequest bedOccupancyCsvRequest = null;
+            if (object != null && BedOccupancyCsvRequest.class.isAssignableFrom(object.getClass()))
+                bedOccupancyCsvRequest = (BedOccupancyCsvRequest) object;
 
-            if (bedOccupancy == null) {
+            if (bedOccupancyCsvRequest == null) {
                 resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null));
             } else {
-                resultDetailsList.addAll(validateRequiredFields(bedOccupancy));
+                resultDetailsList.addAll(validateRequiredFields(bedOccupancyCsvRequest));
 
 
                 try {
-                    if (!DateValidatorUtils.isValidPastDate(bedOccupancy.getAdmissionDate(), checkDateFormatStrings(bedOccupancy.getAdmissionDate()))) {
-                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancy.getPatID()), null));
+                    if (!DateValidatorUtils.isValidPastDate(bedOccupancyCsvRequest.getAdmissionDate(), checkDateFormatStrings(bedOccupancyCsvRequest.getAdmissionDate()))) {
+                        resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE"), bedOccupancyCsvRequest.getPatID()), null));
                     } else {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getAdmissionDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancyCsvRequest.getAdmissionDate()));
 
                         //Reformatting the date to the format required by the HDR
-                        bedOccupancy.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getAdmissionDate())));
+                        bedOccupancyCsvRequest.setAdmissionDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancyCsvRequest.getAdmissionDate())));
                     }
 
-                    if (!StringUtils.isBlank(bedOccupancy.getDischargeDate())) {
+                    if (!StringUtils.isBlank(bedOccupancyCsvRequest.getDischargeDate())) {
                         //Simple Date Format used in payloads from EMR systems
-                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancy.getDischargeDate()));
+                        SimpleDateFormat emrDateFormat = new SimpleDateFormat(checkDateFormatStrings(bedOccupancyCsvRequest.getDischargeDate()));
 
                         //Reformatting the date to the format required by the HDR
-                        bedOccupancy.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancy.getDischargeDate())));
+                        bedOccupancyCsvRequest.setDischargeDate(hdrDateFormat.format(emrDateFormat.parse(bedOccupancyCsvRequest.getDischargeDate())));
                     }
                 } catch (ParseException e) {
-                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancy.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
+                    resultDetailsList.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(bedOccupancyErrorMessageResource.getString("ERROR_ADMISSION_DATE_INVALID_FORMAT"), bedOccupancyCsvRequest.getPatID()), tz.go.moh.him.mediator.core.utils.StringUtils.writeStackTraceToString(e)));
                 }
             }
             //TODO implement additional data validations checks
             if (resultDetailsList.size() == 0) {
                 //No errors were found during data validation
                 //adding the service received to the valid payload to be sent to HDR
-                validReceivedList.add(bedOccupancy);
+                validReceivedList.add(bedOccupancyCsvRequest);
             } else {
                 //Adding the validation results to the Error message object
                 errorMessage.setResultsDetails(resultDetailsList);
@@ -176,9 +176,9 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
 
         List<HdrRequestMessage.HdrEvent> hdrEvents = new ArrayList<>();
         for (Object object : validatedObjects) {
-            BedOccupancy bedOccupancy = null;
-            if (object != null && BedOccupancy.class.isAssignableFrom(object.getClass()))
-                bedOccupancy = (BedOccupancy) object;
+            BedOccupancyCsvRequest bedOccupancyCsvRequest = null;
+            if (object != null && BedOccupancyCsvRequest.class.isAssignableFrom(object.getClass()))
+                bedOccupancyCsvRequest = (BedOccupancyCsvRequest) object;
             HdrRequestMessage.HdrEvent hdrEvent = new HdrRequestMessage.HdrEvent();
             hdrEvent.setEventType("save-bed-occupancy");
 
@@ -188,7 +188,7 @@ public class BedOccupancyOrchestrator extends BaseOrchestrator {
             hdrEvent.setEventDate(new Date());
             hdrEvent.setOpenHimClientId(openHimClientId);
 
-            hdrEvent.setPayload(bedOccupancy);
+            hdrEvent.setPayload(bedOccupancyCsvRequest);
 
             hdrEvents.add(hdrEvent);
         }
