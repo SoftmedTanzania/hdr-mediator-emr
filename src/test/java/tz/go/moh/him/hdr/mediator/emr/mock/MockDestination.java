@@ -127,8 +127,8 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("002923", revenueReceivedRequest.getItems().get(0).getMedSvcCode());
                 assertEquals(33, revenueReceivedRequest.getItems().get(0).getPayerId());
                 assertEquals(47, revenueReceivedRequest.getItems().get(0).getExemptionCategoryId());
-                assertEquals(10000.00, revenueReceivedRequest.getItems().get(0).getBilledAmount(),0.01);
-                assertEquals(0.00, revenueReceivedRequest.getItems().get(0).getWaivedAmount(),0.01);
+                assertEquals(10000.00, revenueReceivedRequest.getItems().get(0).getBilledAmount(), 0.01);
+                assertEquals(0.00, revenueReceivedRequest.getItems().get(0).getWaivedAmount(), 0.01);
                 assertEquals(1, revenueReceivedRequest.getItems().get(0).getServiceProviderRankingId());
 
                 break;
@@ -147,7 +147,6 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("20201228", serviceReceivedRequest.getItems().get(0).getServiceDate());
                 assertEquals(1, serviceReceivedRequest.getItems().get(0).getServiceProviderRankingId());
                 assertEquals("IPD", serviceReceivedRequest.getItems().get(0).getVisitType());
-
 
 
                 break;

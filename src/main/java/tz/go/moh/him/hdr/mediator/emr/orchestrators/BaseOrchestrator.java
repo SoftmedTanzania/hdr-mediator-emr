@@ -34,7 +34,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
     /**
      * Possible date formats used by the source systems
      */
-    private static List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyyMMdd");
+    private static final List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyyMMdd");
     /**
      * The mediator configuration.
      */
