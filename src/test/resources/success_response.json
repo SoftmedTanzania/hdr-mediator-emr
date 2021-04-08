@@ -1,0 +1,18 @@
+{
+  "code": 200,
+  "success": true,
+  "message": "success",
+  "data": {
+    "created": 1,
+    "updated": 0,
+    "error": 0,
+    "response": [
+      {
+        "message": "Created",
+        "uuid": "446c62d7-db22-4e42-9f17-9b8dee061341",
+        "code": 1,
+        "errors": null
+      }
+    ]
+  }
+}

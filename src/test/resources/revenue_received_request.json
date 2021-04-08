@@ -1,0 +1,20 @@
+{
+  "messageType": "REV",
+  "orgName": "Muhimbili",
+  "facilityHfrCode": "105651-4",
+  "items": [
+    {
+      "systemTransId": "12231",
+      "transactionDate": "20201225",
+      "patId": "1",
+      "gender": "Male",
+      "dob": "19890101",
+      "medSvcCode": "002923",
+      "payerId": 33,
+      "exemptionCategoryId": 47,
+      "billedAmount": 10000.00,
+      "waivedAmount": 0.00,
+      "serviceProviderRankingId": 1
+    }
+  ]
+}

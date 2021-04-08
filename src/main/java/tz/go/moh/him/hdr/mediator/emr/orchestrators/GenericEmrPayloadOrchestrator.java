@@ -6,7 +6,6 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
@@ -15,14 +14,12 @@ import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import tz.go.moh.him.hdr.mediator.emr.domain.EmrPayload;
-import tz.go.moh.him.mediator.core.adapter.CsvAdapterUtils;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
 import tz.go.moh.him.mediator.core.domain.ResultDetail;
-import tz.go.moh.him.mediator.core.utils.StringUtils;
+import tz.go.moh.him.mediator.core.serialization.JsonSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +29,11 @@ import java.util.List;
  * and forwarding the request to the correct mediator orchestrator based on the message type for further processing and data validation.
  */
 public class GenericEmrPayloadOrchestrator extends UntypedActor {
+    /**
+     * The serializer.
+     */
+    protected static final JsonSerializer serializer = new JsonSerializer();
+
     /**
      * The mediator configuration.
      */
@@ -93,24 +95,11 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
             log.info("Received request: " + originalRequest.getHost() + " " + originalRequest.getMethod() + " " + originalRequest.getPath());
 
             //Converting the received request body to POJO List of type EmrPayload
-            List<EmrPayload> objects = new ArrayList<>();
-            try {
-                objects = convertMessageBodyToPojoList(((MediatorHTTPRequest) msg).getBody());
-            } catch (Exception e) {
-                //In-case of an exception creating an error message with the stack trace
-                ErrorMessage errorMessage = new ErrorMessage(
-                        originalRequest.getBody(),
-                        Arrays.asList(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, e.getMessage(), StringUtils.writeStackTraceToString(e)))
-                );
-                errorMessages.add(errorMessage);
-            }
+            EmrPayload emrPayload = convertMessageBodyToPojo(((MediatorHTTPRequest) msg).getBody());
+
 
             //Checking if there were any objects successfully converted POJOs
-            if (objects.size() > 0) {
-
-                //Obtaining a single object as a sample of objects in the payloads
-                EmrPayload emrPayload = objects.get(0);
-
+            if (emrPayload != null) {
                 //Reading the messageType so as to route the payload to the correct orchestrator
                 ActorRef actor;
                 switch (emrPayload.getMessageType()) {
@@ -119,8 +108,8 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
                         log.info("Forwarding request to: " + BedOccupancyOrchestrator.class.getSimpleName());
                         break;
                     case "DDC":
-                        actor = getContext().actorOf(Props.create(DeathByDiseaseCasesOrchestrator.class, config));
-                        log.info("Forwarding request to: " + DeathByDiseaseCasesOrchestrator.class.getSimpleName());
+                        actor = getContext().actorOf(Props.create(DeathByDiseaseCasesWithinFacilityOrchestrator.class, config));
+                        log.info("Forwarding request to: " + DeathByDiseaseCasesWithinFacilityOrchestrator.class.getSimpleName());
                         break;
                     case "REV":
                         actor = getContext().actorOf(Props.create(RevenueReceivedOrchestrator.class, config));
@@ -146,7 +135,10 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
                     );
                     errorMessages.add(errorMessage);
                 }
-            } else { //In-case the conversion to POJO was not successful
+
+
+            } else {
+                //In-case the conversion to POJO was not successful
                 ErrorMessage errorMessage = new ErrorMessage(
                         originalRequest.getBody(),
                         Arrays.asList(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null))
@@ -167,15 +159,7 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
         }
     }
 
-    protected List<EmrPayload> convertMessageBodyToPojoList(String msg) throws IOException {
-        List<EmrPayload> payloads;
-        try {
-            Type listType = new TypeToken<List<EmrPayload>>() {
-            }.getType();
-            payloads = new Gson().fromJson((originalRequest).getBody(), listType);
-        } catch (com.google.gson.JsonSyntaxException ex) {
-            payloads = (List<EmrPayload>) CsvAdapterUtils.csvToArrayList(msg, EmrPayload.class);
-        }
-        return payloads;
+    protected EmrPayload convertMessageBodyToPojo(String msg) throws IOException {
+        return serializer.deserialize(msg, EmrPayload.class);
     }
 }

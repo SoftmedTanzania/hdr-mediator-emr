@@ -5,14 +5,12 @@ import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import com.google.gson.Gson;
 import org.apache.commons.lang3.tuple.Pair;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
-import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,10 +94,10 @@ public class HdrActor extends UntypedActor {
      */
     @Override
     public void onReceive(Object msg) throws Exception {
-        if (SimpleMediatorRequest.isInstanceOf(HdrRequestMessage.class, msg)) { //process message
-            log.info("Sending data HDR ...");
+        if (SimpleMediatorRequest.isInstanceOf(String.class, msg)) { //process message
+            log.info("Sending data to HDR ...");
             requestHandler = ((SimpleMediatorRequest) msg).getRequestHandler();
-            forwardToHdr(new Gson().toJson(((SimpleMediatorRequest) msg).getRequestObject()));
+            forwardToHdr(((SimpleMediatorRequest) msg).getRequestObject().toString());
 
         } else if (msg instanceof MediatorHTTPResponse) { //respond
             log.info("Received response from HDR");

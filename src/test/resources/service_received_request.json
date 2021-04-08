@@ -1,0 +1,19 @@
+{
+  "messageType": "SVCREC",
+  "orgName": "Muhimbili",
+  "facilityHfrCode": "105651-4",
+  "items": [
+    {
+      "deptName": "Radiology",
+      "deptId": "80",
+      "patId": "108627-1",
+      "gender": "Male",
+      "dob": "19900101",
+      "medSvcCode": "002923",
+      "icd10Code": "A17.8, M60.1, B29",
+      "serviceDate": "20201228",
+      "serviceProviderRankingId": 1,
+      "visitType": "IPD"
+    }
+  ]
+}

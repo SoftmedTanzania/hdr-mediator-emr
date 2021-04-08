@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Bed occupancy object for JSON payloads from EMR systems
  */
-public class BedOccupancyJsonRequest extends EmrPayload {
+public class BedOccupancyRequest extends EmrPayload {
 
     /**
      * Common name of submitting facility
@@ -15,7 +15,7 @@ public class BedOccupancyJsonRequest extends EmrPayload {
     /**
      * Unique identifier of submitting facility, as presented from HFR
      */
-    private String localOrgID;
+    private String facilityHfrCode;
 
     /**
      * List of bed occupancy items
@@ -26,8 +26,8 @@ public class BedOccupancyJsonRequest extends EmrPayload {
         return orgName;
     }
 
-    public String getLocalOrgID() {
-        return localOrgID;
+    public String getFacilityHfrCode() {
+        return facilityHfrCode;
     }
 
     public List<Item> getItems() {
@@ -48,7 +48,7 @@ public class BedOccupancyJsonRequest extends EmrPayload {
         /**
          * Unique identifier of patient associated with the transaction
          */
-        private String patID;
+        private String patId;
 
         /**
          * The date that the patient was admitted to the ward
@@ -64,21 +64,40 @@ public class BedOccupancyJsonRequest extends EmrPayload {
             return wardId;
         }
 
+        public void setWardId(String wardId) {
+            this.wardId = wardId;
+        }
+
         public String getWardName() {
             return wardName;
         }
 
-        public String getPatID() {
-            return patID;
+        public void setWardName(String wardName) {
+            this.wardName = wardName;
+        }
+
+        public String getPatId() {
+            return patId;
+        }
+
+        public void setPatId(String patId) {
+            this.patId = patId;
         }
 
         public String getAdmissionDate() {
             return admissionDate;
         }
 
+        public void setAdmissionDate(String admissionDate) {
+            this.admissionDate = admissionDate;
+        }
+
         public String getDischargeDate() {
             return dischargeDate;
         }
 
+        public void setDischargeDate(String dischargeDate) {
+            this.dischargeDate = dischargeDate;
+        }
     }
 }
