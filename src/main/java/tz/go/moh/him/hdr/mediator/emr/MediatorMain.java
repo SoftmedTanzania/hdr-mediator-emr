@@ -11,6 +11,7 @@ import org.openhim.mediator.engine.RegistrationConfig;
 import org.openhim.mediator.engine.RoutingTable;
 import org.openhim.mediator.engine.StartupActorsConfig;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.BedOccupancyOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesOutsideFacilityOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesWithinFacilityOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
