@@ -48,7 +48,6 @@ public class MediatorMain {
         routingTable.addRoute("/hdr-revenue-received", RevenueReceivedOrchestrator.class);
         routingTable.addRoute("/hdr-mediator", GenericEmrPayloadOrchestrator.class);
 
-
         return routingTable;
     }
 
