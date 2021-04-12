@@ -19,10 +19,17 @@
       "type": "http"
     },
     {
-      "name": "HDR mediator Death by Disease Cases Route",
+      "name": "HDR mediator Death by Disease Cases WWithin Facility Route",
       "host": "localhost",
       "port": "3000",
-      "path": "/hdr-death-by-disease-cases",
+      "path": "/hdr-death-by-disease-cases-within-facility",
+      "type": "http"
+    },
+    {
+      "name": "HDR mediator Death by Disease Cases Outside Facility Route",
+      "host": "localhost",
+      "port": "3000",
+      "path": "/hdr-death-by-disease-cases-outside-facility",
       "type": "http"
     },
     {
@@ -78,9 +85,9 @@
       ]
     },
     {
-      "name": "EMR - HDR Death by Disease Cases Channel",
-      "urlPattern": "^/death-by-disease-cases$",
-      "description": "OpenHIM Channel for processing death by disease cases payload sent by EMR systems to Tanzania Health Data Repository",
+      "name": "EMR - HDR Death by Disease Cases Within Facility Channel",
+      "urlPattern": "^/death-by-disease-cases-within-facility$",
+      "description": "OpenHIM Channel for processing death by disease cases from health within facility payload sent by EMR systems to Tanzania Health Data Repository",
       "type": "http",
       "allow": [
         "emr-role"
@@ -90,7 +97,25 @@
           "name": "HDR mediator Death by Disease Cases Route",
           "host": "localhost",
           "port": "3000",
-          "path": "/hdr-death-by-disease-cases",
+          "path": "/hdr-death-by-disease-cases-within-facility",
+          "type": "http"
+        }
+      ]
+    },
+    {
+      "name": "EMR - HDR Death by Disease Cases Outside Facility Channel",
+      "urlPattern": "^/death-by-disease-cases-outside-facility$",
+      "description": "OpenHIM Channel for processing death by disease cases from outside health facility payload sent by EMR systems to Tanzania Health Data Repository",
+      "type": "http",
+      "allow": [
+        "emr-role"
+      ],
+      "routes": [
+        {
+          "name": "HDR mediator Death by Disease Cases Outside Facility Route",
+          "host": "localhost",
+          "port": "3000",
+          "path": "/hdr-death-by-disease-cases-outside-facility",
           "type": "http"
         }
       ]

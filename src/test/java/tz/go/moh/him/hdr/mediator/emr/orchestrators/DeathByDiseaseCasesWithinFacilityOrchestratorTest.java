@@ -19,25 +19,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Contains tests for the {@link BedOccupancyOrchestrator} class.
+ * Contains tests for the {@link DeathByDiseaseCasesWithinFacilityOrchestrator} class.
  */
-public class BedOccupancyOrchestratorTest extends BaseOrchestratorTest {
+public class DeathByDiseaseCasesWithinFacilityOrchestratorTest extends BaseOrchestratorTest {
     /**
      * Represents the orchestrator.
      */
-    private final ActorRef orchestrator = system.actorOf(Props.create(BedOccupancyOrchestrator.class, configuration));
+    private final ActorRef orchestrator = system.actorOf(Props.create(DeathByDiseaseCasesWithinFacilityOrchestrator.class, configuration));
 
     /**
      * Runs initialization before each test execution.
      */
     @Before
     public void before() {
-        setupDestinationMock("BedOccupancyRequest");
+        setupDestinationMock("DeathByDiseaseCasesWithinFacilityRequest");
     }
 
     @Test
     public void testMediatorHTTPRequest() throws Exception {
-        InputStream stream = BedOccupancyOrchestrator.class.getClassLoader().getResourceAsStream("bed_occupancy_request.json");
+        InputStream stream = DeathByDiseaseCasesWithinFacilityOrchestratorTest.class.getClassLoader().getResourceAsStream("death_by_disease_cases_within_facility_request.json");
         assertNotNull(stream);
         new JavaTestKit(system) {{
             MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
@@ -67,7 +67,7 @@ public class BedOccupancyOrchestratorTest extends BaseOrchestratorTest {
                         }
                     }.get();
 
-            InputStream responseStream = BedOccupancyOrchestratorTest.class.getClassLoader().getResourceAsStream("success_response.json");
+            InputStream responseStream = DeathByDiseaseCasesWithinFacilityOrchestratorTest.class.getClassLoader().getResourceAsStream("success_response.json");
 
             assertNotNull(responseStream);
 

@@ -1,0 +1,15 @@
+{
+  "messageType": "DDC",
+  "orgName": "Muhimbili",
+  "facilityHfrCode": "105651-4",
+  "items": [
+    {
+      "deathId": "1",
+      "placeOfDeathId": 1,
+      "icd10Code": "B50.9",
+      "gender": "Male",
+      "dob": "19850101",
+      "dateDeathOccurred": "20201225"
+    }
+  ]
+}

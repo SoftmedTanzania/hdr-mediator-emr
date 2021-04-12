@@ -3,11 +3,6 @@ package tz.go.moh.him.hdr.mediator.emr;
 import akka.actor.ActorSystem;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import tz.go.moh.him.hdr.mediator.emr.orchestrators.BedOccupancyOrchestrator;
-import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesOrchestrator;
-import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
-import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
-import tz.go.moh.him.hdr.mediator.emr.orchestrators.ServiceReceivedOrchestrator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openhim.mediator.engine.MediatorConfig;
@@ -15,6 +10,12 @@ import org.openhim.mediator.engine.MediatorServer;
 import org.openhim.mediator.engine.RegistrationConfig;
 import org.openhim.mediator.engine.RoutingTable;
 import org.openhim.mediator.engine.StartupActorsConfig;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.BedOccupancyOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesOutsideFacilityOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesWithinFacilityOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.ServiceReceivedOrchestrator;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +42,11 @@ public class MediatorMain {
         RoutingTable routingTable = new RoutingTable();
 
         routingTable.addRoute("/hdr-service-received", ServiceReceivedOrchestrator.class);
-        routingTable.addRoute("/hdr-death-by-disease-cases", DeathByDiseaseCasesOrchestrator.class);
+        routingTable.addRoute("/hdr-death-by-disease-cases-within-facility", DeathByDiseaseCasesWithinFacilityOrchestrator.class);
+        routingTable.addRoute("/hdr-death-by-disease-cases-outside-facility", DeathByDiseaseCasesOutsideFacilityOrchestrator.class);
         routingTable.addRoute("/hdr-bed-occupancy", BedOccupancyOrchestrator.class);
         routingTable.addRoute("/hdr-revenue-received", RevenueReceivedOrchestrator.class);
         routingTable.addRoute("/hdr-mediator", GenericEmrPayloadOrchestrator.class);
-
 
         return routingTable;
     }

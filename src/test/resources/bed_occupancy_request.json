@@ -1,0 +1,14 @@
+{
+  "messageType": "BEDOCC",
+  "orgName": "Muhimbili",
+  "facilityHfrCode": "105651-4",
+  "items": [
+    {
+      "wardId": "1",
+      "wardName": "Pediatric",
+      "patId": "1",
+      "admissionDate": "20201220",
+      "dischargeDate": "20201225"
+    }
+  ]
+}

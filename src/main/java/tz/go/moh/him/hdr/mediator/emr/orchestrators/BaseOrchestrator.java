@@ -13,10 +13,9 @@ import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.FinishRequest;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
-import tz.go.moh.him.hdr.mediator.emr.messages.HdrRequestMessage;
 import tz.go.moh.him.mediator.core.domain.ErrorMessage;
 import tz.go.moh.him.mediator.core.domain.ResultDetail;
-import tz.go.moh.him.mediator.core.utils.StringUtils;
+import tz.go.moh.him.mediator.core.serialization.JsonSerializer;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,9 +27,14 @@ import java.util.List;
 
 public abstract class BaseOrchestrator extends UntypedActor {
     /**
+     * The serializer.
+     */
+    protected static final JsonSerializer serializer = new JsonSerializer();
+
+    /**
      * Possible date formats used by the source systems
      */
-    private static List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyyMMdd");
+    private static final List<String> formatStrings = Arrays.asList("yyyy-MM-dd HH:mm:ss:ms", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd", "yyyyMMdd");
     /**
      * The mediator configuration.
      */
@@ -104,84 +108,51 @@ public abstract class BaseOrchestrator extends UntypedActor {
 
             log.info("Received request: " + originalRequest.getHost() + " " + originalRequest.getMethod() + " " + originalRequest.getPath());
 
-            //Converting the received request body to POJO List
-            List<?> objects = new ArrayList<>();
-            try {
-                objects = convertMessageBodyToPojoList(((MediatorHTTPRequest) msg).getBody());
-            } catch (Exception e) {
-                //In-case of an exception creating an error message with the stack trace
-                ErrorMessage errorMessage = new ErrorMessage(
-                        originalRequest.getBody(),
-                        Arrays.asList(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, e.getMessage(), StringUtils.writeStackTraceToString(e)))
-                );
-                errorMessages.add(errorMessage);
-            }
-
-            log.info("Received payload in JSON = " + new Gson().toJson(objects));
-
-            List<?> validatedObjects;
-            if (objects.isEmpty()) {
-                ErrorMessage errorMessage = new ErrorMessage(
-                        originalRequest.getBody(),
-                        Arrays.asList(
-                                new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, errorMessageResource.getString("ERROR_INVALID_PAYLOAD"), null)
-                        )
-                );
-                errorMessages.add(errorMessage);
-                validatedObjects = new ArrayList<>();
-            } else {
-                validatedObjects = validateData(objects);
-            }
-            sendDataToHdr(validatedObjects);
+            //Convert the msg to Domain Object
+            Object object = convertMessageBodyToPojo(((MediatorHTTPRequest) msg).getBody());
+            sendDataToHdr(object, validateData(object));
         } else {
             unhandled(msg);
         }
     }
 
     /**
-     * Abstract method to handle Convertion the msg string payload to Correct POJO list
+     * Abstract method to handle Convertion the msg string payload to Correct Domain Object
      *
      * @param msg payload to be converted
-     * @return list of POJO
-     * @throws IOException if an I/O exception occurs
+     * @return domain object
      */
-    protected abstract List<?> convertMessageBodyToPojoList(String msg) throws IOException;
+    protected abstract Object convertMessageBodyToPojo(String msg);
 
     /**
      * Abstract method to handle data validations
      *
-     * @param receivedList array list of the objects to be validated
+     * @param receivedMessage the objects to be validated
      * @return list of valid objects that passed data validations
      */
-    protected abstract List<?> validateData(List<?> receivedList);
+    protected abstract List<ResultDetail> validateData(Object receivedMessage);
 
     /**
-     * Abstract method to handle converting of the valid payloads that passed data validations to the format required by HDR
+     * Method that handles sending of data to the HDR Actor
      *
-     * @param openHimClientId  openHIMClient id of the system that initiated the request
-     * @param validatedObjects list of valid objects to be added to the payload to be sent to HDR
-     * @return HDR Request Message object to be sent to HDR
+     * @param objectsList   list of objects to be sent to HDR
+     * @param resultDetails Result details of the data validation
      */
-    protected abstract HdrRequestMessage parseMessage(String openHimClientId, List<?> validatedObjects);
+    private void sendDataToHdr(Object objectsList, List<ResultDetail> resultDetails) {
+        // if there are any errors
+        // we need to serialize the results and return
+        if (resultDetails.stream().anyMatch(c -> c.getType() == ResultDetail.ResultsDetailsType.ERROR)) {
+            FinishRequest finishRequest = new FinishRequest(serializer.serializeToString(resultDetails), "application/json", HttpStatus.SC_BAD_REQUEST);
+            originalRequest.getRequestHandler().tell(finishRequest, getSelf());
 
-    /**
-     * Method that handles sending of data to the HDR
-     *
-     * @param validatedObjects list of objects that passed data validations to be sent to HDR
-     */
-    private void sendDataToHdr(List<?> validatedObjects) {
-        if (!errorMessages.isEmpty()) {
-            FinishRequest finishRequest = new FinishRequest(new Gson().toJson(errorMessages), "text/plain", HttpStatus.SC_BAD_REQUEST);
-            (originalRequest).getRequestHandler().tell(finishRequest, getSelf());
         } else {
             log.info("Sending data to Hdr Actor");
-            HdrRequestMessage hdrRequestMessage = parseMessage((originalRequest).getHeaders().get("x-openhim-clientid"), validatedObjects);
             ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config));
             actor.tell(
                     new SimpleMediatorRequest<>(
                             originalRequest.getRequestHandler(),
                             getSelf(),
-                            hdrRequestMessage), getSelf());
+                            new Gson().toJson(objectsList)), getSelf());
         }
     }
 }
