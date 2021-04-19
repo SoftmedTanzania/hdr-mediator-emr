@@ -125,11 +125,11 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("Male", revenueReceivedRequest.getItems().get(0).getGender());
                 assertEquals("19890101", revenueReceivedRequest.getItems().get(0).getDob());
                 assertEquals("002923", revenueReceivedRequest.getItems().get(0).getMedSvcCode());
-                assertEquals(33, revenueReceivedRequest.getItems().get(0).getPayerId());
-                assertEquals(47, revenueReceivedRequest.getItems().get(0).getExemptionCategoryId());
+                assertEquals("33", revenueReceivedRequest.getItems().get(0).getPayerId());
+                assertEquals("47", revenueReceivedRequest.getItems().get(0).getExemptionCategoryId());
                 assertEquals(10000.00, revenueReceivedRequest.getItems().get(0).getBilledAmount(), 0.01);
                 assertEquals(0.00, revenueReceivedRequest.getItems().get(0).getWaivedAmount(), 0.01);
-                assertEquals(1, revenueReceivedRequest.getItems().get(0).getServiceProviderRankingId());
+                assertEquals("1", revenueReceivedRequest.getItems().get(0).getServiceProviderRankingId());
 
                 break;
             case "ServiceReceivedRequest":
@@ -145,7 +145,7 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("002923", serviceReceivedRequest.getItems().get(0).getMedSvcCode());
                 assertEquals("A17.8, M60.1, B29", serviceReceivedRequest.getItems().get(0).getIcd10Code());
                 assertEquals("20201228", serviceReceivedRequest.getItems().get(0).getServiceDate());
-                assertEquals(1, serviceReceivedRequest.getItems().get(0).getServiceProviderRankingId());
+                assertEquals("1", serviceReceivedRequest.getItems().get(0).getServiceProviderRankingId());
                 assertEquals("IPD", serviceReceivedRequest.getItems().get(0).getVisitType());
 
 

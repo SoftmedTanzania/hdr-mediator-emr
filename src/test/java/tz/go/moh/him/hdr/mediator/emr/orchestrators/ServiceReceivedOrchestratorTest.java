@@ -82,6 +82,9 @@ public class ServiceReceivedOrchestratorTest extends BaseOrchestratorTest {
 
     @Test
     public void testBadRequest() throws Exception {
+        InputStream stream = ServiceReceivedOrchestratorTest.class.getClassLoader().getResourceAsStream("bad_request.json");
+        assertNotNull(stream);
+
         assertNotNull(system);
         new JavaTestKit(system) {{
             MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
@@ -93,7 +96,7 @@ public class ServiceReceivedOrchestratorTest extends BaseOrchestratorTest {
                     null,
                     null,
                     "/hdr",
-                    "{}",
+                    IOUtils.toString(stream),
                     Collections.singletonMap("Content-Type", "text/plain"),
                     Collections.emptyList()
             );

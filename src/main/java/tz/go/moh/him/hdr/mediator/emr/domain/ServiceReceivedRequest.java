@@ -99,7 +99,7 @@ public class ServiceReceivedRequest extends EmrPayload {
          * The rank of the service provider.
          */
         @JsonProperty("serviceProviderRankingId")
-        private int serviceProviderRankingId;
+        private String serviceProviderRankingId;
 
         /**
          * Visit type whether IPD or OPD visit.
@@ -171,11 +171,11 @@ public class ServiceReceivedRequest extends EmrPayload {
             this.serviceDate = serviceDate;
         }
 
-        public int getServiceProviderRankingId() {
+        public String getServiceProviderRankingId() {
             return serviceProviderRankingId;
         }
 
-        public void setServiceProviderRankingId(int serviceProviderRankingId) {
+        public void setServiceProviderRankingId(String serviceProviderRankingId) {
             this.serviceProviderRankingId = serviceProviderRankingId;
         }
 
