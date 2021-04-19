@@ -12,7 +12,7 @@
       "medSvcCode": "002923",
       "icd10Code": "A17.8, M60.1, B29",
       "serviceDate": "20201228",
-      "serviceProviderRankingId": 1,
+      "serviceProviderRankingId": "1",
       "visitType": "IPD"
     }
   ]

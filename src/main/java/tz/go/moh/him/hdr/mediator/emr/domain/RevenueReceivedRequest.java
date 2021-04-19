@@ -87,13 +87,13 @@ public class RevenueReceivedRequest extends EmrPayload {
          * Coded identifier of the source of the revenue associated with this financial transaction.
          */
         @JsonProperty("payerId")
-        private int payerId;
+        private String payerId;
 
         /**
          * Coded identifier for the exemption categories
          */
         @JsonProperty("exemptionCategoryId")
-        private int exemptionCategoryId;
+        private String exemptionCategoryId;
 
         /**
          * Total service charge
@@ -111,7 +111,7 @@ public class RevenueReceivedRequest extends EmrPayload {
          * Service Provider Id
          */
         @JsonProperty("serviceProviderRankingId")
-        private int serviceProviderRankingId;
+        private String serviceProviderRankingId;
 
         public String getSystemTransId() {
             return systemTransId;
@@ -161,19 +161,19 @@ public class RevenueReceivedRequest extends EmrPayload {
             this.medSvcCode = medSvcCode;
         }
 
-        public int getPayerId() {
+        public String getPayerId() {
             return payerId;
         }
 
-        public void setPayerId(int payerId) {
+        public void setPayerId(String payerId) {
             this.payerId = payerId;
         }
 
-        public int getExemptionCategoryId() {
+        public String getExemptionCategoryId() {
             return exemptionCategoryId;
         }
 
-        public void setExemptionCategoryId(int exemptionCategoryId) {
+        public void setExemptionCategoryId(String exemptionCategoryId) {
             this.exemptionCategoryId = exemptionCategoryId;
         }
 
@@ -193,11 +193,11 @@ public class RevenueReceivedRequest extends EmrPayload {
             this.waivedAmount = waivedAmount;
         }
 
-        public int getServiceProviderRankingId() {
+        public String getServiceProviderRankingId() {
             return serviceProviderRankingId;
         }
 
-        public void setServiceProviderRankingId(int serviceProviderRankingId) {
+        public void setServiceProviderRankingId(String serviceProviderRankingId) {
             this.serviceProviderRankingId = serviceProviderRankingId;
         }
     }
