@@ -82,6 +82,9 @@ public class DeathByDiseaseCasesOutsideFacilityOrchestratorTest extends BaseOrch
 
     @Test
     public void testBadRequest() throws Exception {
+        InputStream stream = DeathByDiseaseCasesOutsideFacilityOrchestratorTest.class.getClassLoader().getResourceAsStream("bad_request.json");
+        assertNotNull(stream);
+
         assertNotNull(system);
         new JavaTestKit(system) {{
             MediatorHTTPRequest POST_Request = new MediatorHTTPRequest(
@@ -93,7 +96,7 @@ public class DeathByDiseaseCasesOutsideFacilityOrchestratorTest extends BaseOrch
                     null,
                     null,
                     "/hdr",
-                    "{}",
+                    IOUtils.toString(stream),
                     Collections.singletonMap("Content-Type", "text/plain"),
                     Collections.emptyList()
             );
