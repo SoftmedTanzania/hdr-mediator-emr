@@ -2,6 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.openhim.mediator.engine.MediatorConfig;
+import tz.go.moh.him.hdr.mediator.emr.Constants;
 import tz.go.moh.him.hdr.mediator.emr.domain.DeathByDiseaseCasesOutsideFacilityRequest;
 import tz.go.moh.him.mediator.core.domain.ResultDetail;
 
@@ -16,6 +17,7 @@ public class DeathByDiseaseCasesOutsideFacilityOrchestrator extends BaseOrchestr
      */
     public DeathByDiseaseCasesOutsideFacilityOrchestrator(MediatorConfig config) {
         super(config);
+        payloadType = Constants.DDCOUT;
     }
 
     @Override

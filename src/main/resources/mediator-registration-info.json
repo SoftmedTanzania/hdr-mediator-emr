@@ -49,24 +49,6 @@
   ],
   "defaultChannelConfig": [
     {
-      "name": "EMR - HDR CSV Channel",
-      "urlPattern": "^/hdr$",
-      "description": "OpenHIM Channel for processing payloads sent by EMR systems to Tanzania Health Data Repository",
-      "type": "http",
-      "allow": [
-        "emr-role"
-      ],
-      "routes": [
-        {
-          "name": "HDR mediator Generic Route",
-          "host": "localhost",
-          "port": "3000",
-          "path": "/hdr-mediator",
-          "type": "http"
-        }
-      ]
-    },
-    {
       "name": "EMR - HDR Services Received Channel",
       "urlPattern": "^/hdr-services-received$",
       "description": "OpenHIM Channel for processing services received payload sent by EMR systems to Tanzania Health Data Repository",
@@ -177,9 +159,33 @@
           "type": "number"
         },
         {
-          "param": "hdrPath",
-          "displayName": "HDR Path",
+          "param": "hdrServiceReceivedPath",
+          "displayName": "HDR Services Received Path",
+          "description": "The the path to the correct endpoint for receiving of services received data from the HIM.",
+          "type": "string"
+        },
+        {
+          "param": "hdrDeathByDiseaseCasesWithinFacilityPath",
+          "displayName": "HDR Death by Disease Cases Within Facility Path",
+          "description": "The the path to the correct endpoint for receiving death by disease cases within facility data from the HIM.",
+          "type": "string"
+        },
+        {
+          "param": "hdrDeathByDiseaseCasesOutsideFacilityPath",
+          "displayName": "HDR Death By Disease Cases Outside Facility Path",
           "description": "The the path to the correct endpoint for receiving of data from the HIM. eg /hdr",
+          "type": "string"
+        },
+        {
+          "param": "hdrBedOccupancyPath",
+          "displayName": "HDR Bed Occupancy Path",
+          "description": "The the path to the correct endpoint for receiving of Bed Occupancy data from the HIM.",
+          "type": "string"
+        },
+        {
+          "param": "hdrRevenueReceivedPath",
+          "displayName": "HDR Revenue Received Path",
+          "description": "The the path to the correct endpoint for receiving revenue received data from the HIM.",
           "type": "string"
         },
         {

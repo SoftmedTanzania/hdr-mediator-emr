@@ -2,6 +2,7 @@ package tz.go.moh.him.hdr.mediator.emr.orchestrators;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.openhim.mediator.engine.MediatorConfig;
+import tz.go.moh.him.hdr.mediator.emr.Constants;
 import tz.go.moh.him.hdr.mediator.emr.domain.RevenueReceivedRequest;
 import tz.go.moh.him.mediator.core.domain.ResultDetail;
 
@@ -16,6 +17,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
      */
     public RevenueReceivedOrchestrator(MediatorConfig config) {
         super(config);
+        payloadType = Constants.REV;
     }
 
     @Override

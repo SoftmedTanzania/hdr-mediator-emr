@@ -111,6 +111,10 @@ public class GenericEmrPayloadOrchestrator extends UntypedActor {
                         actor = getContext().actorOf(Props.create(DeathByDiseaseCasesWithinFacilityOrchestrator.class, config));
                         log.info("Forwarding request to: " + DeathByDiseaseCasesWithinFacilityOrchestrator.class.getSimpleName());
                         break;
+                    case "DDCOUT":
+                        actor = getContext().actorOf(Props.create(DeathByDiseaseCasesOutsideFacilityOrchestrator.class, config));
+                        log.info("Forwarding request to: " + DeathByDiseaseCasesOutsideFacilityOrchestrator.class.getSimpleName());
+                        break;
                     case "REV":
                         actor = getContext().actorOf(Props.create(RevenueReceivedOrchestrator.class, config));
                         log.info("Forwarding request to: " + RevenueReceivedOrchestrator.class.getSimpleName());

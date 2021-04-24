@@ -30,7 +30,6 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * The serializer.
      */
     protected static final JsonSerializer serializer = new JsonSerializer();
-
     /**
      * Possible date formats used by the source systems
      */
@@ -43,6 +42,10 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * The logger instance.
      */
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
+    /**
+     * The payload type.
+     */
+    protected String payloadType;
     /**
      * Represents a list of error messages, if any,that have been caught during payload data validation to be returned to the source system as response.
      */
@@ -110,7 +113,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
 
             //Convert the msg to Domain Object
             Object object = convertMessageBodyToPojo(((MediatorHTTPRequest) msg).getBody());
-            sendDataToHdr(object, validateData(object));
+            sendDataToHdr(object, validateData(object), payloadType);
         } else {
             unhandled(msg);
         }
@@ -138,7 +141,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
      * @param objectsList   list of objects to be sent to HDR
      * @param resultDetails Result details of the data validation
      */
-    private void sendDataToHdr(Object objectsList, List<ResultDetail> resultDetails) {
+    protected void sendDataToHdr(Object objectsList, List<ResultDetail> resultDetails, String payloadType) {
         // if there are any errors
         // we need to serialize the results and return
         if (resultDetails.stream().anyMatch(c -> c.getType() == ResultDetail.ResultsDetailsType.ERROR)) {
@@ -147,7 +150,7 @@ public abstract class BaseOrchestrator extends UntypedActor {
 
         } else {
             log.info("Sending data to Hdr Actor");
-            ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config));
+            ActorRef actor = getContext().actorOf(Props.create(HdrActor.class, config, payloadType));
             actor.tell(
                     new SimpleMediatorRequest<>(
                             originalRequest.getRequestHandler(),
