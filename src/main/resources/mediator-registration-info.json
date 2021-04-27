@@ -197,6 +197,18 @@
             "http",
             "https"
           ]
+        },
+        {
+          "param": "hdrUsername",
+          "displayName": "HDR Username",
+          "description": "The HDR username for receiving data from the HIM.",
+          "type": "string"
+        },
+        {
+          "param": "hdrPassword",
+          "displayName": "HDR Password",
+          "description": "The HDR password for receiving data from the HIM.",
+          "type": "password"
         }
       ]
     }
