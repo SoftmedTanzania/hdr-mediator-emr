@@ -5,7 +5,9 @@ import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.http.HttpHeaders;
 import org.json.JSONObject;
 import org.openhim.mediator.engine.MediatorConfig;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
@@ -13,6 +15,7 @@ import org.openhim.mediator.engine.messages.MediatorHTTPResponse;
 import org.openhim.mediator.engine.messages.SimpleMediatorRequest;
 import tz.go.moh.him.hdr.mediator.emr.Constants;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +63,8 @@ public class HdrActor extends UntypedActor {
         String scheme;
         String host;
         String path;
+        String username;
+        String password;
         int portNumber;
         if (config.getDynamicConfig().isEmpty()) {
             if (config.getProperty("hdr.secure").equals("true")) {
@@ -96,6 +101,20 @@ public class HdrActor extends UntypedActor {
             host = connectionProperties.getString("hdrHost");
             portNumber = connectionProperties.getInt("hdrPort");
             scheme = connectionProperties.getString("hdrScheme");
+
+            if (connectionProperties.has("hdrUsername") && connectionProperties.has("hdrPassword")) {
+                username = connectionProperties.getString("hdrUsername");
+                password = connectionProperties.getString("hdrPassword");
+
+                // if we have a username and a password
+                // we want to add the username and password as the Basic Auth header in the HTTP request
+                if (username != null && !"".equals(username) && password != null && !"".equals(password)) {
+                    String auth = username + ":" + password;
+                    byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.ISO_8859_1));
+                    String authHeader = "Basic " + new String(encodedAuth);
+                    headers.put(HttpHeaders.AUTHORIZATION, authHeader);
+                }
+            }
 
             switch (messageType) {
                 case Constants.REV:
