@@ -1,59 +1,6 @@
 {
+  "NN_ERR01": "%s cannot be null or empty",
   "ERROR_INVALID_PAYLOAD": "Error the payload is invalid",
-  "ERROR_MESSAGE_TYPE_IS_UNDEFINED": "Error the message type is undefined, Message types must be of values BEDOCC, DDC, REV or SVCREC",
-  "SERVICE_RECEIVED_ERROR_MESSAGES": {
-    "ERROR_PATIENT_ID_IS_BLANK": "Record failed validation, Patient ID must not be blank",
-    "ERROR_MESSAGE_TYPE_IS_BLANK": "Record with Patient Id %s failed validation, Message Type must not be blank",
-    "ERROR_ORG_NAME_IS_BLANK": "Record with Patient Id %s failed validation, OrgName must not be blank",
-    "ERROR_LOCAL_ORG_ID_IS_BLANK": "Record with Patient Id %s failed validation, LocalOrgID must not be blank",
-    "ERROR_DEPT_NAME_IS_BLANK": "Record with Patient Id %s failed validation, DeptName must not be blank",
-    "ERROR_DEPT_ID_IS_BLANK": "Record with Patient Id %s failed validation, DeptID must not be blank",
-    "ERROR_GENDER_IS_BLANK": "Record with Patient Id %s failed validation, Gender must not be blank",
-    "ERROR_MED_SVC_CODE_IS_BLANK": "Record with Patient Id %s failed validation, MedSvcCode must not be blank",
-    "ERROR_SVC_DATE_CODE_IS_BLANK": "Record with Patient Id %s failed validation, Service Date must not be blank",
-    "ERROR_SVC_DATE_IS_NOT_A_VALID_PAST_DATE": "Record with Patient Id %s failed validation, Service Date is not a valid past date",
-    "ERROR_SVC_DATE_INVALID_FORMAT": "Record with Patient Id %s failed validation, Service Date is not of a valid date format yyymmdd"
-  },
-  "REVENUE_RECEIVED_ERROR_MESSAGES": {
-    "ERROR_SYSTEM_TRANS_ID_IS_BLANK": "Record failed validation, System Trans Id must not be blank",
-    "ERROR_PATIENT_ID_IS_BLANK": "Record with System Trans ID %s failed validation, Patient ID must not be blank",
-    "ERROR_MESSAGE_TYPE_IS_BLANK": "Record with System Trans ID %s failed validation, Message Type must not be blank",
-    "ERROR_ORG_NAME_IS_BLANK": "Record with System Trans ID %s failed validation, OrgName must not be blank",
-    "ERROR_LOCAL_ORG_ID_IS_BLANK": "Record with System Trans ID %s failed validation, LocalOrgID must not be blank",
-    "ERROR_TRANSACTION_DATE_IS_BLANK": "Record with System Trans ID %s failed validation, Transaction Date must not be blank",
-    "ERROR_BILLED_AMOUNT_IS_BLANK": "Record with System Trans ID %s failed validation, Billed Amount must not be blank",
-    "ERROR_WAIVED_AMOUNT_IS_BLANK": "Record with System Trans ID %s failed validation, Waived Amount must not be blank",
-    "ERROR_GENDER_IS_BLANK": "Record with System Trans ID %s failed validation, Gender must not be blank",
-    "ERROR_MED_SVC_CODE_IS_BLANK": "Record with System Trans ID %s failed validation, MedSvcCode must not be blank",
-    "ERROR_PAYER_ID_IS_BLANK": "Record with System Trans ID %s failed validation, Payer ID must not be blank",
-    "ERROR_TRANSACTION_DATE_IS_NOT_A_VALID_PAST_DATE": "Record with System Trans ID %s failed validation, Transaction Date is not a valid past date",
-    "ERROR_TRANSACTION_DATE_INVALID_FORMAT": "Record with System Trans ID %s failed validation, Transaction Date is not of a valid date format yyymmdd"
-  },
-  "BED_OCCUPANCY_ERROR_MESSAGES": {
-    "ERROR_PATIENT_ID_IS_BLANK": "Record failed validation, Patient ID must not be blank",
-    "ERROR_MESSAGE_TYPE_IS_BLANK": "Record with Patient Id %s failed validation, Message Type must not be blank",
-    "ERROR_ORG_NAME_IS_BLANK": "Record with Patient Id %s failed validation, OrgName must not be blank",
-    "ERROR_LOCAL_ORG_ID_IS_BLANK": "Record with Patient Id %s failed validation, LocalOrgID must not be blank",
-    "ERROR_WARD_NAME_IS_BLANK": "Record with Patient Id %s failed validation, Ward Name must not be blank",
-    "ERROR_WARD_ID_IS_BLANK": "Record with Patient Id %s failed validation, Ward ID must not be blank",
-    "ERROR_ADMISSION_DATE_IS_BLANK": "Record with Patient Id %s failed validation, Admission Date must not be blank",
-    "ERROR_ADMISSION_DATE_IS_NOT_A_VALID_PAST_DATE": "Record with Patient Id %s failed validation, Admission Date is not a valid past date",
-    "ERROR_ADMISSION_DATE_INVALID_FORMAT": "Record with Patient Id %s failed validation, Admission Date is not of a valid date format yyymmdd"
-  },
-  "DEATH_BY_DISEASE_CASES_ERROR_MESSAGES": {
-    "ERROR_PATIENT_ID_IS_BLANK": "Record failed validation, Patient ID must not be blank",
-    "ERROR_MESSAGE_TYPE_IS_BLANK": "Record with Patient Id %s failed validation, Message Type must not be blank",
-    "ERROR_ORG_NAME_IS_BLANK": "Record with Patient Id %s failed validation, OrgName must not be blank",
-    "ERROR_LOCAL_ORG_ID_IS_BLANK": "Record with Patient Id %s failed validation, LocalOrgID must not be blank",
-    "ERROR_WARD_NAME_IS_BLANK": "Record with Patient Id %s failed validation, Ward Name must not be blank",
-    "ERROR_WARD_ID_IS_BLANK": "Record with Patient Id %s failed validation, Ward ID must not be blank",
-    "ERROR_DISEASE_CODE_IS_BLANK": "Record with Patient Id %s failed validation, Disease Code must not be blank",
-    "ERROR_DOB_IS_BLANK": "Record with Patient Id %s failed validation, DOB must not be blank",
-    "ERROR_DOB_IS_NOT_A_VALID_PAST_DATE": "Record with Patient Id %s failed validation, DOB is not a valid past date",
-    "ERROR_DOB_INVALID_FORMAT": "Record with Patient Id %s failed validation, DOB is not of a valid date format yyymmdd",
-    "ERROR_DATE_DEATH_OCCURRED_IS_BLANK": "Record with Patient Id %s failed validation, Date Death Occurred must not be blank",
-    "ERROR_DATE_DEATH_OCCURRED_IS_NOT_A_VALID_PAST_DATE": "Record with Patient Id %s failed validation, Date Death Occurred is not a valid past date",
-    "ERROR_DATE_DEATH_OCCURRED_INVALID_FORMAT": "Record with Patient Id %s failed validation, Date Death Occurred is not of a valid date format yyymmdd"
-
-  }
+  "ERROR_INVALID_DATE_FORMAT": "%s is in an invalid format",
+  "ERROR_DATE_IS_NOT_VALID_PAST_DATE": "%s is not a valid past date"
 }
