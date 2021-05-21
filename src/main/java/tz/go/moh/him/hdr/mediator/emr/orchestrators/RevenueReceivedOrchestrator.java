@@ -57,8 +57,8 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 if (StringUtils.isBlank(item.getServiceProviderRankingId()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "serviceProviderRankingId"), null));
 
-                if (StringUtils.isBlank(item.getPatId()))
-                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "patId"), null));
+//                if (StringUtils.isBlank(item.getPatId()))
+//                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "patId"), null));
 
                 if (StringUtils.isBlank(item.getGender()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "gender"), null));
