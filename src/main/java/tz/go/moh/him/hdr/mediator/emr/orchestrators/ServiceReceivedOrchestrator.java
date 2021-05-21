@@ -45,8 +45,8 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 if (StringUtils.isBlank(item.getDeptName()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "deptName"), null));
 
-                if (StringUtils.isBlank(item.getPatId()))
-                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "patId"), null));
+//                if (StringUtils.isBlank(item.getPatId()))
+//                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "patId"), null));
 
                 if (StringUtils.isBlank(item.getGender()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "gender"), null));
