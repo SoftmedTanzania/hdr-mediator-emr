@@ -1,7 +1,7 @@
 {
   "urn": "urn:uuid:0ad8fbe0-434c-11eb-b585-df00a464e3b8",
   "version": "0.1.0",
-  "name": "HDR mediator",
+  "name": "EMR - HDR mediator",
   "description": "An OpenHIM mediator for processing data to be sent to HDR from EMR systems",
   "endpoints": [
     {
