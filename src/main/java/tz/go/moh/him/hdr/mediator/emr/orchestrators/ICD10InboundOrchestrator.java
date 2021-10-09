@@ -17,11 +17,6 @@ public class ICD10InboundOrchestrator extends UntypedActor {
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
 
-    public ICD10InboundOrchestrator(@SuppressWarnings("unused")  MediatorConfig config) {
-        final MediatorConfig config_;
-        config_ = config;
-    }
-
     @Override
     public void onReceive(Object msg) throws Exception {
         if (msg instanceof MediatorHTTPRequest) {

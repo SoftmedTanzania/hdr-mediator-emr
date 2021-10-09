@@ -16,12 +16,6 @@ import tz.go.moh.him.hdr.mediator.emr.domain.HdrResponse;
 public class CPTInboundOrchestrator extends UntypedActor {
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-
-    public CPTInboundOrchestrator(@SuppressWarnings("unused")  MediatorConfig config) {
-        final MediatorConfig config_;
-        config_ = config;
-    }
-
     @Override
     public void onReceive(Object msg) throws Exception {
         if (msg instanceof MediatorHTTPRequest) {
