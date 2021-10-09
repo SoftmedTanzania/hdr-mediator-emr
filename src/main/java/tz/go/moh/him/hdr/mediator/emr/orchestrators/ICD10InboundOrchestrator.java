@@ -25,7 +25,7 @@ public class ICD10InboundOrchestrator extends UntypedActor {
 
                 HdrICD10Request hdrICD10Request = mapper.readValue(((MediatorHTTPRequest) msg).getBody(), HdrICD10Request.class);
 
-                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_OK, hdrICD10Request.getIcd10SubCategoryId(), "Success", "ICD10");
+                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_OK, hdrICD10Request.getIcd10CodeCategoryId(), "Success", "ICD10");
 
                 finishRequest = new FinishRequest(new Gson().toJson(hdrResponse), "text/json", HttpStatus.SC_OK);
             } catch (Exception e) {
