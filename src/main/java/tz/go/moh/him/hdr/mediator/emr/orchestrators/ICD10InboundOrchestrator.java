@@ -19,7 +19,7 @@ public class ICD10InboundOrchestrator extends UntypedActor {
     private final MediatorConfig config;
 
 
-    public ICD10InboundOrchestrator(MediatorConfig config) {
+    public ICD10InboundOrchestrator(@SuppressWarnings("unused")  MediatorConfig config) {
         this.config = config;
     }
 

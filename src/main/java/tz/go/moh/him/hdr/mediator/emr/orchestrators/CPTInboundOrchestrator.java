@@ -19,7 +19,7 @@ public class CPTInboundOrchestrator extends UntypedActor {
     private final MediatorConfig config;
 
 
-    public CPTInboundOrchestrator(MediatorConfig config) {
+    public CPTInboundOrchestrator(@SuppressWarnings("unused")  MediatorConfig config) {
         this.config = config;
     }
 
