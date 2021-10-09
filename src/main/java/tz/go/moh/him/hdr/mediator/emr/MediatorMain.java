@@ -16,6 +16,8 @@ import tz.go.moh.him.hdr.mediator.emr.orchestrators.DeathByDiseaseCasesWithinFac
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.GenericEmrPayloadOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.RevenueReceivedOrchestrator;
 import tz.go.moh.him.hdr.mediator.emr.orchestrators.ServiceReceivedOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.ICD10InboundOrchestrator;
+import tz.go.moh.him.hdr.mediator.emr.orchestrators.CPTInboundOrchestrator;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,8 @@ public class MediatorMain {
         routingTable.addRoute("/hdr-bed-occupancy", BedOccupancyOrchestrator.class);
         routingTable.addRoute("/hdr-revenue-received", RevenueReceivedOrchestrator.class);
         routingTable.addRoute("/hdr-mediator", GenericEmrPayloadOrchestrator.class);
+        routingTable.addRoute("/hdr-icd10-inbound", ICD10InboundOrchestrator.class);
+        routingTable.addRoute("/hdr-cpt-inbound", CPTInboundOrchestrator.class);
 
         return routingTable;
     }
