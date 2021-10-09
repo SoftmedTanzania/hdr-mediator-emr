@@ -16,11 +16,10 @@ import tz.go.moh.him.hdr.mediator.emr.domain.HdrResponse;
 public class ICD10InboundOrchestrator extends UntypedActor {
     LoggingAdapter log = Logging.getLogger(getContext().system(), this);
 
-    private final MediatorConfig config;
-
 
     public ICD10InboundOrchestrator(@SuppressWarnings("unused")  MediatorConfig config) {
-        this.config = config;
+        final MediatorConfig config_;
+        config_ = config;
     }
 
     @Override
