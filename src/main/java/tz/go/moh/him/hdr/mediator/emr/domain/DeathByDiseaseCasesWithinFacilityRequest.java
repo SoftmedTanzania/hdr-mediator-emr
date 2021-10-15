@@ -68,6 +68,24 @@ public class DeathByDiseaseCasesWithinFacilityRequest extends EmrPayload {
         private String patId;
 
         /**
+         * First name of the patient
+         */
+        @JsonProperty("firstName")
+        private String firstName;
+
+        /**
+         * Middle name of the patient
+         */
+        @JsonProperty("middleName")
+        private String middleName;
+
+        /**
+         * Last name of the patient
+         */
+        @JsonProperty("lastName")
+        private String lastName;
+
+        /**
          * ICD 10 preferred but other codes will be accepted as long as they are mapped to ICD10.Codes will be comma separated
          */
         @JsonProperty("icd10Code")
@@ -90,6 +108,31 @@ public class DeathByDiseaseCasesWithinFacilityRequest extends EmrPayload {
          */
         @JsonProperty("dateDeathOccurred")
         private String dateDeathOccurred;
+
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getMiddleName() {
+            return middleName;
+        }
+
+        public void setMiddleName(String middleName) {
+            this.middleName = middleName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
 
         public String getWardId() {
             return wardId;
