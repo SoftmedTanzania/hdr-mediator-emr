@@ -81,7 +81,7 @@ public class RevenueReceivedRequest extends EmrPayload {
          * Custom medical service codes must be mapped to standard CPT4 codes.
          */
         @JsonProperty("medSvcCode")
-        private String medSvcCode;
+        private List<String> medSvcCode;
 
         /**
          * Coded identifier of the source of the revenue associated with this financial transaction.
@@ -153,11 +153,11 @@ public class RevenueReceivedRequest extends EmrPayload {
             this.dob = dob;
         }
 
-        public String getMedSvcCode() {
+        public List<String> getMedSvcCode() {
             return medSvcCode;
         }
 
-        public void setMedSvcCode(String medSvcCode) {
+        public void setMedSvcCode(List<String> medSvcCode) {
             this.medSvcCode = medSvcCode;
         }
 

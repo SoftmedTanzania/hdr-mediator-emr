@@ -1,5 +1,4 @@
 package tz.go.moh.him.hdr.mediator.emr.mock;
-
 import org.apache.commons.io.IOUtils;
 import org.openhim.mediator.engine.messages.MediatorHTTPRequest;
 import org.openhim.mediator.engine.testing.MockHTTPConnector;
@@ -88,30 +87,34 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("20201225", bedOccupancyRequest.getItems().get(0).getDischargeDate());
                 break;
             case "DeathByDiseaseCasesOutsideFacilityRequest":
-                DeathByDiseaseCasesOutsideFacilityRequest forecastAccuracyPerProgramRequests = serializer.deserialize(msg.getBody(), DeathByDiseaseCasesOutsideFacilityRequest.class);
-                assertEquals("DDC", forecastAccuracyPerProgramRequests.getMessageType());
-                assertEquals("Muhimbili", forecastAccuracyPerProgramRequests.getOrgName());
-                assertEquals("105651-4", forecastAccuracyPerProgramRequests.getFacilityHfrCode());
-                assertEquals("1", forecastAccuracyPerProgramRequests.getItems().get(0).getDeathId());
-                assertEquals("1", forecastAccuracyPerProgramRequests.getItems().get(0).getPlaceOfDeathId());
-                assertEquals("B50.9", forecastAccuracyPerProgramRequests.getItems().get(0).getIcd10Code());
-                assertEquals("Male", forecastAccuracyPerProgramRequests.getItems().get(0).getGender());
-                assertEquals("19850101", forecastAccuracyPerProgramRequests.getItems().get(0).getDob());
-                assertEquals("20201225", forecastAccuracyPerProgramRequests.getItems().get(0).getDateDeathOccurred());
+                DeathByDiseaseCasesOutsideFacilityRequest deathByDiseaseCasesOutsideFacilityRequest = serializer.deserialize(msg.getBody(), DeathByDiseaseCasesOutsideFacilityRequest.class);
+                assertEquals("DDCOUT", deathByDiseaseCasesOutsideFacilityRequest.getMessageType());
+                assertEquals("Muhimbili", deathByDiseaseCasesOutsideFacilityRequest.getOrgName());
+                assertEquals("105651-4", deathByDiseaseCasesOutsideFacilityRequest.getFacilityHfrCode());
+                assertEquals("1", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getDeathId());
+                assertEquals("1", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getPlaceOfDeathId());
+                assertEquals("Z91.81", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getCauseOfDeath());
+                assertEquals("B50.9", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getImmediateCauseOfDeath());
+                assertEquals("C30.1", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getUnderlyingCauseOfDeath());
+                assertEquals("Male", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getGender());
+                assertEquals("19850101", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getDob());
+                assertEquals("20201225", deathByDiseaseCasesOutsideFacilityRequest.getItems().get(0).getDateDeathOccurred());
 
                 break;
             case "DeathByDiseaseCasesWithinFacilityRequest":
-                DeathByDiseaseCasesWithinFacilityRequest laboratoryDiagnosticEquipmentFunctionalityRequests = serializer.deserialize(msg.getBody(), DeathByDiseaseCasesWithinFacilityRequest.class);
-                assertEquals("DDC", laboratoryDiagnosticEquipmentFunctionalityRequests.getMessageType());
-                assertEquals("Muhimbili", laboratoryDiagnosticEquipmentFunctionalityRequests.getOrgName());
-                assertEquals("105651-4", laboratoryDiagnosticEquipmentFunctionalityRequests.getFacilityHfrCode());
-                assertEquals("1", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getWardId());
-                assertEquals("Pediatric", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getWardName());
-                assertEquals("1", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getPatId());
-                assertEquals("B50.9", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getIcd10Code());
-                assertEquals("Male", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getGender());
-                assertEquals("19850101", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getDob());
-                assertEquals("20201225", laboratoryDiagnosticEquipmentFunctionalityRequests.getItems().get(0).getDateDeathOccurred());
+                DeathByDiseaseCasesWithinFacilityRequest deathByDiseaseCasesWithinFacilityRequest = serializer.deserialize(msg.getBody(), DeathByDiseaseCasesWithinFacilityRequest.class);
+                assertEquals("DDC", deathByDiseaseCasesWithinFacilityRequest.getMessageType());
+                assertEquals("Muhimbili", deathByDiseaseCasesWithinFacilityRequest.getOrgName());
+                assertEquals("105651-4", deathByDiseaseCasesWithinFacilityRequest.getFacilityHfrCode());
+                assertEquals("1", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getWardId());
+                assertEquals("Pediatric", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getWardName());
+                assertEquals("1", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getPatId());
+                assertEquals("Z91.81", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getCauseOfDeath());
+                assertEquals("B50.9", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getImmediateCauseOfDeath());
+                assertEquals("C30.1", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getUnderlyingCauseOfDeath());
+                assertEquals("Male", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getGender());
+                assertEquals("19850101", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getDob());
+                assertEquals("20201225", deathByDiseaseCasesWithinFacilityRequest.getItems().get(0).getDateDeathOccurred());
 
                 break;
             case "RevenueReceivedRequest":
@@ -124,7 +127,8 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("1", revenueReceivedRequest.getItems().get(0).getPatId());
                 assertEquals("Male", revenueReceivedRequest.getItems().get(0).getGender());
                 assertEquals("19890101", revenueReceivedRequest.getItems().get(0).getDob());
-                assertEquals("002923", revenueReceivedRequest.getItems().get(0).getMedSvcCode());
+                assertEquals("00231", revenueReceivedRequest.getItems().get(0).getMedSvcCode().get(0));
+                assertEquals("99415", revenueReceivedRequest.getItems().get(0).getMedSvcCode().get(1));
                 assertEquals("33", revenueReceivedRequest.getItems().get(0).getPayerId());
                 assertEquals("47", revenueReceivedRequest.getItems().get(0).getExemptionCategoryId());
                 assertEquals(10000.00, revenueReceivedRequest.getItems().get(0).getBilledAmount(), 0.01);
@@ -142,8 +146,6 @@ public class MockDestination extends MockHTTPConnector {
                 assertEquals("108627-1", serviceReceivedRequest.getItems().get(0).getPatId());
                 assertEquals("Male", serviceReceivedRequest.getItems().get(0).getGender());
                 assertEquals("19900101", serviceReceivedRequest.getItems().get(0).getDob());
-                assertEquals("002923", serviceReceivedRequest.getItems().get(0).getMedSvcCode());
-                assertEquals("A17.8, M60.1, B29", serviceReceivedRequest.getItems().get(0).getIcd10Code());
                 assertEquals("20201228", serviceReceivedRequest.getItems().get(0).getServiceDate());
                 assertEquals("1", serviceReceivedRequest.getItems().get(0).getServiceProviderRankingId());
                 assertEquals("IPD", serviceReceivedRequest.getItems().get(0).getVisitType());

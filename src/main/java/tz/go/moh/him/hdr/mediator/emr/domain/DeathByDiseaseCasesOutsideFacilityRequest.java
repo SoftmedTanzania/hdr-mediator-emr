@@ -61,10 +61,23 @@ public class DeathByDiseaseCasesOutsideFacilityRequest extends EmrPayload {
         private String placeOfDeathId;
 
         /**
-         * ICD 10 preferred but other codes will be accepted as long as they are mapped to ICD10.Codes will be comma separated
+         * The ICD10 code for the cause of death
          */
-        @JsonProperty("icd10Code")
-        private String icd10Code;
+        @JsonProperty("causeOfDeath")
+        private String causeOfDeath;
+
+        /**
+         *The ICD10 Code for the Immediate cause of death
+         */
+        @JsonProperty("immediateCauseOfDeath")
+        private String immediateCauseOfDeath;
+
+        /**
+         * The ICD10 COde for the Underlying cause of death
+         */
+        @JsonProperty("underlyingCauseOfDeath")
+        private String underlyingCauseOfDeath;
+
 
         /**
          * Gender of the patient
@@ -100,14 +113,6 @@ public class DeathByDiseaseCasesOutsideFacilityRequest extends EmrPayload {
             this.placeOfDeathId = placeOfDeathId;
         }
 
-        public String getIcd10Code() {
-            return icd10Code;
-        }
-
-        public void setIcd10Code(String icd10Code) {
-            this.icd10Code = icd10Code;
-        }
-
         public String getGender() {
             return gender;
         }
@@ -130,6 +135,30 @@ public class DeathByDiseaseCasesOutsideFacilityRequest extends EmrPayload {
 
         public void setDateDeathOccurred(String dateDeathOccurred) {
             this.dateDeathOccurred = dateDeathOccurred;
+        }
+
+        public String getCauseOfDeath() {
+            return causeOfDeath;
+        }
+
+        public void setCauseOfDeath(String causeOfDeath) {
+            this.causeOfDeath = causeOfDeath;
+        }
+
+        public String getImmediateCauseOfDeath() {
+            return immediateCauseOfDeath;
+        }
+
+        public void setImmediateCauseOfDeath(String immediateCauseOfDeath) {
+            this.immediateCauseOfDeath = immediateCauseOfDeath;
+        }
+
+        public String getUnderlyingCauseOfDeath() {
+            return underlyingCauseOfDeath;
+        }
+
+        public void setUnderlyingCauseOfDeath(String underlyingCauseOfDeath) {
+            this.underlyingCauseOfDeath = underlyingCauseOfDeath;
         }
     }
 }

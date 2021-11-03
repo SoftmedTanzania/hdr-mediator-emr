@@ -9,12 +9,12 @@
       "patId": "1",
       "gender": "Male",
       "dob": "19890101",
-      "medSvcCode": "002923",
-      "payerId": "33",
-      "exemptionCategoryId": "47",
+      "medSvcCode": ["00231","99415"],
+      "payerId": 33,
+      "exemptionCategoryId": 47,
       "billedAmount": 10000.00,
       "waivedAmount": 0.00,
-      "serviceProviderRankingId": "1"
+      "serviceProviderRankingId": 1
     }
   ]
 }

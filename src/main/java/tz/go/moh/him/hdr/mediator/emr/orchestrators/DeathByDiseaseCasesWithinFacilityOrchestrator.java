@@ -51,8 +51,11 @@ public class DeathByDiseaseCasesWithinFacilityOrchestrator extends BaseOrchestra
                 if (StringUtils.isBlank(item.getWardName()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "wardName"), null));
 
-//                if (StringUtils.isBlank(item.getIcd10Code()))
-//                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "icd10Code"), null));
+                if (StringUtils.isBlank(item.getCauseOfDeath()))
+                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "causeOfDeath"), null));
+
+                if (StringUtils.isBlank(item.getUnderlyingCauseOfDeath()))
+                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "underlyingCauseOfDeath"), null));
 
                 if (StringUtils.isBlank(item.getWardId()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "wardId"), null));
