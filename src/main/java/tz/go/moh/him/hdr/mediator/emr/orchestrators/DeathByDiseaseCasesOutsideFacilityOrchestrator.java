@@ -51,8 +51,8 @@ public class DeathByDiseaseCasesOutsideFacilityOrchestrator extends BaseOrchestr
                 if (StringUtils.isBlank(item.getPlaceOfDeathId()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "placeOfDeathId"), null));
 
-//                if (StringUtils.isBlank(item.getIcd10Code()))
-//                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "icd10Code"), null));
+                if (StringUtils.isBlank(item.getCauseOfDeath()))
+                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "causeOfDeath"), null));
 
                 if (StringUtils.isBlank(item.getDeathId()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "deathId"), null));

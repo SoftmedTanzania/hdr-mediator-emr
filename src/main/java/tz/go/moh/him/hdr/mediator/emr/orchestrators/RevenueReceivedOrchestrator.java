@@ -42,6 +42,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
 
         if (revenueReceivedRequest.getItems() != null) {
             for (RevenueReceivedRequest.Item item : revenueReceivedRequest.getItems()) {
+
                 if (StringUtils.isBlank(item.getSystemTransId()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "systemTransId"), null));
 
@@ -66,7 +67,7 @@ public class RevenueReceivedOrchestrator extends BaseOrchestrator {
                 if (StringUtils.isBlank(item.getDob()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "dob"), null));
 
-                if (StringUtils.isBlank(item.getMedSvcCode()))
+                if (item.getMedSvcCode() == null || item.getMedSvcCode().isEmpty())
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "medSvcCode"), null));
 
             }

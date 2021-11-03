@@ -81,13 +81,27 @@ public class ServiceReceivedRequest extends EmrPayload {
          * The unique identifier of the medical services provided. They should be comma separated (e.g. 002923, 00277, 002772)
          */
         @JsonProperty("medSvcCode")
-        private String medSvcCode;
+        private List<String> medSvcCode;
 
         /**
-         * The unique identifier of the diagnosed diseases. Should be comma separated (e.g. A17.8, M60.1, B29)
+         * The unique identifier of the confirmed diagnosed diseases.
          */
-        @JsonProperty("icd10Code")
-        private String icd10Code;
+        @JsonProperty("confirmedDiagnosis")
+        private List<String> confirmedDiagnosis;
+
+
+        /**
+         * The unique identifier of the differential diagnosed diseases.
+         */
+        @JsonProperty("differentialDiagnosis")
+        private List<String> differentialDiagnosis;
+
+
+        /**
+         * The unique identifier of the provisional diagnosed diseases.
+         */
+        @JsonProperty("provisionalDiagnosis")
+        private List<String> provisionalDiagnosis;
 
         /**
          * For in-patient records, the date the service was provided. For out-patient records, this should be the date of the visit.
@@ -147,20 +161,36 @@ public class ServiceReceivedRequest extends EmrPayload {
             this.dob = dob;
         }
 
-        public String getMedSvcCode() {
+        public List<String> getMedSvcCode() {
             return medSvcCode;
         }
 
-        public void setMedSvcCode(String medSvcCode) {
+        public void setMedSvcCode(List<String> medSvcCode) {
             this.medSvcCode = medSvcCode;
         }
 
-        public String getIcd10Code() {
-            return icd10Code;
+        public List<String> getConfirmedDiagnosis() {
+            return confirmedDiagnosis;
         }
 
-        public void setIcd10Code(String icd10Code) {
-            this.icd10Code = icd10Code;
+        public void setConfirmedDiagnosis(List<String> confirmedDiagnosis) {
+            this.confirmedDiagnosis = confirmedDiagnosis;
+        }
+
+        public List<String> getDifferentialDiagnosis() {
+            return differentialDiagnosis;
+        }
+
+        public void setDifferentialDiagnosis(List<String> differentialDiagnosis) {
+            this.differentialDiagnosis = differentialDiagnosis;
+        }
+
+        public List<String> getProvisionalDiagnosis() {
+            return provisionalDiagnosis;
+        }
+
+        public void setProvisionalDiagnosis(List<String> provisionalDiagnosis) {
+            this.provisionalDiagnosis = provisionalDiagnosis;
         }
 
         public String getServiceDate() {

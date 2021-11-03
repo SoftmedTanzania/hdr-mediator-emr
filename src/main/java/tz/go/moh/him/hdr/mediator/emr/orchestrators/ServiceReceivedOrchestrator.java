@@ -54,11 +54,8 @@ public class ServiceReceivedOrchestrator extends BaseOrchestrator {
                 if (StringUtils.isBlank(item.getDob()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "dob"), null));
 
-                if (StringUtils.isBlank(item.getMedSvcCode()))
+                if (item.getMedSvcCode() == null || item.getMedSvcCode().isEmpty())
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "medSvcCode"), null));
-
-//                if (StringUtils.isBlank(item.getIcd10Code()))
-//                    results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "icd10Code"), null));
 
                 if (StringUtils.isBlank(item.getServiceDate()))
                     results.add(new ResultDetail(ResultDetail.ResultsDetailsType.ERROR, String.format(errorMessageResource.getString("NN_ERR01"), "serviceDate"), null));

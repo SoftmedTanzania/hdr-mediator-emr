@@ -9,10 +9,12 @@
       "patId": "108627-1",
       "gender": "Male",
       "dob": "19900101",
-      "medSvcCode": "002923",
-      "icd10Code": "A17.8, M60.1, B29",
+      "medSvcCode": ["00231","99415"],
+      "confirmedDiagnosis": ["A10.1","B29.0"],
+      "differentialDiagnosis": ["M60.1","U07.1"],
+      "provisionalDiagnosis": ["B54","B53.0"],
       "serviceDate": "20201228",
-      "serviceProviderRankingId": "1",
+      "serviceProviderRankingId": 1,
       "visitType": "IPD"
     }
   ]
