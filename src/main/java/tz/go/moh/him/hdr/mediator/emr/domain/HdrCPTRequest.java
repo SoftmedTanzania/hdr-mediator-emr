@@ -4,65 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HdrCPTRequest {
 
-    @JsonProperty("cpt_category_code_id")
-    private int cptCategoryCodeId;
+    @JsonProperty("cpt_category_description")
+    private String cptCategoryDescription;
 
-    @JsonProperty("cpt_code_category_description")
-    private String cptCodeCategoryDescription;
-
-    @JsonProperty("cpt_code_sub_category_id")
-    private int cptCodeSubCategoryId;
-
-    @JsonProperty("cpt_code_sub_category_description")
-    private String cptCodeSubCategoryDescription;
-
-    @JsonProperty("cpt_code_id")
-    private int cptCodeId;
+    @JsonProperty("cpt_sub_category_description")
+    private String cptSubCategoryDescription;
 
     @JsonProperty("cpt_code")
     private String cptCode;
 
-    @JsonProperty("cpt_description")
-    private String cptDescription;
+    @JsonProperty("cpt_code_description")
+    private String cptCodeDescription;
 
-    public int getCptCategoryCodeId() {
-        return cptCategoryCodeId;
+    public String getCptCategoryDescription() {
+        return cptCategoryDescription;
     }
 
-    public void setCptCategoryCodeId(int cptCategoryCodeId) {
-        this.cptCategoryCodeId = cptCategoryCodeId;
+    public void setCptCategoryDescription(String cptCategoryDescription) {
+        this.cptCategoryDescription = cptCategoryDescription;
     }
 
-    public String getCptCodeCategoryDescription() {
-        return cptCodeCategoryDescription;
+    public String getCptSubCategoryDescription() {
+        return cptSubCategoryDescription;
     }
 
-    public void setCptCodeCategoryDescription(String cptCodeCategoryDescription) {
-        this.cptCodeCategoryDescription = cptCodeCategoryDescription;
-    }
-
-    public int getCptCodeSubCategoryId() {
-        return cptCodeSubCategoryId;
-    }
-
-    public void setCptCodeSubCategoryId(int cptCodeSubCategoryId) {
-        this.cptCodeSubCategoryId = cptCodeSubCategoryId;
-    }
-
-    public String getCptCodeSubCategoryDescription() {
-        return cptCodeSubCategoryDescription;
-    }
-
-    public void setCptCodeSubCategoryDescription(String cptCodeSubCategoryDescription) {
-        this.cptCodeSubCategoryDescription = cptCodeSubCategoryDescription;
-    }
-
-    public int getCptCodeId() {
-        return cptCodeId;
-    }
-
-    public void setCptCodeId(int cptCodeId) {
-        this.cptCodeId = cptCodeId;
+    public void setCptSubCategoryDescription(String cptSubCategoryDescription) {
+        this.cptSubCategoryDescription = cptSubCategoryDescription;
     }
 
     public String getCptCode() {
@@ -73,12 +40,11 @@ public class HdrCPTRequest {
         this.cptCode = cptCode;
     }
 
-    public String getCptDescription() {
-        return cptDescription;
+    public String getCptCodeDescription() {
+        return cptCodeDescription;
     }
 
-    public void setCptDescription(String cptDescription) {
-        this.cptDescription = cptDescription;
+    public void setCptCodeDescription(String cptCodeDescription) {
+        this.cptCodeDescription = cptCodeDescription;
     }
-
 }

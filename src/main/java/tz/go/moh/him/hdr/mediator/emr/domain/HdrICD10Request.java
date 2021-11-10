@@ -3,29 +3,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HdrICD10Request {
 
-    @JsonProperty("icd10_code_category_id")
-    private int icd10CodeCategoryId;
+    @JsonProperty("icd10_category_identifier")
+    private String icd10CategoryIdentifier;
 
     @JsonProperty("icd10_category_description")
-    private String icd10CodeCategoryDescription;
+    private String icd10CategoryDescription;
 
-    @JsonProperty("icd10_sub_category_id")
-    private int icd10SubCategoryId;
+    @JsonProperty("icd10_sub_category_identifier")
+    private String icd10SubCategoryIdentifier;
 
     @JsonProperty("icd10_sub_category_description")
     private String icd10SubCategoryDescription;
 
-    @JsonProperty("icd10_id")
-    private int icd10Id;
-
     @JsonProperty("icd10_code")
     private String icd10Code;
 
-    @JsonProperty("icd10_description")
-    private String icd10Description;
-
-    @JsonProperty("icd10_sub_code_id")
-    private int icd10SubCodeId;
+    @JsonProperty("icd10_code_description")
+    private String icd10CodeDescription;
 
     @JsonProperty("icd10_sub_code")
     private String icd10SubCode;
@@ -33,28 +27,28 @@ public class HdrICD10Request {
     @JsonProperty("icd10_sub_code_description")
     private String icd10SubCodeDescription;
 
-    public int getIcd10CodeCategoryId() {
-        return icd10CodeCategoryId;
+    public String getIcd10CategoryIdentifier() {
+        return icd10CategoryIdentifier;
     }
 
-    public void setIcd10CodeCategoryId(int icd10CodeCategoryId) {
-        this.icd10CodeCategoryId = icd10CodeCategoryId;
+    public void setIcd10CategoryIdentifier(String icd10CategoryIdentifier) {
+        this.icd10CategoryIdentifier = icd10CategoryIdentifier;
     }
 
-    public String getIcd10CodeCategoryDescription() {
-        return icd10CodeCategoryDescription;
+    public String getIcd10CategoryDescription() {
+        return icd10CategoryDescription;
     }
 
-    public void setIcd10CodeCategoryDescription(String icd10CodeCategoryDescription) {
-        this.icd10CodeCategoryDescription = icd10CodeCategoryDescription;
+    public void setIcd10CategoryDescription(String icd10CategoryDescription) {
+        this.icd10CategoryDescription = icd10CategoryDescription;
     }
 
-    public int getIcd10SubCategoryId() {
-        return icd10SubCategoryId;
+    public String getIcd10SubCategoryIdentifier() {
+        return icd10SubCategoryIdentifier;
     }
 
-    public void setIcd10SubCategoryId(int icd10SubCategoryId) {
-        this.icd10SubCategoryId = icd10SubCategoryId;
+    public void setIcd10SubCategoryIdentifier(String icd10SubCategoryIdentifier) {
+        this.icd10SubCategoryIdentifier = icd10SubCategoryIdentifier;
     }
 
     public String getIcd10SubCategoryDescription() {
@@ -65,14 +59,6 @@ public class HdrICD10Request {
         this.icd10SubCategoryDescription = icd10SubCategoryDescription;
     }
 
-    public int getIcd10Id() {
-        return icd10Id;
-    }
-
-    public void setIcd10Id(int icd10Id) {
-        this.icd10Id = icd10Id;
-    }
-
     public String getIcd10Code() {
         return icd10Code;
     }
@@ -81,20 +67,12 @@ public class HdrICD10Request {
         this.icd10Code = icd10Code;
     }
 
-    public String getIcd10Description() {
-        return icd10Description;
+    public String getIcd10CodeDescription() {
+        return icd10CodeDescription;
     }
 
-    public void setIcd10Description(String icd10Description) {
-        this.icd10Description = icd10Description;
-    }
-
-    public int getIcd10SubCodeId() {
-        return icd10SubCodeId;
-    }
-
-    public void setIcd10SubCodeId(int icd10SubCodeId) {
-        this.icd10SubCodeId = icd10SubCodeId;
+    public void setIcd10CodeDescription(String icd10CodeDescription) {
+        this.icd10CodeDescription = icd10CodeDescription;
     }
 
     public String getIcd10SubCode() {
@@ -112,5 +90,4 @@ public class HdrICD10Request {
     public void setIcd10SubCodeDescription(String icd10SubCodeDescription) {
         this.icd10SubCodeDescription = icd10SubCodeDescription;
     }
-
 }
