@@ -25,9 +25,6 @@ public class HdrCPTRequest {
     @JsonProperty("cpt_description")
     private String cptDescription;
 
-    @JsonProperty("status")
-    private String status;
-
     public int getCptCategoryCodeId() {
         return cptCategoryCodeId;
     }
@@ -84,11 +81,4 @@ public class HdrCPTRequest {
         this.cptDescription = cptDescription;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

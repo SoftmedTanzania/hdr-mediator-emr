@@ -33,9 +33,6 @@ public class HdrICD10Request {
     @JsonProperty("icd10_sub_code_description")
     private String icd10SubCodeDescription;
 
-    @JsonProperty("status")
-    private String status;
-
     public int getIcd10CodeCategoryId() {
         return icd10CodeCategoryId;
     }
@@ -116,11 +113,4 @@ public class HdrICD10Request {
         this.icd10SubCodeDescription = icd10SubCodeDescription;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }
