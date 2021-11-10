@@ -24,11 +24,11 @@ public class CPTInboundOrchestrator extends UntypedActor {
 
                 HdrCPTRequest HdrCPTRequest = mapper.readValue(((MediatorHTTPRequest) msg).getBody(), HdrCPTRequest.class);
 
-                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_OK, HdrCPTRequest.getCptCategoryCodeId(), "Success", "CPT");
+                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_OK, "Success", "CPT");
 
                 finishRequest = new FinishRequest(new Gson().toJson(hdrResponse), "text/json", HttpStatus.SC_OK);
             } catch (Exception e) {
-                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_BAD_REQUEST, 0, "Failed", "CPT");
+                HdrResponse hdrResponse = new HdrResponse(HttpStatus.SC_BAD_REQUEST, "Failed", "CPT");
                 finishRequest = new FinishRequest(new Gson().toJson(hdrResponse), "text/json", HttpStatus.SC_BAD_REQUEST);
             } finally {
                 ((MediatorHTTPRequest) msg).getRequestHandler().tell(finishRequest, getSelf());

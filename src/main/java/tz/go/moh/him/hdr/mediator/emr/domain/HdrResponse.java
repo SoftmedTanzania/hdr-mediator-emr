@@ -13,14 +13,6 @@ public class HdrResponse {
     private int status;
 
     /**
-     * The HDR ICD10 Category ID.
-     */
-    @SerializedName("CategoryId")
-    @JsonProperty("CategoryId")
-    private int categoryId;
-
-
-    /**
      * The Response Message.
      */
     @SerializedName("Message")
@@ -34,9 +26,8 @@ public class HdrResponse {
     @JsonProperty("MessageType")
     private String messageType;
 
-    public HdrResponse(int status, int categoryId, String message, String messaType) {
+    public HdrResponse(int status,String message, String messaType) {
         this.status = status;
-        this.categoryId = categoryId;
         this.message = message;
         this.messageType = messaType;
     }
@@ -50,14 +41,6 @@ public class HdrResponse {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
     }
 
     public String getMessage() {
